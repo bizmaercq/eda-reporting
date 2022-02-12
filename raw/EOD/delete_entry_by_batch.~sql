@@ -1,0 +1,20 @@
+SELECT * FROM detb_batch_master b where b.last_oper_id ='JNSOM' and b.batch_no ='7707' FOR UPDATE NOWAIT; 
+
+select * from detb_upload_detail w where w.batch_no = '7707' and w.branch_code='021' FOR UPDATE NOWAIT; 
+
+
+select * from detb_upload_master d where d.batch_no = '7707' and d.branch_code='021'  for update nowait;
+
+SELECT * FROM actb_daily_log d WHERE d.batch_no ='7707' and d.ac_branch='021' FOR UPDATE NOWAIT; 
+delete FROM actb_daily_log d WHERE d.batch_no ='7713'
+select * from acvw_all_ac_entries s where s.BATCH_NO = '7777' and s.TRN_DT = '12/03/2019'  
+
+SELECT * FROM sttb_record_log rl WHERE rl.auth_stat ='U'
+
+
+SELECT *from actb_daily_log dl WHERE dl.batch_no ='9625' and dl.ac_branch  ='023'
+SELECT * FROM sttm_dates
+
+
+
+SELECT COUNT(*) from user_objects

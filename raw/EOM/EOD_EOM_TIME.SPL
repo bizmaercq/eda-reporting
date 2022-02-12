@@ -1,0 +1,242 @@
+SQL> 
+SQL> 
+SQL> PROMPT batch timings lower version (<10)
+batch timings lower version (<10)
+SQL> 
+SQL> select a.*,
+  2  	    TO_CHAR(starttime, 'DD-MON-YYYY HH24:MI:SS') start_time,
+  3  	    TO_CHAR(endtime, 'DD-MON-YYYY HH24:MI:SS') end_time
+  4    from aetb_process_progress a;
+
+                ESN;BRA;PROCESS                  ;S;ERRCODE    ;REASON                                                                                                                                                                                                                                                         ;STARTTIME;ENDTIME  ;E;START_TIME                                                                 ;END_TIME
+-------------------;---;-------------------------;-;-----------;---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------;---------;---------;-;---------------------------------------------------------------------------;---------------------------------------------------------------------------
+            1.00000;050;MarkEod                  ;A;ED-10052   ;Error occurred in moving cleaning up maintenance log. Contract your support representative.                                                                                                                                                                    ;         ;26-AUG-14;F;                                                                           ;26-AUG-2014 10:33:06
+            1.00000;023;MarkEod                  ;A;ED-10029   ;Some branch Status does not permit End of Day. Please Check.                                                                                                                                                                                                   ;24-AUG-14;26-AUG-14;E;24-AUG-2014 21:05:08                                                       ;26-AUG-2014 09:56:22
+            1.00000;024;MarkEod                  ;A;ED-10029   ;Some branch Status does not permit End of Day. Please Check.                                                                                                                                                                                                   ;24-AUG-14;26-AUG-14;B;24-AUG-2014 21:05:08                                                       ;26-AUG-2014 09:56:22
+            1.00000;031;MarkEod                  ;A;ED-10029   ;Some branch Status does not permit End of Day. Please Check.                                                                                                                                                                                                   ;24-AUG-14;26-AUG-14;B;24-AUG-2014 21:05:08                                                       ;26-AUG-2014 09:56:22
+            1.00000;040;MarkEod                  ;A;ED-10029   ;Some branch Status does not permit End of Day. Please Check.                                                                                                                                                                                                   ;24-AUG-14;26-AUG-14;E;24-AUG-2014 21:05:08                                                       ;26-AUG-2014 09:56:22
+            1.00000;042;MarkEod                  ;A;           ;                                                                                                                                                                                                                                                               ;24-AUG-14;26-AUG-14;F;24-AUG-2014 21:05:08                                                       ;26-AUG-2014 10:30:18
+            1.00000;043;MarkEod                  ;A;ED-10029   ;Some branch Status does not permit End of Day. Please Check.                                                                                                                                                                                                   ;24-AUG-14;26-AUG-14;B;24-AUG-2014 21:05:08                                                       ;26-AUG-2014 10:30:18
+
+7 rows selected.
+
+SQL> 
+SQL> PROMPT Total elapsed time
+Total elapsed time
+SQL> 
+SQL> select *
+  2    from (select eod_date,
+  3  		 TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+  4  		    TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME,
+  5  		    round((max(end_time) - min(start_time)) * 24 * 60, 0) tot_min_taken
+  6  	       from (select x.eod_date,
+  7  			    min(x.start_time) start_time,
+  8  			    max(x.end_time) end_time,
+  9  			    round((max(x.end_time) - min(x.start_time)), 2) * 24 * 60 tot_min_taken
+ 10  		       from aetb_eoc_runchart_history x
+ 11  		       left join aetm_eoc_group_branches y on x.branch_code =
+ 12  							      y.branch_code
+ 13  		      group by x.eod_date
+ 14  		     union all
+ 15  		     select i.eod_date,
+ 16  			    min(i.start_time) start_time,
+ 17  			    max(i.end_time) end_time,
+ 18  			    round((max(i.end_time) - min(i.start_time)), 2) * 24 * 60 tot_min_taken
+ 19  		       from aetb_eoc_runchart i
+ 20  		       left join aetm_eoc_group_branches j on i.branch_code =
+ 21  							      j.branch_code
+ 22  		      group by i.eod_date)
+ 23  	      group by eod_date,start_time,end_time)
+ 24   where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+ 25   order by start_time;
+old  24:  where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+new  24:  where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+                       round((max(x.end_time) - min(x.start_time)), 2) * 24 * 60 tot_min_taken
+                                                      *
+ERROR at line 9:
+ORA-00904: "X"."START_TIME": invalid identifier
+
+
+SQL> 
+SQL> PROMPT batch timings lower version (>11 <12)
+batch timings lower version (>11 <12)
+SQL> 
+SQL> select a.*,
+  2  	    TO_CHAR(starttime, 'DD-MON-YYYY HH24:MI:SS') start_time,
+  3  	    TO_CHAR(endtime, 'DD-MON-YYYY HH24:MI:SS') end_time
+  4    from aetb_process_progress a
+  5    where a.starttime >= TO_DATE('&EODDATE', 'DD-MON-YYYY');
+old   5:   where a.starttime >= TO_DATE('&EODDATE', 'DD-MON-YYYY')
+new   5:   where a.starttime >= TO_DATE('30-11-2018', 'DD-MON-YYYY')
+  where a.starttime >= TO_DATE('30-11-2018', 'DD-MON-YYYY')
+    *
+ERROR at line 5:
+ORA-01843: not a valid month
+
+
+SQL> 
+SQL> 
+SQL> PROMPT full batch timings with group code for 11x sites
+full batch timings with group code for 11x sites
+SQL> 
+SQL>  select *
+  2    from (select x.eod_date,
+  3  		    y.group_code,
+  4  		    x.branch_code,
+  5  		    x.branch_date,
+  6  		    x.eoc_stage,
+  7  		    x.eoc_batch,
+  8  		    x.eoc_batch_status,
+  9  		    TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+ 10  		    TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME,
+ 11  		    round((x.end_time - x.start_time) * 24 * 60, 2) tot_min_taken
+ 12  			     from aetb_eoc_programs_history x
+ 13  			     left join aetm_eoc_group_branches y on (x.branch_code = y.branch_code)
+ 14  		     union all
+ 15  			     select i.eod_date,
+ 16  				     j.group_code,
+ 17  				     i.branch_code,
+ 18  				     i.branch_date,
+ 19  				     i.eoc_stage,
+ 20  				     i.eoc_batch,
+ 21  				     i.eoc_batch_status,
+ 22  				     TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+ 23  				     TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME,
+ 24  				     round((i.end_time - i.start_time) * 24 * 60, 2) tot_min_taken
+ 25  				     from aetb_eoc_programs i
+ 26  				     left join aetm_eoc_group_branches j on (i.branch_code = j.branch_code)
+ 27  	     )
+ 28   where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+ 29   order by start_time;
+old  28:  where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+new  28:  where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+ where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+                               *
+ERROR at line 28:
+ORA-01843: not a valid month
+
+
+SQL> 
+SQL> 
+SQL> PROMPT Groupwise/Branchwise/stage wise timings
+Groupwise/Branchwise/stage wise timings
+SQL> 
+SQL>  select *
+  2    from (select group_code,
+  3  				branch_code,
+  4  		    eod_date,
+  5  		    eoc_stage,
+  6  		    TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+  7  		    TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME,
+  8  		    tot_min_taken
+  9  	       from (select y.group_code,
+ 10  						x.branch_code,
+ 11  			    x.eod_date,
+ 12  			    x.eoc_stage,
+ 13  			    min(x.start_time) start_time,
+ 14  			    max(x.end_time) end_time,
+ 15  			    round((max(x.end_time) - min(x.start_time)) * 24 * 60,
+ 16  				  2) tot_min_taken
+ 17  		     from aetb_eoc_runchart_history x
+ 18  				     left join aetm_eoc_group_branches y on x.branch_code =
+ 19  							      y.branch_code
+ 20  		     group by y.group_code, x.branch_code, x.eod_date, x.eoc_stage
+ 21  		     union all
+ 22  		     select j.group_code,
+ 23  						i.branch_code,
+ 24  			    i.eod_date,
+ 25  			    i.eoc_stage,
+ 26  			    min(i.start_time) start_time,
+ 27  			    max(i.end_time) end_time,
+ 28  			    round((max(i.end_time) - min(i.start_time)) * 24 * 60,
+ 29  				  2) tot_min_taken
+ 30  		     from aetb_eoc_runchart i
+ 31  				     left join aetm_eoc_group_branches j on i.branch_code = j.branch_code
+ 32  		     group by j.group_code, i.branch_code, i.eod_date, i.eoc_stage))
+ 33   where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+ 34   order by start_time;
+old  33:  where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+new  33:  where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+                       round((max(x.end_time) - min(x.start_time)) * 24 * 60,
+                        *
+ERROR at line 15:
+ORA-00904: "X"."START_TIME": invalid identifier
+
+
+SQL> 
+SQL> PROMPT full batch timings with group code
+full batch timings with group code
+SQL> 
+SQL>  select *
+  2    from (select x.eod_date,
+  3  		    y.group_code,
+  4  		    x.branch_code,
+  5  		    x.branch_date,
+  6  		    x.eoc_stage,
+  7  		    x.eoc_batch,
+  8  		    x.eoc_batch_status,
+  9  		    TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+ 10  		    TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME,
+ 11  		    round((x.end_time - x.start_time) * 24 * 60, 2) tot_min_taken
+ 12  			     from aetb_eoc_programs_history x
+ 13  			     left join aetm_eoc_group_branches y on (x.branch_code = y.branch_code)
+ 14  		     union all
+ 15  			     select i.eod_date,
+ 16  				     j.group_code,
+ 17  				     i.branch_code,
+ 18  				     i.branch_date,
+ 19  				     i.eoc_stage,
+ 20  				     i.eoc_batch,
+ 21  				     i.eoc_batch_status,
+ 22  				     TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+ 23  				     TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME,
+ 24  				     round((i.end_time - i.start_time) * 24 * 60, 2) tot_min_taken
+ 25  				     from aetb_eoc_programs i
+ 26  				     left join aetm_eoc_group_branches j on (i.branch_code = j.branch_code)
+ 27  	     )
+ 28   where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+ 29   order by start_time;
+old  28:  where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+new  28:  where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+ where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+                               *
+ERROR at line 28:
+ORA-01843: not a valid month
+
+
+SQL> 
+SQL> PROMPT  stage wise timings
+stage wise timings
+SQL> 
+SQL> select *
+  2    from (select eod_date, eoc_stage, TO_CHAR(START_TIME, 'DD-MON-YYYY HH24:MI:SS') START_TIME,
+  3  		    TO_CHAR(END_TIME, 'DD-MON-YYYY HH24:MI:SS') END_TIME, tot_min_taken
+  4  	       from (select x.eod_date,
+  5  			    x.eoc_stage,
+  6  			    min(x.start_time) start_time,
+  7  			    max(x.end_time) end_time,
+  8  			    round((max(x.end_time) - min(x.start_time)) * 24 * 60,
+  9  				  2) tot_min_taken
+ 10  		       from aetb_eoc_runchart_history x
+ 11  		      group by x.eod_date, x.eoc_stage
+ 12  		     union all
+ 13  		     select i.eod_date,
+ 14  			    i.eoc_stage,
+ 15  			    min(i.start_time) start_time,
+ 16  			    max(i.end_time) end_time,
+ 17  			    round((max(i.end_time) - min(i.start_time)) * 24 * 60,
+ 18  				  2) tot_min_taken
+ 19  		       from aetb_eoc_runchart i
+ 20  		      group by i.eod_date, i.eoc_stage))
+ 21   where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+ 22   order by start_time;
+old  21:  where eod_date = TO_DATE('&EODDATE', 'DD-MON-YYYY')
+new  21:  where eod_date = TO_DATE('30-11-2018', 'DD-MON-YYYY')
+                       round((max(x.end_time) - min(x.start_time)) * 24 * 60,
+                        *
+ERROR at line 8:
+ORA-00904: "X"."START_TIME": invalid identifier
+
+
+SQL> 
+SQL>  spool off

@@ -1,0 +1,23 @@
+accept ACC PROMPT 'Pls enter the account no. ==> '
+set array 1
+set head on
+set colsep ";"
+set feedback on
+set line 1000
+set pagesize 10000
+set echo on
+set trimspool on
+spool c:\ac_det1.spl
+
+select * FROM xafnfc.sttms_cust_account WHERE cust_ac_no = '&ACC';
+select * FROM xafnfc.sttbs_account WHERE ac_gl_no = '&ACC';
+select * FROM xafnfc.acvws_all_ac_entries WHERE ac_no = '&ACC';
+select * FROM xafnfc.actb_daily_log WHERE ac_no = '&ACC';
+select * FROM xafnfc.actbs_accbal_history WHERE account = '&ACC';
+SELECT * FROM xafnfc.CATMS_AMOUNT_BLOCKS WHERE ACCOUNT  ='&ACC';
+SELECT * FROM xafnfc.ACTBS_FUNCOL WHERE account  ='&ACC';
+SELECT SUM(DECODE(DRCR_IND,'D',-LCY_AMOUNT,LCY_AMOUNT)) FROM xafnfc.ACVW_ALL_AC_ENTRIES WHERE AC_NO = '&ACC';
+select * FROM xafnfc.actbs_vd_bal WHERE acc = '&ACC';
+
+
+spool off

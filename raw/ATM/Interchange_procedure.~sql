@@ -1,0 +1,44 @@
+Create or replace procedure Upload_Interchange(P_filename varchar2 ) is
+
+FileHandler UTL_FILE.FILE_TYPE;
+V_File_Name varchar2(256);
+V_File_Location varchar2(256);
+V_Line varchar2(256);
+V_txn_date varchar2(100);
+V_card_no varchar2(100);
+V_terminal_id varchar2(100);
+V_rrn varchar2(100);
+V_txn_desc varchar2(100);
+V_txn_amount varchar2(100);
+V_date_upload date;
+V_date_generate date;
+V_generate_stat varchar2(1);
+Fichier_Vide Exception;
+V_Total_Amount Number;
+
+BEGIN
+ V_File_Name := P_filename;
+ V_File_Location := 'INPUT';
+ FileHandler := utl_file.fopen(V_File_Location,V_file_Name,'R');
+ LOOP
+   BEGIN
+      UTL_FILE.GET_LINE(FileHandler,V_Line);
+      -- Traitement de la Ligne
+      V_Sal_Code := Substr(V_Line,1,6);
+      V_Sal_Matricule := Substr(V_Line,7,7);
+      V_Sal_Intitule := Substr(V_Line,14,27);
+      V_Sal_Compte := Substr(V_Line,42,9); 
+      V_Sal_Montant := Substr(V_Line,51,7); 
+      V_Sal_Date_Paie := to_char(sysdate,'DD/MM/YYYY');
+      insert into Tmp_Sal_Cenadi(SAL_CODE,SAL_MATRICULE,SAL_INTITULE,SAL_COMPTE,SAL_MONTANT,SAL_DATE_PAIE) 
+      values (V_Sal_Code,V_Sal_Matricule,V_Sal_Intitule,V_Sal_Compte,V_Sal_Montant,to_date(V_Sal_Date_Paie,'DD/MM/YYYY'));     
+     EXCEPTION
+      WHEN NO_DATA_FOUND THEN EXIT ;
+   END;
+ END LOOP;
+ utl_file.fclose(FileHandler);
+ GO_BLOCK('SAL_CENADI');
+ SET_BLOCK_PROPERTY('SAL_CENADI',DEFAULT_WHERE,'to_char(sal_date_paie,''DD/MM/YYYY'') = to_char(sysdate,''DD/MM/YYYY'') ');
+ EXECUTE_QUERY;
+ commit;
+END;

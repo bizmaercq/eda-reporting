@@ -1,0 +1,1 @@
+impdp xafnfc/aq1sw2de3@NFCSUP directory=dump dumpfile=expdp_excludetabledata_20JAN2015.dmp logfile=imp_excludetabledata_20JAN2015.log remap_schema=XAFNFC:XAFNFC parallel=16

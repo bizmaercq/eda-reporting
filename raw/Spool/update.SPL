@@ -1,0 +1,48 @@
+SQL> 
+SQL> SELECT DISTINCT B.BRANCH,
+  2  		     B.ACC_NO,
+  3  		     A.CUST_NO,
+  4  		     C.CUSTOMER_NAME1,
+  5  		     D.ACC_MSG,
+  6  		     B.CIF_SIG_ID,
+  7  		     B.SOLO_SUFFICIENT
+  8    FROM STTM_CUST_ACCOUNT	A,
+  9  	    SVTM_ACC_SIG_DET	B,
+ 10  	    STTM_CUSTOMER	C,
+ 11  	    SVTM_ACC_SIG_MASTER D
+ 12   WHERE A.CUST_AC_NO = B.ACC_NO
+ 13  	AND A.CUST_NO = C.CUSTOMER_NO
+ 14  	AND B.ACC_NO = '0221640104102103'
+ 15  	AND D.ACC_NO = B.ACC_NO
+ 16  	AND D.BRANCH = A.BRANCH_CODE
+ 17  	AND A.AUTH_STAT = 'A'
+ 18  	AND A.RECORD_STAT = 'O'
+ 19  	AND A.BRANCH_CODE = '022'
+ 20   ORDER BY B.BRANCH ;
+
+BRA;ACC_NO              ;CUST_NO  ;CUSTOMER_NAME1                                                                                           ;ACC_MSG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ;CIF_SIG_I;      SOLO_SUFFICIENT
+---;--------------------;---------;---------------------------------------------------------------------------------------------------------;--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------;---------;---------------------
+022;0221640104102103    ;041021   ;THE YAOUNDE BUSINESS SCHOOL                                                                              ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;041021   ;                 .000
+
+SQL> 
+SQL> 
+SQL>  SELECT D.CIF_SIG_ID,
+  2  		       D.SPECIMEN_NO,
+  3  		       D.FILE_TYPE,
+  4  		       D.SIG_TEXT,
+  5  		       NVL(M.CIF_SIG_NAME, '') CIF_SIG_NAME
+  6  		  FROM svtm_CIF_SIG_DET D, svtm_CIF_SIG_MASTER M
+  7  		 WHERE M.CIF_SIG_ID = D.CIF_SIG_ID
+  8  		   and M.cif_id = D.cif_id
+  9  		   and M.AUTH_STAT = 'A'
+ 10  		   and M.RECORD_STAT = 'O'
+ 11  		   and M.CIF_SIG_ID ='041021'
+ 12  		   and M.cif_id ='041021';
+
+CIF_SIG_I;          SPECIMEN_NO;FILE_TYPE                                                                                                                                                                                                                                                      ;SIG_TEXT                                                                        ;CIF_SIG_NAME
+---------;---------------------;---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------;--------------------------------------------------------------------------------;---------------------------------------------------------------------------------------------------------
+041021   ;                1.000;041022_041022_SPE DE SIGN DE BUSINESS SCHOOL YDE30001.jpg                                                                                                                                                                                                      ;                                                                                ;THE YAOUNDE BUSINESS SCHOOL
+
+SQL> 
+SQL> 
+SQL> set echo off

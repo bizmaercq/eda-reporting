@@ -1,0 +1,83 @@
+﻿--Registered users count
+select count(*)  from tek_hb_user;
+
+-- Registered but not loggedin
+select count(*)  from tek_hb_user where last_login_time is null;
+
+--Registered but not done any transactions like billpayments/fundstransfers
+select count(*) from tek_hb_user where user_id not in (select distinct user_id from tek_hb_host_reqrep_audit);
+
+--Currently logged-in users in descending order
+select * from tek_user_session order by login_time desc
+
+--[OTHER BANK TRANSFER THROUGH JOB - ALL ENTRIES]
+SELECT * FROM TEK_HB_RTGS_PENDINGLIST;
+
+--[OTHER BANK TRANSFER THROUGH JOB - REFERENCE NUMBER]
+SELECT REF_NO FROM TEK_HB_RTGS_PENDINGLIST;
+
+--[FOR RETRY, SAMPLE RETRY REF_NO : 1234_RETRY_1]
+SELECT * FROM TEK_HB_HOST_REQREP_AUDIT WHERE IDREFRENCE LIKE '1234%';
+
+--[OTHER BANK TRANSFER THROUGH JOB - ERROR LOGS]
+SELECT * FROM TEK_HB_HOST_REQREP_AUDIT WHERE IDREFRENCE IN (SELECT REF_NO FROM TEK_HB_RTGS_PENDINGLIST);
+
+--Bill payment requests
+select * from tek_hb_biller_request order by payment_date desc;
+
+--Bill payment requests by particular user in descending order.
+select * from tek_hb_biller_request where user_id = 'TEST' order by payment_date desc;
+
+--Fund transfers success count [Own], For fail count use response_status = 'FAIL'
+select count(*) from tek_hb_host_reqrep_audit where idrequest in ('OAT') and response_status = 'SUCCESS';
+
+--Fund transfers success count [Own/Internal], For fail count use response_status = 'FAIL'
+select count(*) from tek_hb_host_reqrep_audit where idrequest in ('IAT','OAT') and response_status = 'SUCCESS';
+
+--Fund transfers success count [Own/Internal/Other], For fail count use response_status = 'FAIL'
+select count(*) from tek_hb_host_reqrep_audit where idrequest in ('IAT','OAT','RTGS') and response_status = 'SUCCESS';
+
+--Bill payments success count, For fail count use response_status = 'FAIL'
+select count(*) from tek_hb_host_reqrep_audit where idrequest in ('BILLPAYPREP') and response_status = 'SUCCESS';
+
+--Bill payments reversal success count, For fail count use response_status = 'FAIL'
+select count(*) from tek_hb_host_reqrep_audit where idrequest in ('BILLPAYPREP_REVERSAL') and response_status = 'SUCCESS';
+
+--Bill payments flexcube logs search by date
+select * from tek_hb_host_reqrep_audit  where idrequest = 'BILLPAYPREP' and rep_time like '26-SEP-17%'  order by rep_time desc;
+
+--Bill payments details
+SELECT * FROM TEK_HB_BILLER_REQUEST WHERE PAYMENT_DATE LIKE '05-OCT-17%' AND STATUS = 'SUCCESS' 
+
+--USERS STATISTICS
+select user_id,idrequest,response_status,count(*) from tek_hb_host_reqrep_audit group by user_id,idrequest,response_status order by count(*) desc;
+select user_id,response_status,count(*) from tek_hb_host_reqrep_audit group by user_id,response_status order by count(*) desc;
+select user_id,count(*) from tek_hb_host_reqrep_audit group by user_id order by count(*) desc;
+
+--RETAIL USERS, FOR ACTIVE USER - ACTIVE_STATUS WILL BE 'Y' AND FAIL_LGN_COUNTER WILL BE LESS THAN 4
+SELECT * FROM TEK_HB_USER;
+
+--RETAIL PROFILE AND BENEFICIARIES IMAGES
+SELECT * FROM TEK_IB_USER_IMAGES;
+
+--RETIAL BENEFICIARIES
+SELECT * FROM TEK_INTERNAL_BENE WHERE CREATED_BY =’TEST’;
+
+--CHEQUE BOOK REQUESTS
+SELECT * FROM TEK_HB_CHEQUE_BOOK_DETAILS;
+
+--DEBIT CARD REQUESTS
+SELECT * FROM TEK_HB_DEBIT_CARD_DETAILS;
+
+--DEBIT CARD OPERATIONS, EX:BLOCK CARD
+SELECT * FROM TEK_HB_DEBIT_CARD_OPTS
+
+--VIEW FEEDBACKS
+SELECT * FROM TEK_HB_FEED_BACK
+
+--MAINTENANCE
+--BEFORE EOD STATUS - Y, AFTER EOD STATUS - N
+SELECT * FROM TEK_IB_MAINTENANCE
+
+--UPDATE MAINTENANCE WITH EOD STATUS
+UPDATE TEK_IB_MAINTENANCE SET STATUS='Y' WHERE JOB='EOD'

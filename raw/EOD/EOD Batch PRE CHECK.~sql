@@ -1,0 +1,55 @@
+
+--1 --  TRANSACTION DU SIEGE ET DE CPU EN ATTENTE   --   
+
+select * from xafnfc.eivw_pending_items XA
+
+--2 --- OPERATIONS ET TRANSACTIONS DE CAISSE EN ATTENTE au NIVEAU DES AGENCES ---
+ 
+SELECT * FROM XAFNFC.FBTB_TXNLOG_MASTER where TXNSTATUS NOT IN ('COM','DIS','REV','FAL') --- AND BRANCHCODE='023'
+AND FUNCTIONID NOT IN ('TVCL','TVQR','EODM','LOCH')
+ORDER BY BRANCHCODE --for update
+
+-- POUR VOIR LA TRANSACTION AVEC LA REFERENCE -- 
+--NOTE DO NOT DISCARD A TRANSACTION THAT IS COM, discard only for IPR and WTS by changing TXNSTATUS and STAGESTATUS
+SELECT * FROM XAFNFC.FBTB_TXNLOG_MASTER WHERE XREFID='FJB2016806479482' --FOR UPDATE
+
+
+--3 --- VERIFICATION DES CAISSES ET COFFRES ENCORE OUVERTS  ---
+
+SELECT * FROM XAFNFC.FBTB_TILL_MASTER WHERE BALANCED_IND='N'
+
+--4 --SIGNATURES NON AUTORISEES 
+
+select * from XAFNFC.eivw_pending_items cd where cd.MD <> 'MA'
+---TO discard, change AUTH_STAT from U to X
+select * from xafnfc.sttb_record_log where auth_stat = 'U' ---for update
+
+--5 --- Verification des agences qui n'ont pas encore fait leurs EODM ---
+
+SELECT * FROM xafnfc.STTM_BRANCH WHERE BRANCH_CODE NOT IN 
+(    select BRANCH_CODE from xafnfc.sttb_brn_eodm where RUN_DATE='&DATE' ) order by BRANCH_CODE
+
+
+--6 --- VERIFICATION DES UTILISATEURS ENCORE CONNECTES DANS LE SYSTEME   ---
+ 
+select * from xafnfc.smtb_current_users ---for update;
+
+-- 7--- Verifier qu'il n'y a pas de desequilibre comptable apres la fermeture des agences  ---
+select * FROM xafnfc.actb_daily_log lo where lo.batch_no = '1026'
+SELECT * FROM getm_liab WHERE id = '91822';
+--8 ---  Verifier si le debug est ON pour un utilisateur --- ---
+SELECT * FROM CSTB_DEBUG_USERS WHERE DEBUG ='Y';
+SELECT * FROM CSTB_PARAM WHERE PARAM_NAME='REAL_DEBUG';
+SELECT * FROM CSTB_DEBUG WHERE DEBUG ='Y';
+
+-- 9 -- SWITCH OFF DEBUG check this every times before start the EOD ---
+
+UPDATE XAFNFC.CSTB_DEBUG_USERS SET DEBUG='N' WHERE debug='Y'
+
+UPDATE XAFNFC.CSTB_PARAM SET PARAM_VAL='N' WHERE PARAM_NAME='REAL_DEBUG'
+  
+--10 Mettre le ONLINE BANKING OFF avant le EOD 
+UPDATE TEK_IB_MAINTENANCE SET STATUS = 'Y' WHERE JOB = 'EOD';
+
+--11 Mettre le ONLINE BANKING ON apres le EOD
+UPDATE TEK_IB_MAINTENANCE SET STATUS = 'N' WHERE JOB = 'EOD';

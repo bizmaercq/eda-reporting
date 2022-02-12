@@ -1,0 +1,220 @@
+Connected to Oracle Database 11g Enterprise Edition Release 11.2.0.2.0 
+Connected as xafnfc
+ 
+SQL> 
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102435255' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102483561' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312830102439377' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0202820100516469' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104294745' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102093524' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102443597' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102422839' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0302820102014872' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102039980' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104479336' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0202820100081521' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0311730102444185' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102442336' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102429338' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0302820101843570' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820101185410' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0302820101705830' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102468526' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100485458' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102045218' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102484628' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102474152' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0432820103079834' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0432820103755342' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102401984' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104424143' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820101904083' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820101904083' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312830104446695' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102441851' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102420220' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102461057' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0302820102421981' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102240882' ;
+ 
+0 rows updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102240882' ;
+ 
+0 rows updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102438650' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100884322' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100884322' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102375615' ;
+ 
+0 rows updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104417062' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104502810' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104361578' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0311710102444768' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0302820102149120' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0311730102445737' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312830102461493' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102477450' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104179994' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100995969' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100915750' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102480942' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104449751' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100727570' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102462803' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104388738' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100347233' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0311730103987358' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102473667' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104476329' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104529679' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104589916' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102447477' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820104642975' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102442530' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102463773' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820101266211' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820100302322' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0312820102389374' ;
+ 
+1 row updated
+SQL> update sttm_cust_account a set a.ac_stat_no_dr = 'Y' where a.cust_ac_no = '0311640104662628' ;
+ 
+1 row updated
+ 
+SQL> commit;
+ 
+Commit complete
+ 
+SQL> 

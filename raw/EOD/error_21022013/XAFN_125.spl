@@ -1,0 +1,70 @@
+SQL> 
+SQL> 
+SQL> select * from actb_daily_log where trn_ref_no = '023ZRSP130520001' and ac_branch='023' and batch_no='8999';
+
+MO;TRN_REF_NO      ;                     EVENT_SR_NO;EVEN;                  AC_ENTRY_SR_NO;AC_;AC_NO               ;AC_;D;TRN;AMOUNT_TAG                         ;                      FCY_AMOUNT;                       EXCH_RATE;                      LCY_AMOUNT;RELATED_C;RELATED_ACCOUNT     ;RELATED_REFERENC;M;MIS_HEAD ;TRN_DT   ;VALUE_DT ;TXN_INIT_;FINANCIAL;PER;INSTRUMENT_CODE ;BATC;                         CURR_NO;USER_ID     ;BANK_CODE   ;                         AVLDAYS;B;T;AUTH_ID     ;P;A;C;C;D;NODE                ;D;O;U;                      NODE_SR_NO;N;I;F;G;P;G;V;PROD;G;EXTERNAL_REF_NO                    ;P;M;C;D;I;A;ORIG_PNL_;STMT_DT  ;                    ENTRY_SEQ_NO;I
+--;----------------;--------------------------------;----;--------------------------------;---;--------------------;---;-;---;-----------------------------------;--------------------------------;--------------------------------;--------------------------------;---------;--------------------;----------------;-;---------;---------;---------;---------;---------;---;----------------;----;--------------------------------;------------;------------;--------------------------------;-;-;------------;-;-;-;-;-;--------------------;-;-;-;--------------------------------;-;-;-;-;-;-;-;----;-;-----------------------------------;-;-;-;-;-;-;---------;---------;--------------------------------;-
+DE;023ZRSP130520001;                           1.000;ZRSP;                  15,251,390.000;023;454101000           ;XAF;C;SUS;ADJ_REAL                           ;                                ;                                ;                   6,727,929.000;         ;                    ;                ;Y;         ;21-FEB-13;21-FEB-13;21-FEB-13;FY2013   ;M02;                ;8999;                                ;SYSTEM      ;            ;                            .000;U;6;SYSTEM      ;N;A;2;G;N;FCUBS               ; ;Y;Y;                                ; ; ;Y; ;N; ;Y;ZRSP;N;                                   ; ; ; ;N;Y; ;         ;21-FEB-13;                           1.000;
+
+1 row selected.
+
+SQL> 
+SQL> DECLARE
+  2  	     CURSOR CUR_ACC IS
+  3  	     select * from actb_daily_log where trn_ref_no = '023ZRSP130520001' and ac_branch='023' and batch_no='8999';
+  4  	     PERRCODE	     VARCHAR2(100);
+  5  	     PPARAM  VARCHAR2(1000);
+  6  
+  7  	     I		     NUMBER ;
+  8  BEGIN
+  9  
+ 10  	     GLOBAL.PR_INIT('023','SYSTEM');
+ 11  	   i := 0 ;
+ 12  	     FOR C1 IN CUR_ACC LOOP
+ 13  
+ 14  		     IF ACPKSS.fn_acservice
+ 15  			     (
+ 16  			     C1.AC_BRANCH,
+ 17  			     global.application_date,
+ 18  			     global.lcy, -- C1.AC_CCY Changed the parameter to global.lcy
+ 19  			     C1.trn_ref_no,
+ 20  			     C1.event_sr_no,
+ 21  			     'D',
+ 22  			     C1.USER_ID,
+ 23  			     pErrCodE,
+ 24  			     pParam
+ 25  			     )
+ 26  		     THEN
+ 27  
+ 28  			     DEBUG.PR_DEBUG('AC','SUCCESS - '||C1.trn_ref_no);
+ 29  		     ELSE
+ 30  			     DEBUG.PR_DEBUG('AC','ERROR - '||C1.trn_ref_no || SQLERRM);
+ 31  		     END IF;
+ 32  
+ 33  		     I:=I+1;
+ 34  
+ 35  		     DEBUG.PR_DEBUG('AC','FINAL COUNT'||I);
+ 36  
+ 37  	     END LOOP;
+ 38  
+ 39  	     commit;
+ 40  
+ 41  EXCEPTION
+ 42  	     WHEN OTHERS
+ 43  	     THEN debug.pr_debug('AC','DELACSERV-WOT - ' || SQLERRM);
+ 44  	     ROLLBACK;
+ 45  END;
+ 46  /
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from actb_daily_log where trn_ref_no = '023ZRSP130520001' and ac_branch='023' and batch_no='8999';
+
+MO;TRN_REF_NO      ;                     EVENT_SR_NO;EVEN;                  AC_ENTRY_SR_NO;AC_;AC_NO               ;AC_;D;TRN;AMOUNT_TAG                         ;                      FCY_AMOUNT;                       EXCH_RATE;                      LCY_AMOUNT;RELATED_C;RELATED_ACCOUNT     ;RELATED_REFERENC;M;MIS_HEAD ;TRN_DT   ;VALUE_DT ;TXN_INIT_;FINANCIAL;PER;INSTRUMENT_CODE ;BATC;                         CURR_NO;USER_ID     ;BANK_CODE   ;                         AVLDAYS;B;T;AUTH_ID     ;P;A;C;C;D;NODE                ;D;O;U;                      NODE_SR_NO;N;I;F;G;P;G;V;PROD;G;EXTERNAL_REF_NO                    ;P;M;C;D;I;A;ORIG_PNL_;STMT_DT  ;                    ENTRY_SEQ_NO;I
+--;----------------;--------------------------------;----;--------------------------------;---;--------------------;---;-;---;-----------------------------------;--------------------------------;--------------------------------;--------------------------------;---------;--------------------;----------------;-;---------;---------;---------;---------;---------;---;----------------;----;--------------------------------;------------;------------;--------------------------------;-;-;------------;-;-;-;-;-;--------------------;-;-;-;--------------------------------;-;-;-;-;-;-;-;----;-;-----------------------------------;-;-;-;-;-;-;---------;---------;--------------------------------;-
+DE;023ZRSP130520001;                           1.000;ZRSP;                  15,251,390.000;023;454101000           ;XAF;C;SUS;ADJ_REAL                           ;                                ;                                ;                   6,727,929.000;         ;                    ;                ;Y;         ;21-FEB-13;21-FEB-13;21-FEB-13;FY2013   ;M02;                ;8999;                                ;SYSTEM      ;            ;                            .000;U;6;SYSTEM      ;N;A;2;G;N;FCUBS               ;D;Y;Y;                                ; ; ;Y; ;N; ;Y;ZRSP;N;                                   ; ; ; ;N;Y; ;         ;21-FEB-13;                           1.000;
+
+1 row selected.
+
+SQL> 
+SQL> SET ECHO OFF

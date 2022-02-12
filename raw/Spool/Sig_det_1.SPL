@@ -1,0 +1,7 @@
+SQL> 
+SQL> select * from svtms_acc_sig_det where branch = '043' and acc_no = '0433830204399630'
+  2  /
+
+no rows selected
+
+SQL> spool off

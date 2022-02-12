@@ -1,0 +1,13 @@
+-- Query the huge table sizes
+SELECT owner,segment_name,tablespace_name,bytes/1048576 MB
+FROM DBA_SEGMENTS
+WHERE OWNER = 'XAFNFC'  AND SEGMENT_TYPE = 'TABLE' 
+AND SEGMENT_NAME IN ('ELTB_UTIL_TXN_LOG_HISTORY','FBTB_TXNLOG_DETAILS_HIST','ICTB_ICALC_STMT','STTB_NOTIFICATION_HISTORY','GETB_UTILS_LOG_HISTORY') 
+order by bytes desc;
+
+-- Truncating the Huge Tables
+truncate table ELTB_UTIL_TXN_LOG_HISTORY;
+truncate table FBTB_TXNLOG_DETAILS_HIST;
+truncate table ICTB_ICALC_STMT;
+truncate table STTB_NOTIFICATION_HISTORY;
+truncate table GETB_UTILS_LOG_HISTORY;

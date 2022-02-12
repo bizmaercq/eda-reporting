@@ -1,0 +1,161 @@
+  if not fn_check_int_gls('042', 'M03', 'FY2013', 'XAF', b.GL_CODE, 'XAF') then
+         *
+ERROR at line 14:
+ORA-06550: line 14, column 10: 
+PLS-00201: identifier 'FN_CHECK_INT_GLS' must be declared 
+ORA-06550: line 14, column 3: 
+PL/SQL: Statement ignored 
+ORA-06550: line 23, column 10: 
+PLS-00201: identifier 'FN_BUILD_INT_GLS' must be declared 
+ORA-06550: line 23, column 3: 
+PL/SQL: Statement ignored 
+ORA-06550: line 42, column 10: 
+PLS-00201: identifier 'FN_CHECK_INT_GLS' must be declared 
+ORA-06550: line 42, column 3: 
+PL/SQL: Statement ignored 
+ORA-06550: line 51, column 10: 
+PLS-00201: identifier 'FN_BUILD_INT_GLS' must be declared 
+ORA-06550: line 51, column 3: 
+PL/SQL: Statement ignored 
+ORA-06550: line 72, column 10: 
+PLS-00201: identifier 'FN_CHECK_INT_GLS' must be declared 
+ORA-06550: line 72, column 3: 
+PL/SQL: Statement ignored 
+ORA-06550: line 81, column 10: 
+PLS-00201: identifier 'FN_BUILD_INT_GLS' must be declared 
+ORA-06550: line 81, column 3: 
+PL/SQL: Statement ignored 
+
+
+
+no rows selected
+
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+051 712001000 XAF M03 3 FY2013             0          0          0       6015   
+         0          0              0           7589                             
+                                                                                
+051 713001000 XAF M03 3 FY2013             0          0          0      15332   
+         0          0              0          18395                             
+                                                                                
+051 713004100 XAF M03 3 FY2013             0          0          0      13362   
+         0          0              0          16380                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+042 328001000 XAF M03 1 FY2013             0          0     514638          0   
+         0          0         514638          60552                             
+                                                                                
+042 341306000 XAF M03 1 FY2013             0          0    7420698          0   
+         0          0        7420698         432220                             
+                                                                                
+042 345110000 XAF M03 1 FY2013             0          0          0          0   
+         0          0              0          74858                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+042 434003000 XAF M03 2 FY2013             0          0          0     130423   
+         0          0              0         147429                             
+                                                                                
+042 712001000 XAF M03 3 FY2013             0          0          0     169240   
+         0          0              0         203080                             
+                                                                                
+042 713001000 XAF M03 3 FY2013             0          0          0     358138   
+         0          0              0         423512                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+042 713004100 XAF M03 3 FY2013             0          0          0     156500   
+         0          0              0         187790                             
+                                                                                
+042 985100000 XAF M03 5 FY2013             0          0       2380          0   
+         0          0           2856              0                             
+                                                                                
+042 997100000 XAF M03 6 FY2013             0          0          0       2380   
+         0          0              0           2856                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+041 434003000 XAF M03 2 FY2013             0          0          0     159974   
+         0          0              0         170333                             
+                                                                                
+041 714001000 XAF M03 3 FY2013             0          0          0     118559   
+         0          0              0         119344                             
+                                                                                
+041 719006000 XAF M03 3 FY2013             0          0          0     538603   
+         0          0              0         592447                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+043 378001000 XAF M03 1 FY2013             0          0     219914          0   
+         0          0         224826              0                             
+                                                                                
+043 549002000 XAF M03 2 FY2013             0          0     191780      34246   
+         0          0         191780          41095                             
+                                                                                
+043 612001000 XAF M03 4 FY2013             0          0      34246          0   
+         0          0          41095              0                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+043 714001000 XAF M03 3 FY2013             0          0          0     219914   
+         0          0              0         224826                             
+                                                                                
+020 711001000 XAF M03 3 FY2013             0          0          0     100584   
+         0          0              0         120700                             
+                                                                                
+020 712001000 XAF M03 3 FY2013             0          0          0    1083775   
+         0          0              0        1300840                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+020 713001000 XAF M03 3 FY2013             0          0          0    1292446   
+         0          0              0        1550822                             
+                                                                                
+020 713004100 XAF M03 3 FY2013             0          0          0     740572   
+         0          0              0         889132                             
+                                                                                
+020 985100000 XAF M03 5 FY2013             0          0      28081          0   
+         0          0          33696              0                             
+                                                                                
+
+BRA GL_CODE   CCY PER C FIN_YEAR      DR_MOV     CR_MOV DR_MOV_LCY CR_MOV_LCY   
+--- --------- --- --- - --------- ---------- ---------- ---------- ----------   
+DR_MOV_ACT CR_MOV_ACT DR_MOV_LCY_ACT CR_MOV_LCY_ACT                             
+---------- ---------- -------------- --------------                             
+020 997100000 XAF M03 6 FY2013             0          0          0      28081   
+         0          0              0          33696                             
+                                                                                
+021 378001000 XAF M03 1 FY2013             0          0     537525          0   
+         0          0         573326              0                             
+                                                                                
+021 714001000 XAF M03 3 FY2013             0          0          0     537525   
+         0          0              0         637257                             
+                                                                                
+
+27 rows selected.
+

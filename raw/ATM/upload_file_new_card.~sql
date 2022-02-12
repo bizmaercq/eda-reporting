@@ -1,0 +1,27 @@
+--- GI Upload file generation from nfcread schema
+select rownum ,'7777' batch_no,substr(cf.cust_ac,1,3)branch_no,cf.cust_ac,tt.trn_amount,tt.trn_amount,'XAF',1,'D',tt.trn_code,null,de.date_deupld,tt.trn_desc,cf.cust_ac,'UPLOAD'
+from carte_file cf,deupld de, transaction_table tt
+where cf.cust_ac = de.num_compte
+and de.code_transaction = tt.trn_code
+and de.code_transaction in  ('ELS','EFS','EPS','EPT','ESS','EST','EPT')
+and cf.date_crea ='18-OCT-2017'
+order by substr(cf.cust_ac,1,3), tt.trn_code;
+
+select * from transaction_table for update;
+--- --- Carte absentes dans le DEUPLD -----
+select rownum ,'7777' batch_no,substr(cf.cust_ac,1,3)branch_no,cf.cust_ac,tt.trn_amount,tt.trn_amount,'XAF',1,'D',tt.trn_code,null,de.date_deupld,tt.trn_desc,cf.cust_ac,'UPLOAD'
+from carte_file cf,deupld de, transaction_table tt
+where cf.cust_ac = de.num_compte
+and de.code_transaction = tt.trn_code
+and de.code_transaction not in  ('ELS','EFS','EPS','EPT','ESS','EST','EPT')
+and cf.date_crea ='21-SEP-2017'
+order by substr(cf.cust_ac,1,3), tt.trn_code;
+--- select des cartes d'une journée ----
+select * from carte_file cf
+where cf.date_crea ='27-mar-2018'
+order by cust_ac;
+
+--- carte dont les comptes ne sont pas dans DEUPLD pour un e journée
+select * from carte_file cf
+ where cf.date_crea ='18-OCT-2017' and cf.cust_ac not in ( select de.num_compte from deupld de )
+SELECT distinct DATE_crea  from carte_file order by date_crea;

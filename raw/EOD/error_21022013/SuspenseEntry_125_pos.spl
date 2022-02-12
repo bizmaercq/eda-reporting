@@ -1,0 +1,130 @@
+SQL> set trimspool on
+SQL> set colsep ';'
+SQL> set numformat 9999999999999999.99
+SQL> SET SERVEROUTPUT OFF
+SQL> 
+SQL> 
+SQL> DECLARE
+  2  
+  3  -- Enter the details.
+  4  -- LD accouting entries are posted as Unauthorised entries.
+  5  
+  6  l_init_acc_hoff actbs_handoff%ROWTYPE;
+  7  l_acc_hoff 	     acpkss.tbl_achoff;
+  8  l_hoff_count	     INTEGER :=0;
+  9  L_error_code	     VARCHAR2(200);
+ 10  L_error_parameter	     VARCHAR2(200);
+ 11  
+ 12  l_contract_ref_no	     cstbs_contract.contract_ref_no%TYPE	     := '023SUSP220220132'; --unique Contratc number
+ 13  l_event_sr_no	     cstbs_contract_event_log.event_seq_no%TYPE      := '1';		---Dont change
+ 14  l_ac_no		     sttm_cust_account.cust_ac_no%TYPE		     := '476002000'; ---get suspence Gl from user
+ 15  l_ac_ccy			     sttm_cust_account.ccy%TYPE 	     := 'XAF'; ---local ccy
+ 16  l_lcy_amount	     actbs_daily_log.lcy_amount%TYPE		     := 6727929.000 ; -- diff amount
+ 17  l_counterparty	     sttm_cust_account.cust_no%TYPE		     := '';
+ 18  l_mishead			     actbs_daily_log.mis_head%TYPE	     := '';
+ 19  l_amount_tag	     actbs_daily_log.amount_tag%TYPE		     := 'OFS_AMT';	---get it from spool file
+ 20  l_event		     actbs_daily_log.event%TYPE 		     := 'INIT';   --get it from spool file
+ 21  l_drcrind			     VARCHAR2(1)			     := 'D';  --C for crdit,  D for Debit,whichever is less
+ 22  l_trn_code 		     sttms_trn_code.trn_code%TYPE	     := 'CSD';--get it from spool file
+ 23  
+ 24  BEGIN
+ 25  		     global.pr_init ('023','SYSTEM');  --CHANGE THE BRACNH CODE
+ 26  
+ 27  		     l_init_acc_hoff := NULL;
+ 28  
+ 29  		     l_acc_hoff(l_hoff_count) := l_init_acc_hoff;
+ 30  
+ 31  		     l_acc_hoff(l_hoff_count).module := 'DE' ;	     --------------
+ 32  
+ 33  		     l_acc_hoff(l_hoff_count).trn_ref_no := l_contract_ref_no;
+ 34  
+ 35  		     l_acc_hoff(l_hoff_count).event_sr_no := l_event_sr_no;
+ 36  
+ 37  		     l_acc_hoff(l_hoff_count).event := l_event;
+ 38  
+ 39  		     l_acc_hoff(l_hoff_count).ac_branch := global.current_branch;
+ 40  
+ 41  		     l_acc_hoff(l_hoff_count).ac_no  := l_ac_no;
+ 42  
+ 43  		     l_acc_hoff(l_hoff_count).ac_ccy := l_ac_ccy;
+ 44  
+ 45  		     l_acc_hoff(l_hoff_count).drcr_ind := l_drcrind;
+ 46  
+ 47  		     l_acc_hoff(l_hoff_count).trn_code := l_trn_code;
+ 48  
+ 49  		     l_acc_hoff(l_hoff_count).amount_tag := l_amount_tag;
+ 50  
+ 51  		     l_acc_hoff(l_hoff_count).fcy_amount := null;
+ 52  
+ 53  		     l_acc_hoff(l_hoff_count).exch_rate := null;
+ 54  
+ 55  		     l_acc_hoff(l_hoff_count).lcy_amount :=  l_lcy_amount;
+ 56  
+ 57  		     l_acc_hoff(l_hoff_count).related_customer :=   l_counterparty;
+ 58  
+ 59  		     l_acc_hoff(l_hoff_count).trn_dt := global.application_date;
+ 60  
+ 61  		     l_acc_hoff(l_hoff_count).value_dt := global.application_date;
+ 62  
+ 63  		     l_acc_hoff(l_hoff_count).instrument_code := NULL;
+ 64  
+ 65  		     l_acc_hoff(l_hoff_count).netting_ind := 'N';
+ 66  
+ 67  		     l_acc_hoff(l_hoff_count).user_id := global.user_id;
+ 68  
+ 69  		     l_acc_hoff(l_hoff_count).mis_head := l_mishead;
+ 70  		     l_acc_hoff(l_hoff_count).batch_no := '';
+ 71  		     l_acc_hoff(l_hoff_count).FINANCIAL_CYCLE := 'FY2013';		     ----
+ 72  		     l_acc_hoff(l_hoff_count).PERIOD_CODE := 'M02';				     ----
+ 73  
+ 74  
+ 75  		     IF NOT acpkss.fn_achandoff
+ 76  				     ( l_contract_ref_no,
+ 77  				     1,
+ 78  				     global.application_date,
+ 79  				     l_acc_hoff,
+ 80  				     'B',
+ 81  				     'Y',	     --suspense
+ 82  				     'N',	     --balancing
+ 83  				     global.user_id,
+ 84  				     l_error_code,
+ 85  				     l_error_parameter )
+ 86  		     THEN
+ 87  			     DBMS_OUTPUT.PUT_LINE('failed in accounting handoff function');
+ 88  			     DBMS_OUTPUT.PUT_LINE('error code --> '||l_error_code);
+ 89  			     DBMS_OUTPUT.PUT_LINE('error parameter --> '||l_error_parameter);
+ 90  			     rollback;
+ 91  		     ELSE
+ 92  			     DBMS_OUTPUT.PUT_LINE('Success - ACC ENTRY');
+ 93  			     DBMS_OUTPUT.PUT_LINE('error code --> '||l_error_code);
+ 94  			     DBMS_OUTPUT.PUT_LINE('error parameter --> '||l_error_parameter);
+ 95  
+ 96  			     commit;
+ 97  		     END IF;
+ 98  END;
+ 99  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> 
+SQL> 				     ----change the branch
+SQL> SELECT A.delete_stat,A.* FROM actb_daily_log A WHERE trn_ref_no ='023SUSP220220132';
+
+D;MO;TRN_REF_NO      ;         EVENT_SR_NO;EVEN;      AC_ENTRY_SR_NO;AC_;AC_NO               ;AC_;D;TRN;AMOUNT_TAG                         ;          FCY_AMOUNT;           EXCH_RATE;          LCY_AMOUNT;RELATED_C;RELATED_ACCOUNT     ;RELATED_REFERENC;M;MIS_HEAD ;TRN_DT   ;VALUE_DT ;TXN_INIT_;FINANCIAL;PER;INSTRUMENT_CODE ;BATC;             CURR_NO;USER_ID     ;BANK_CODE   ;             AVLDAYS;B;T;AUTH_ID     ;P;A;C;C;D;NODE                ;D;O;U;          NODE_SR_NO;N;I;F;G;P;G;V;PROD;G;EXTERNAL_REF_NO                    ;P;M;C;D;I;A;ORIG_PNL_;STMT_DT  ;        ENTRY_SEQ_NO;I
+-;--;----------------;--------------------;----;--------------------;---;--------------------;---;-;---;-----------------------------------;--------------------;--------------------;--------------------;---------;--------------------;----------------;-;---------;---------;---------;---------;---------;---;----------------;----;--------------------;------------;------------;--------------------;-;-;------------;-;-;-;-;-;--------------------;-;-;-;--------------------;-;-;-;-;-;-;-;----;-;-----------------------------------;-;-;-;-;-;-;---------;---------;--------------------;-
+ ;DE;023SUSP220220132;                1.00;INIT;         15286446.00;023;476002000           ;XAF;D;CSD;OFS_AMT                            ;                    ;                    ;          6727929.00;         ;                    ;                ;Y;         ;21-FEB-13;21-FEB-13;21-FEB-13;FY2013   ;M02;                ;    ;                    ;SYSTEM      ;            ;               -1.00;U;6;SYSTEM      ;N;A;9;G;N;FCUBS               ; ;Y;Y;                    ; ; ;Y; ;N; ;Y;SUSP;N;                                   ; ; ; ;N;Y; ;         ;21-FEB-13;                1.00;
+
+1 row selected.
+
+SQL> 
+SQL> select * from sttm_branch where branch_code='023';
+
+BRA;BRANCH_NAME                                                                                              ;BRANCH_ADDR1                                                                                             ;BRANCH_ADDR2                                                                                             ;BRANCH_ADDR3                                                                                             ;PAR;REG;BANK;HOST_NAME                                                                                                ;WALKIN_CU;NETTING_S;CONTINGEN;CURRENT_C;CUR;SWIFT_ADDR  ;TELEX_ADDR    ;E;  REP_HISTORY_PERIOD;SUSPENSE_;G;          TIME_LEVEL;R;A;              MOD_NO;MAKER_ID    ;MAKER_DT_;CHECKER_ID  ;CHECKER_D;O;SUSPENSE_;CONT_SUSP;COU;CIF_ID   ;J;F;CONVERSIO;CON;W;W;BRA;           OFFSET_HR;          OFFSET_MIN;CLEARING_ACC        ;G;DEF_BANK_OPER_CO;P;OFFSET_CLEARING_ACCO;CLEARING_BANK_CODE  ;C;C;      COD_ATM_BRANCH;COD_INST_ID;COD;C;ATM_SUSPENSE_GL     ;IBAN_MASK_BANK_CODE           ;IBAN_MASK_ACCOUNT_NUMBER      ;CLG_BRN_C;SECTOR_CO;CLE;ROUTING_NO                 ;MIS_CCY_MISM;DRSU;CRSU;PC_;I;  INTERDICT_TIME_OUT;A;        MSG_GEN_DAYS;         REFERRAL_HR;        REFERRAL_MIN;G;S;B;     BACK_VALUE_DAYS;P;T;U;P;        OFFSET_HOURS;         OFFSET_MINS;CURRENT_T;T;TA;C;I;D;D;INTERNAL_;I;E;LDAP_TEMPLATE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ;DSN_NAME                           ;B;S;SUSP;SUS;REV_SUSPENSE_ENTRY_DAYS;MAX_REAL_SUSPENSE_AMT;MAX_CONT_SUSPENSE_AMT;       NOTICE_PERIOD;           MINOR_AGE;A;REV;CAS;   CHEQUE_STALE_DAYS;T;TRA;POSITION_;POSITION_;GL_CLASS
+---;---------------------------------------------------------------------------------------------------------;---------------------------------------------------------------------------------------------------------;---------------------------------------------------------------------------------------------------------;---------------------------------------------------------------------------------------------------------;---;---;----;---------------------------------------------------------------------------------------------------------;---------;---------;---------;---------;---;------------;--------------;-;--------------------;---------;-;--------------------;-;-;--------------------;------------;---------;------------;---------;-;---------;---------;---;---------;-;-;---------;---;-;-;---;--------------------;--------------------;--------------------;-;----------------;-;--------------------;--------------------;-;-;--------------------;-----------;---;-;--------------------;------------------------------;------------------------------;---------;---------;---;---------------------------;------------;----;----;---;-;--------------------;-;--------------------;--------------------;--------------------;-;-;-;--------------------;-;-;-;-;--------------------;--------------------;---------;-;--;-;-;-;-;---------;-;-;--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------;-----------------------------------;-;-;----;---;-----------------------;---------------------;---------------------;--------------------;--------------------;-;---;---;--------------------;-;---;---------;---------;---------
+023;YAOUNDE HIPPODROME                                                                                       ;P.O. BOX 6578 YAOUNDE                                                                                    ;AVENUE CHARLES DE GAULLE                                                                                 ;CAMEROON TEL 237 22 20 28 23                                                                             ;010;010;025 ;FCUBS                                                                                                    ;999923   ;477101000;999000999;FY2013   ;M02;            ;              ;N;                    ;454101000;2;                9.00;O;A;                5.00;WAKILI      ;15-NOV-11;BIKAT       ;15-NOV-11;Y;454101000;999000999;CM ;         ;N;N;         ;   ;7;1;XAF;                 .00;                 .00;                    ;Y;CRED            ;N;                    ;                    ; ; ;                    ;           ;IBT;N;                    ;                              ;                              ;         ;         ;010;                           ;            ;SUSD;SUSC;010;N;                    ;Y;                    ;                    ;                    ;N;C;Y;               30.00;D;N;U;N;                    ;                    ;         ; ;  ;N;N;Y;N;         ;N;N;cn=<FCCUSR>,cn=Users,dc=i-flex,dc=com                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ;jdbc/fcjdevDS                      ;Y;Y;8999;SUS;               99999.00;                     ;                     ;                    ;               18.00;N;   ;   ;              373.00; ;   ;         ;         ;ALL
+
+1 row selected.
+
+SQL> 
+SQL> SPOOL OFF

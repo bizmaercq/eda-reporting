@@ -1,0 +1,9 @@
+rman TARGET sys/sysnf68ank@FCUBS AUXILIARY sys/sysnf68ank@FCRPUBS
+
+run {
+allocate channel prmy1 type disk;
+allocate channel prmy2 type disk;
+allocate auxiliary channel stby1 type disk;
+allocate auxiliary channel stby2 type disk;
+duplicate target database for standby from active database dorecover nofilenamecheck;
+}

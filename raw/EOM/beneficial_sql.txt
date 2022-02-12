@@ -1,0 +1,15 @@
+--- Standing instructions Crédités au profit des sociétés d'assurances
+select distinct ae.TXN_INIT_DATE,ae.TRN_REF_NO,cm.internal_remarks , ae.AC_BRANCH,ca.cust_ac_no ,  cu.customer_name1, ae.AC_NO, ae.DRCR_IND, ae.LCY_AMOUNT
+from XAFNFC.ACVW_ALL_AC_ENTRIES_FIN ae
+join XAFNFC.SITB_CONTRACT_MASTER cm on ae.TRN_REF_NO = cm.contract_ref_no
+join XAFNFC.STTM_CUSTOMER cu on cu.customer_no = substr(cm.dr_account,9,6)
+join XAFNFC.STTM_CUST_ACCOUNT ca on cm.dr_account = ca.cust_ac_no
+where module ='SI'
+and trn_code = 'SIP'
+and event='SUXS'
+and period_code ='&PERIOD'
+and financial_cycle ='&FYCYCLE'
+and ca.account_class in ('282','281','283','284','285')
+--and drcr_ind = 'D'
+and ae.AC_NO in ('0501920101301570','0221730101301563','0401730102634752','0411730103070946','0421730103523921','0431920103575355','0301730102199372') -- Beneficial
+order by ae.TXN_INIT_DATE;

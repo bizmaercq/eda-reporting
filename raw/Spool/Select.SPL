@@ -1,0 +1,26 @@
+SQL> 
+SQL> SELECT *
+  2  FROM detbs_teller_master
+  3  WHERE instrument_no = '6739'
+  4  AND txn_account = '382102000'
+  5  AND txn_branch = '030'
+  6  AND record_stat <> 'V';
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> SELECT *
+  2  FROM detbs_rtl_teller
+  3  WHERE dr_instrument_code = '6739'
+  4  AND record_stat <> 'V'
+  5  AND product_code = 'MGLD'
+  6  AND txn_acc = '382102000'
+  7  AND txn_branch = '030';
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> 
+SQL> set echo off

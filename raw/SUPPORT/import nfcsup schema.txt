@@ -1,0 +1,1 @@
+impdp directory=dump dumpfile= expdp-full-03102015_090001.dmp  logfile=impdp_nfcsup remap_schema=XAFNFC:NFCSUP parallel=4

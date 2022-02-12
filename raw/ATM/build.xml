@@ -1,0 +1,124 @@
+<project name="SWIG" default="all" basedir=".">
+
+	<!-- set global properties for this build -->
+	<property environment="env"/>  	
+	<property name="project_home" value="${env.PROJECT_DIR}"/>	 	
+	<property name="src" value="${project_home}/src"/>	
+	<property name="config" value="${project_home}/config"/>
+	<property name="lib" value="${project_home}/lib"/>	
+	<property name="classes" value="${project_home}/classes"/>
+    <property name="gw_service_files" value="${project_home}/GW_CALL"/>	
+	<property name="gw_service_as" value="${project_home}/src/com/iflex/sw/handler"/>	
+	<property name="build" value="${project_home}/build"/>
+	<property name="dist" value="${project_home}/dist"/>
+	<property name="utilities" value="${project_home}/utilities"/>
+
+	<path id="compile.common.classpath">
+		<pathelement location="${lib}/j2ee.jar"/>				
+		<pathelement location="${lib}/GW_EJB_Bean.jar"/>			
+		<pathelement location="${lib}/javax77.jar"/>
+		<pathelement location="${lib}/jsr173_api.jar"/>
+		<pathelement location="${lib}/xbean.jar"/>
+		<pathelement location="${lib}/atm_isoxml.jar"/>
+		<pathelement location="${lib}/xalan.jar"/>
+		<pathelement location="${lib}/xerces.jar"/>
+	</path>
+
+	
+
+  <target name="all" depends="clean_build, make_dir, copy_gw_ejb_files, compile_common, do_jar,clean "/>
+
+	<target name="clean_build">
+ 		<delete dir="${build}"/>
+		<delete dir="${classes}"/>
+		<delete dir="${dist}"/>
+	</target>
+
+	<!-- Create the build directory structure used by compile
+	and copy the deployment descriptors into it-->
+	<target name="make_dir">
+		<!-- Create the time stamp -->
+		<tstamp/>
+		<mkdir dir="${classes}"/>
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/META-INF"/>
+		<mkdir dir="${dist}"/>
+		<mkdir dir="${dist}/META-INF"/>
+		
+	</target>
+
+	<target name="check-cond">
+	<echo message="${env.GW_CALL}"/>
+        <condition property="cond-is-true">
+            <and>
+                <equals arg1="${env.GW_CALL}" arg2="EJB" />
+            </and>
+        </condition>
+    </target>
+
+    <target name="copy_gw_ejb_files" depends="copy_files, cond-else"/>
+
+	<target name="copy_files" depends="check-cond" if="cond-is-true">
+	    <echo message="${gw_service_as}"/>
+		<move file="${gw_service_as}/SWMsgRequestHandler_EJB.java" tofile="${gw_service_as}/SWMsgRequestHandler.java"/>
+		<move file="${utilities}/run_EJB.bat" tofile="${utilities}/run.bat"/>
+		<delete file="${gw_service_as}/SWMsgRequestHandler_JMS.java"/>
+		<delete file="${src}/com/iflex/sw/remote/receiver/SWMQListener.java"/>
+		<delete file="${src}/com/iflex/sw/remote/receiver/SWReceiveMsgController.java"/>
+		<delete file="${src}/com/iflex/sw/remote/receiver/SWReceiveMsgThread.java"/>
+		<delete file="${src}/com/iflex/sw/remote/receiver/SWQResponseReceiver.java"/>
+		<delete file="${src}/com/iflex/sw/remote/sender/SWQRequestSender.java"/>
+        <delete file="${src}/com/iflex/sw/remote/SWGWMDBConnectionFactory.java"/>
+		<delete file="${utilities}/run_MDB.bat"/>
+	</target>
+
+	<target name="cond-else" depends="check-cond" unless="cond-is-true">
+		<echo message="${gw_service_as}"/>
+	    <move file="${gw_service_as}/SWMsgRequestHandler_JMS.java" tofile="${gw_service_as}/SWMsgRequestHandler.java"/>
+		<move file="${utilities}/run_MDB.bat" tofile="${utilities}/run.bat"/>
+		<delete file="${gw_service_as}/SWMsgRequestHandler_EJB.java"/>
+		<delete file="${src}/com/iflex/sw/remote/SWGWEJBConnectionFactory.java"/>
+		<delete file="${src}/com/iflex/sw/remote/SWGWEJBConnectionFactory.java"/>
+		<delete file="${utilities}/run_EJB.bat"/>
+	</target>
+
+
+	<target name="compile_common" depends="make_dir">
+		<javac 
+			srcdir="${src}"	 destdir="${classes}"
+            debug="on">
+			<classpath>
+				<path refid="compile.common.classpath"/>
+			</classpath>
+			
+		</javac>
+		
+		
+	</target>
+
+	<!-- Compile the java code -->
+	<target name="compile" depends="compile_common"> 
+		<javac srcdir="${src}" destdir="${dist}" debug="on">
+			<classpath>
+				<path refid="compile.common.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Make a standard ejb jar file, including XML deployment descriptors -->
+	<target name="do_jar" depends="compile">	  	     
+	     <manifest file="${build}/META-INF/MANIFEST.MF">
+			<attribute name="Main-Class" value="com.iflex.sw.server.SWManagerInitializer"/>			
+        </manifest>	
+		
+		<jar destfile="${build}/SWIG.jar" 
+			basedir="${dist}" manifest="${build}/META-INF/MANIFEST.MF">
+		</jar> 		
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist}"/>		
+		<delete dir="${classes}"/>	
+		<delete dir="${build}/META-INF"/>	
+	</target>
+</project>

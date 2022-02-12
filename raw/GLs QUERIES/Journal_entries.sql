@@ -1,0 +1,31 @@
+SELECT 
+ae.CURR_NO JournalEntryLineNo,
+ae.ENTRY_SEQ_NO Sequence,
+ae.BATCH_NO Batch,
+ae.AC_BRANCH Branch,
+ae.AC_NO Account,
+ae.LCY_AMOUNT Amount,
+ae.LCY_AMOUNT LCY_Amount,
+ae.AC_CCY Currency,
+ae.EXCH_RATE Rate,
+ae.DRCR_IND Dr_CR,
+ae.TRN_CODE Trn_Code, tc.trn_desc Transaction_desc, 
+ae.TRN_DT TransactionDate,
+ae.INSTRUMENT_CODE Instr_Num,
+ae.VALUE_DT Value_Date,
+ae.FINANCIAL_CYCLE Financial_Year,
+null ReverseOrVoidRV,
+acpks_stmt.fn_get_rtl_narrative_desc(ae.TRN_REF_NO,ae.MODULE,'TXN',ae.TRN_CODE,'ENG',Ae.AC_NO,Ae.AC_BRANCH,ae.ac_ccy,ae.trn_dt,ae.LCY_AMOUNT) JournalEntryDescription,
+ae.TRN_DT JournalInputDate,
+ae.TRN_DT JournalpostDate,
+ae.TRN_DT TransactionEffectiveDate,
+ae.USER_ID JournalOriginator,
+ae.AUTH_ID JournalChecker,
+null Journal_source,
+ae.AC_NO GLNumber,
+ae.USER_ID UserID,
+ae.MODULE ProgramID,
+null WorkStationID
+FROM acvw_all_ac_entries ae, sttm_trn_code tc
+WHERE ae.TRN_CODE = tc.trn_code
+and (ae.TRN_DT between '26/01/2019' and '31/01/2019') ;

@@ -1,0 +1,20 @@
+
+07-03-2017 --- Maintenance Helpdesk
+
+mantis_bugnote_table     >>  DELETE FROM mantis_bugnote_table WHERE id < 3564
+mantis_bug_file_table    >>  DELETE FROM mantis_bug_file_table WHERE id < 3564
+mantis_bug_monitor_table      >>  DELETE FROM mantis_bug_monitor_table  WHERE bug_id < 18770 
+mantis_bug_monitor_table      >>  DELETE FROM mantis_bug_table  WHERE bug_id < 18770 
+mantis_email_table      >>     DELETE FROM mantis_email_table WHERE   email_id < 40500
+mantis_plugin_EmailReporting_msgids_table      >>  DELETE FROM mantis_plugin_EmailReporting_msgids_table WHERE id < 18770
+
+07-03-2017 --- Maintenance Helpdesk
+
+mantis_bug_history_table  >> DELETE FROM `mantis_bug_history_table` WHERE < 8400
+mantis_bugnote_table     >>  DELETE FROM `mantis_bugnote_table` WHERE id < 4000
+mantis_bugnote_text_table     >>  DELETE FROM `mantis_bugnote_text_table` WHERE id < 4000
+mantis_bug_file_table    >>  DELETE FROM `mantis_bug_file_table` WHERE id < 4000
+mantis_bug_monitor_table      >>  DELETE FROM `mantis_bug_monitor_table`  WHERE bug_id < 21000 
+mantis_bug_monitor_table      >>  DELETE FROM `mantis_bug_table`  WHERE id < 21000 
+mantis_email_table      >>     DELETE FROM `mantis_email_table` WHERE   email_id < 61400
+mantis_plugin_EmailReporting_msgids_table      >>  DELETE FROM `mantis_plugin_EmailReporting_msgids_table` WHERE id < 21000

@@ -1,0 +1,2 @@
+SELECT * FROM employe em WHERE em.matriemp in 
+(SELECT distinct a.matriemp FROM intervenant a); 

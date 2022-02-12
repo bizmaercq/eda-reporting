@@ -1,0 +1,4 @@
+delete archivelog all;
+crosscheck archivelog all;
+delete expired archivelog all;
+backup database format '/media/extbackup/app/oracle/backup' plus archivelog ;

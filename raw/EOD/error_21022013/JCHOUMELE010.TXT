@@ -1,0 +1,254 @@
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>Source :FLEXCUBE
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>Retutrning Success From Fn_Extract_Msg_Header..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>In Fn_Extract_Req_Headers..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>Retutrning Success From Fn_Extract_Req_Headers..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>In Fn_Populate_Msgid..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>Returning Success From Fn_Populate_Msgid...
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1575-->Gwpks_Service_Router=>Returning Success From Fn_Init..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->740-->Gwpks_Service_Router=>In Fn_Dedupe_Log_Msg..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->809-->Gwpks_Service_Router=>Returning Success From Fn_Dedupe_Log_Msg..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1658-->Gwpks_Service_Router=>After assigning multitrip id to ELCM :
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>In Fn_Process_Requests..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>Processing Simple Message..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>In Fn_Process_Request..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>In Fn_Set_Request_Xml..
+XAFNFC-->-->CSPKS_REQ_GLOBAL-->163-->In Cspks_Req_Global.Pr_Init
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>Returning Success From Fn_Set_Request_Xml..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->975-->Gwpks_Service_Router=>In Fn_Enrich_Header..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->994-->Gwpks_Service_Router=>In HERE 1..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1010-->Gwpks_Service_Router=>In HERE 2..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1011-->Gwpks_Service_Router=> Invalid Function_Id/Action  :AEDSTART/BATCHEODSTARTASYNC
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1037-->Gwpks_Service_Router=>In HERE 3..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1073-->Gwpks_Service_Router=>In HERE 5..
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>The action isBATCHEODSTARTASYNC
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>The operation is 
+XAFNFC-->-->GWPKS_SERVICE_ROUTER-->1661-->Gwpks_Service_Router=>Non Extensible Request..
+XAFNFC-->-->GWPKS_SERVICE_WRAPPER-->480-->Gwpks_Service_Wrapper=>In Fn_process_msg
+XAFNFC-->-->GWPKS_SERVICE_WRAPPER-->484-->Gwpks_Service_Wrapper=>Converting Processing Instructions Type..
+XAFNFC-->-->GWPKS_SERVICE_WRAPPER-->502-->Gwpks_Service_Wrapper=>Coverting Msg header Type..
+XAFNFC-->-->GWPKS_SERVICE_WRAPPER-->533-->Gwpks_Service_Wrapper=>l_Msg_Length..1051
+XAFNFC-->-->GWPKS_SERVICE_WRAPPER-->534-->Gwpks_Service_Wrapper=>Cspks_Req_Global.g_Max_Vc..32000
+XAFNFC-->-->GWPKS_SERVICE_WRAPPER-->558-->Gwpks_Service_Wrapper=>Calling Stpks_Fcmaint_Service.Fn_Process_Msg..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_process_msg
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Prepaqring Header..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Prepare_Header..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Prepare_Header..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>l_Operation_Code
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>l_Source_Operation
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Coming From FLEXCUBE..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Load_Xmldoc..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Load_Xmldoc..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Build_Node_Data..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Build_Node_Data..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Table ;AETB_EOC_MASTER
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Table ;AEVWS_EOC_GROUPS
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Table ;AETB_EOC_BRANCHES
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Get_Rel_Tbl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Populating Node Levels..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Get_Lvl..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Build_Node_Data..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Build_Addl_Info..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Build_Addl_Info..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Build_Addl_Info..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Parse_Fcxml..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Parse_Fcxml..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Number Of Nodes Present In Parent List :3
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Fet_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Parent_Nodes is :3
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Child_Nodes::1:FV
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::EOC_REF_NO Current Value ::010ZEOC13052000K
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 010ZEOC13052000K
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedTARGET_STAGE~EOC_SEQ_NO~RUN_MODE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedPOSTEOTI~1~S~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::TARGET_STAGE Current Value ::POSTEOTI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 POSTEOTI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedEOC_SEQ_NO~RUN_MODE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed1~S~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::EOC_SEQ_NO Current Value ::1
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 1
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedRUN_MODE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedS~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::RUN_MODE Current Value ::S
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 S
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 33 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>  Fields Exists For This Table..AETB_EOC_MASTER
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> Inserting For The First Time..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Child_Nodes::1:REC
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Fet_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[EOC_REF_NO] = 010ZEOC13052000K
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[EOC_SEQ_NO] = 1
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[RUN_MODE] = S
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[TARGET_STAGE] = POSTEOTI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Parent_Nodes is :1
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Child_Nodes::1:FV
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::GROUP_CODE Current Value ::ALL
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 ALL
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedGROUP_DESCRIPTION~RUN~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedAll Branches~N~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::GROUP_DESCRIPTION Current Value ::All Branches
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 All Branches
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedRUN~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedN~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::RUN Current Value ::N
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 N
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 33 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>  Fields Exists For This Table..AEVWS_EOC_GROUPS
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> Inserting For The First Time..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Fet_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Child_Nodes::1:REC
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Fn_Get_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Fet_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[EOC_REF_NO] = 010ZEOC13052000K
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[EOC_SEQ_NO] = 1
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[RUN_MODE] = S
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>P_Parent_Data[TARGET_STAGE] = POSTEOTI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Parent_Nodes is :1
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>In Fn_Get_Attr_Value..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>L_Child_Nodes::1:FV
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::EOC_REF_NO Current Value ::010ZEOC13052000K
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 010ZEOC13052000K
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedCURR_STAGE~TARGET_STAGE~BRANCH_CODE~BRANCH_DATE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedTI~POSTEOFI~010~2013-02-21~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::CURR_STAGE Current Value ::TI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 TI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedTARGET_STAGE~BRANCH_CODE~BRANCH_DATE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedPOSTEOFI~010~2013-02-21~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::TARGET_STAGE Current Value ::POSTEOFI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 POSTEOFI
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedBRANCH_CODE~BRANCH_DATE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed010~2013-02-21~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::BRANCH_CODE Current Value ::010
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 010
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot ProceedBRANCH_DATE~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed2013-02-21~~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Current Column ::BRANCH_DATE Current Value ::2013-02-21
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 11 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 22 2013-02-21
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL Column name Is NULL So Cannot Proceed~
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> ARUL insid 33 
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>  Fields Exists For This Table..AETB_EOC_BRANCHES
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=> Inserting For The First Time..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Fet_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Fet_Fldval..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Returning From Fn_Parse_Fcxml..
+XAFNFC-->-->STPKS_FCMAINT_SERVICE-->68-->stpks_fcmaint_service1=>Calling Stpks_Fidpkg_Wrapper.Fn_Process_Msg..
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->45-->In Stpks_Fidpkg_Wrapper.fn_process_msg..
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->90-->AEpks_fcj_AEDSTART.fn_process_msg
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->151-->DYNAMIC SQL..
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->153-->p_source FLEXCUBE
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->154-->p_function_id AEDSTART
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->155-->g_source_operation AEDSTART_BATCHEODSTARTASYNC
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->156-->g_action_code BATCHEODSTARTASYNC
+XAFNFC-->-->STPKS_FIDPKG_WRAPPER-->158-->DECLARE 
+   l_source           cotms_source.source_code%TYPE := Stpks_Fidpkg_Wrapper.g_source; 
+   l_function_id      smtbs_menu.function_id%TYPE :=Stpks_Fidpkg_Wrapper.g_function_id;
+   l_source_operation VARCHAR2(100) := Stpks_Fidpkg_Wrapper.g_source_operation; 
+   l_action_code      VARCHAR2(50) := Stpks_Fidpkg_Wrapper.g_action_code;  
+   l_multi_trip_id    VARCHAR2(100) := Stpks_Fidpkg_Wrapper.g_multi_trip_id; 
+   l_tb_xml_data      stpks_fcmaint_service.ty_tb_xml_data := Stpks_Fidpkg_Wrapper.g_tb_xml_data;
+   l_addl_info        stpks_fcmaint_service.ty_addl_info := Stpks_Fidpkg_Wrapper.g_addl_info;
+   l_status           VARCHAR2(50) := Stpks_Fidpkg_Wrapper.g_status;
+   l_err_code         VARCHAR2(32767) := Stpks_Fidpkg_Wrapper.g_err_code; 
+   l_err_params       VARCHAR2(32767) := Stpks_Fidpkg_Wrapper.g_err_params;  
+BEGIN
+IF NOT AEpks_fcj_AEDSTART.fn_process_msg(l_source,
+l_source_operation,
+l_action_code,
+l_multi_trip_id,
+l_tb_xml_data,
+l_addl_info,
+l_status,
+l_err_code,
+l_err_params) THEN
+Stpks_Fidpkg_Wrapper.g_return := FALSE;
+debug.pr_debug('ST','Failed in AEpks_fcj_AEDSTART.fn_process_msg');
+END IF;
+debug.pr_debug('ST','1');
+   Stpks_Fidpkg_Wrapper.g_source           := l_source; 
+debug.pr_debug('ST','2');
+   Stpks_Fidpkg_Wrapper.g_function_id      := l_function_id;
+debug.pr_debug('ST','3');
+   Stpks_Fidpkg_Wrapper.g_source_operation := l_source_operation; 
+debug.pr_debug('ST','3');
+   Stpks_Fidpkg_Wrapper.g_action_code      := l_action_code;  
+debug.pr_debug('ST','4');
+   Stpks_Fidpkg_Wrapper.g_multi_trip_id    := l_multi_trip_id; 
+debug.pr_debug('ST','5');
+   Stpks_Fidpkg_Wrapper.g_tb_xml_data      := l_tb_xml_data;
+debug.pr_debug('ST','6');
+   Stpks_Fidpkg_Wrapper.g_addl_info        := l_addl_info;
+debug.pr_debug('ST','7');
+   Stpks_Fidpkg_Wrapper.g_status           := l_status;
+debug.pr_debug('ST','8');
+   Stpks_Fidpkg_Wrapper.g_err_code         := l_err_code; 
+debug.pr_debug('ST','9');
+   Stpks_Fidpkg_Wrapper.g_err_params       := l_err_params;   
+debug.pr_debug('ST','10');
+END;
+
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1877-->Aepks_Fcj_Aedstart ==>In Fn_Process_Msg..
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1878-->Aepks_Fcj_Aedstart ==>In fn_build_type_structure
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1878-->Aepks_Fcj_Aedstart ==>In fn_build_type_structure1
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1878-->Aepks_Fcj_Aedstart ==>In fn_build_type_structure3
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1878-->Aepks_Fcj_Aedstart ==>Returning True from fn_build_type_structure
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>In Fn_Main
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>Initializing the Stages..
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>In pr_init
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>In fn_check_mandatory..
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>Returning True from fn_check_mandatory
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>In fn_default_and_validate
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1890-->Aepks_Fcj_Aedstart ==>Returning True from fn_default_and_validate
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->990-->Aepks_Fcj_Aedstart ==>In Fn_Process_Request..:BATCHEODSTARTASYNC
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1220-->Aepks_Fcj_Aedstart ==>****************ACTUAL EOD ASYNC CALL*****************
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1221-->Aepks_Fcj_Aedstart ==>EOC Reference Number ..:010ZEOC13052000K
+XAFNFC-->-->AEPKS_FCJ_AEDSTART-->1222-->Aepks_Fcj_Aedstart ==>DEBUG WOULD BE SHIFTED TO :010ZEOC000K.TXT

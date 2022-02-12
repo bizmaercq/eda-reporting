@@ -1,0 +1,267 @@
+DECLARE
+  --l_val number:=0;
+BEGIN
+  dbms_output.enable(9000000);
+
+  INSERT INTO STTB_STAFF_INFO
+  VALUES
+    ('&HOME_BRANCH',
+     '&MAT',
+     '&NAME',
+     '&SEX',
+     '&STAFF_FUNCTION',
+     '&ROLE',
+     '&USERID',
+     'U');
+
+  FOR k IN (select * from STTB_STAFF_INFO WHERE STATUS = 'U') loop
+  
+    dbms_output.put_line('PROCESSING ...' || k.USERID);
+  
+    FOR J IN (SELECT * FROM SMTB_USER WHERE USER_ID = 'CONV_USER') LOOP
+    
+      INSERT INTO SMTB_USER
+      VALUES
+        (J.EXIT_FUNCTION,
+         TRIM(k.USERID), --CHANGED
+         J.START_DATE,
+         k.NAME, --CHANGED
+         FN_ENCRYPT('PASSWORD', TRIM(k.USERID)), --CHANGED
+         J.STATUS_CHANGED_ON,
+         'D', --CHANGED
+         'D', --CHANGED
+         'D', --CHANGED
+         'D', --CHANGED
+         J.LAST_SIGNED_ON,
+         J.MAX_OVERRIDE_AMT,
+         '5', --CHANGED
+         J.USER_CATEGORY,
+         'E', --CHANGED
+         J.END_DATE,
+         J.PWD_CHANGED_ON,
+         J.MAX_TXN_AMT,
+         J.MAX_AUTH_AMT,
+         NULL, --CHANGED
+         NULL, --CHANGED
+         J.FORCE_PASSWD_CHANGE,
+         J.USER_LANGUAGE,
+         J.STARTUP_FUNCTION,
+         k.BRANCH_CODE, --CHANGED
+         J.FWDREW_COUNT,
+         'D', --CHANGED
+         J.AUTH_STAT,
+         J.CHECKER_DT_STAMP,
+         J.CHECKER_ID,
+         J.MAKER_DT_STAMP,
+         J.MAKER_ID,
+         J.MOD_NO,
+         J.ONCE_AUTH,
+         J.RECORD_STAT,
+         J.USER_PASSWORD_BRN,
+         J.USER_ID_BRN,
+         J.USER_TXN_LIMIT,
+         J.LIMITS_CCY,
+         'N', --CHANGED
+         J.CUSTOMER_NO,
+         J.PRODUCTS_ACCESS_ALLOWED,
+         J.LDAP_USER,
+         J.BRANCH_USRPWD,
+         J.DFLT_MODULE,
+         J.USER_EMAIL,
+         J.TELEPHONE_NUMBER,
+         J.USER_MANAGER,
+         J.HOME_PHONE,
+         J.USER_MOBILE,
+         J.USER_FAX,
+         J.USER_PAGER,
+         J.EXT_USER_REF,
+         J.TAX_IDENTIFIER,
+         J.MULTI_BRN_OPERATIONAL,
+         J.STAFF_AC_RESTR,
+         J.AMOUNT_FORMAT,
+         J.DATE_FORMAT,
+         J.DEPT_CODE);
+    
+      IF k.ROLE = 'CPU' THEN
+        FOR IJK IN (SELECT *
+                      FROM STTM_BRANCH
+                     WHERE AUTH_STAT = 'A'
+                       AND RECORD_STAT = 'O') LOOP
+          FOR B IN (SELECT *
+                      FROM SMTB_ROLE_MASTER
+                     WHERE ROLE_ID IN ('BR_CUST_ACC_IN',
+                                       'CA-MAINT-IN',
+                                       'CA-ONLINE-IN',
+                                       'CLRG_INPUT',
+                                       'CUSTAC-MNT-IN',
+                                       'CUSTACC-IN',
+                                       'FT_INPUT',
+                                       'IC-MAINT-IN',
+                                       'IC_ONLINE_IN',
+                                       'LC_INPUT',
+                                       'LENDING_INPUT',
+                                       'LIM_COLL_INPUT',
+                                       'OFFICER',
+                                       'SI_INPUT',
+                                       'ST-MAINT-IN',
+                                       'TD_INPUT',
+                                       'BR_CUST_ACC_AU',
+                                       'CA-MAINT-AUTH',
+                                       'CA-ONLINE-AUTH',
+                                       'CLRG_AUTH',
+                                       'CUSTAC-MNT-AU',
+                                       'CUSTACC-AU',
+                                       'FT_AUTH',
+                                       'IC-MAINT-AUTH',
+                                       'IC_ONLINE_AU',
+                                       'LC_AUTH',
+                                       'LENDING_AUTH',
+                                       'LIM_COLL_AUTH',
+                                       'OFFICER',
+                                       'SI_AUTH',
+                                       'ST-MAINT-AUTH',
+                                       'TD_AUTH',
+                                       'LENDING_INPUT',
+                                       'LENDING_AUTH',
+                                       'LENDING_VIEW',
+                                       'GL-MAINT-AUTH',
+                                       'GL-MAINT-IN',
+                                       'GL-MAINT-VW',
+                                       'GL-RPT',
+                                       'GLMIS-AU',
+                                       'GLMIS-IN',
+                                       'GLMIS-VW')) LOOP
+          
+            INSERT INTO SMTB_USER_ROLE
+            VALUES
+              (B.ROLE_ID, TRIM(k.USERID), 'A', IJK.BRANCH_CODE);
+          
+          END LOOP;
+        END LOOP;
+      ELSIF k.ROLE = 'CCC' THEN
+        FOR IJK IN (SELECT *
+                      FROM STTM_BRANCH
+                     WHERE AUTH_STAT = 'A'
+                       AND RECORD_STAT = 'O') LOOP
+          FOR B IN (SELECT *
+                      FROM SMTB_ROLE_MASTER
+                     WHERE ROLE_ID IN ('BR_CUSTAC_VW',
+                                       'BR_CUST_VW',
+                                       'CA-MAINT-VW',
+                                       'CG-VW',
+                                       'CUSTAC-MNT-VW',
+                                       'FT_VW',
+                                       'IC-MAINT-VW',
+                                       'IC-ONLINE-VW',
+                                       'LC-MAINT-VW',
+                                       'LC-ONLINE-VW',
+                                       'LIM_COLL_VIEW',
+                                       'SI-MAINT-VW',
+                                       'SI-TXN-VW',
+                                       'ST-MAINT-VW',
+                                       'TD_VIEW',
+                                       'TELLER-VW',
+                                       'GL-MAINT-VW',
+                                       'GLMIS-VW')) LOOP
+          
+            INSERT INTO SMTB_USER_ROLE
+            VALUES
+              (B.ROLE_ID, TRIM(k.USERID), 'A', IJK.BRANCH_CODE);
+          
+          END LOOP;
+        END LOOP;
+      
+      ELSIF k.ROLE = 'NFCTELLER' THEN
+        FOR IJK IN (SELECT *
+                      FROM STTM_BRANCH
+                     WHERE AUTH_STAT = 'A'
+                       AND RECORD_STAT = 'O') LOOP
+        
+          INSERT INTO SMTB_USER_ROLE
+          VALUES
+            ('NFCTELLER', TRIM(k.USERID), 'A', IJK.BRANCH_CODE);
+        
+        END LOOP;
+      ELSIF k.ROLE = 'NFCHEADTELLER' THEN
+        FOR IJK IN (SELECT *
+                      FROM STTM_BRANCH
+                     WHERE AUTH_STAT = 'A'
+                       AND RECORD_STAT = 'O') LOOP
+        
+          INSERT INTO SMTB_USER_ROLE
+          VALUES
+            ('NFCHEADTELLER', TRIM(k.USERID), 'A', IJK.BRANCH_CODE);
+          INSERT INTO SMTB_USER_ROLE
+          VALUES
+            ('OFFICER', TRIM(k.USERID), 'A', IJK.BRANCH_CODE);
+        
+        END LOOP;
+      ELSIF k.ROLE IN ('ALLROLES-AUTH', 'EOD') THEN
+        FOR IJK IN (SELECT *
+                      FROM STTM_BRANCH
+                     WHERE AUTH_STAT = 'A'
+                       AND RECORD_STAT = 'O') LOOP
+          FOR B IN (SELECT *
+                      FROM SMTB_ROLE_MASTER
+                     WHERE ROLE_ID IN ('BR_CUST_ACC_IN',
+                                       'CA-MAINT-IN',
+                                       'CA-ONLINE-IN',
+                                       'CLRG_INPUT',
+                                       'CUSTAC-MNT-IN',
+                                       'CUSTACC-IN',
+                                       'FT_INPUT',
+                                       'IC-MAINT-IN',
+                                       'IC_ONLINE_IN',
+                                       'LC_INPUT',
+                                       'LENDING_INPUT',
+                                       'LIM_COLL_INPUT',
+                                       'OFFICER',
+                                       'SI_INPUT',
+                                       'ST-MAINT-IN',
+                                       'TD_INPUT',
+                                       'BR_CUST_ACC_AU',
+                                       'CA-MAINT-AUTH',
+                                       'CA-ONLINE-AUTH',
+                                       'CLRG_AUTH',
+                                       'CUSTAC-MNT-AU',
+                                       'CUSTACC-AU',
+                                       'FT_AUTH',
+                                       'IC-MAINT-AUTH',
+                                       'IC_ONLINE_AU',
+                                       'LC_AUTH',
+                                       'LENDING_AUTH',
+                                       'LIM_COLL_AUTH',
+                                       'OFFICER',
+                                       'SI_AUTH',
+                                       'ST-MAINT-AUTH',
+                                       'TD_AUTH',
+                                       'LENDING_INPUT',
+                                       'LENDING_AUTH',
+                                       'LENDING_VIEW',
+                                       'GL-MAINT-AUTH',
+                                       'GL-MAINT-IN',
+                                       'GL-MAINT-VW',
+                                       'GL-RPT',
+                                       'GLMIS-AU',
+                                       'GLMIS-IN',
+                                       'GLMIS-VW')) LOOP
+          
+            INSERT INTO SMTB_USER_ROLE
+            VALUES
+              (B.ROLE_ID, TRIM(k.USERID), 'A', IJK.BRANCH_CODE);
+          
+          END LOOP;
+        END LOOP;
+      
+      END IF;
+    
+    END LOOP;
+    UPDATE STTB_STAFF_INFO SET STATUS = 'P' WHERE USERID = TRIM(k.USERID);
+    COMMIT;
+  END LOOP;
+exception
+  when others then
+    dbms_output.put_line('failed to process' || sqlerrm);
+    null;
+END;
+/

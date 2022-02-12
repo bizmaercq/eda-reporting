@@ -1,0 +1,1 @@
+scp oracle@172.20.50.11:/u01/app/oracle/dmp/expdp-full-04042015_090002.dmp.gz oracle@172.20.50.6:/home/oracle/expdp/

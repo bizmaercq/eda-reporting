@@ -1,0 +1,66 @@
+-- 
+select  a.account_class, c.description,cu.customer_no,cu.customer_name1
+from sttm_cust_account a  , sttm_account_class c, sttm_customer cu
+where a.account_class = c.account_class
+and a.cust_no = cu.customer_no
+--and a.branch_code ='022' 
+and a.record_stat ='O'
+order by c.account_class;
+-- F
+select a.branch_code, a.account_class, c.description,count(*) "COUNT", sum(a.lcy_curr_balance) Encours
+from sttm_cust_account a  , sttm_account_class c
+where a.account_class = c.account_class
+and a.record_stat ='O'
+--and a.branch_code ='022'
+group by a.branch_code, a.account_class, c.description
+order by a.account_class,a.branch_code;
+
+----
+
+select c.local_branch, decode(c.customer_type,'I','INDIVIDUAL','C','CORPORATE','BANK') CATEGORY, count(*) "COUNT" 
+from sttm_customer c 
+where c.record_stat = 'O'
+group by c.local_branch, c.customer_type
+order by c.local_branch;
+
+--- Loans
+select c.local_branch, decode(c.customer_type,'I','INDIVIDUAL','C','CORPORATE','BANK') CATEGORY,p.product_description ,decode(l.ACCOUNT_STATUS,'L','LIQUIDATE','V','V','ACTIVE') STATUS ,count(*) "COUNT", sum(b.lcy_balance) Encours
+from sttm_customer c , cltb_account_master l, cltb_account_comp_bal_breakup b , cstm_product p
+where c.customer_no = l.CUSTOMER_ID
+and l.PRODUCT_CODE = p.product_code
+and l.ACCOUNT_NUMBER = b.account_number
+and c.record_stat = 'O'
+and c.local_branch = '022'
+and l.ACCOUNT_STATUS ='A'
+group by c.local_branch, c.customer_type,p.product_description,l.ACCOUNT_STATUS
+order by decode(c.customer_type,'I','INDIVIDUAL','C','CORPORATE','BANK');
+
+--- Accounts opened Analysis by branch 
+SELECT ac.branch_code,ac.Business_Account,ac.Current_Account,ac.Savings_Account,ac.Microsave_Account,ac.Halal_Savings_Account,nvl(cl.Closed_Accounts,0) Closed_Accounts
+ from
+(
+SELECT branch_code
+,sum(Business_Account) Business_Account
+,sum(Current_Account) Current_Account
+,sum(Savings_Account) Savings_Account
+,sum(Microsave_Account) Microsave_Account
+,sum(Halal_Savings_Account) Halal_Savings_Account
+ FROM 
+(
+select a.branch_code, 
+case when substr(c.account_class,1,1) = '1'   then count(*) else 0 end Business_Account,
+case when substr(c.account_class,1,1) = '2'  then count(*) else 0 end Current_Account,
+case when c.account_class in ('351','364','370','381','382','383','384')  then count(*) else 0 end Savings_Account,
+case when c.account_class in ('386')  then count(*) else 0 end Microsave_Account,
+case when c.account_class in ('387')  then count(*) else 0 end Halal_Savings_Account 
+from sttm_cust_account a  , sttm_account_class c 
+where a.account_class = c.account_class
+and a.ac_open_date between '&Start_Date' and '&End_Date'
+and a.ac_open_date between '&Start_Date' and '&End_Date'
+group by a.branch_code,c.account_class,a.cust_ac_no,a.ac_open_date,a.record_stat,a.checker_dt_stamp 
+) group by  branch_code ) ac  
+left outer join (SELECT branch_code,0 Business_Account,0 Current_Account,0 Savings_Account,0 Microsave_Account,0 Halal_Savings_Account,count(*) Closed_Accounts
+FROM sttm_cust_account where record_stat ='C' and  nvl( ( select max(brn_date)  from ictb_acc_action mm where action='C' and mm.acc =cust_ac_no ) , checker_dt_stamp ) between '&Start_Date' and '&End_Date' 
+group by branch_code) cl
+on ac.branch_code = cl.branch_code
+order by ac.branch_code;

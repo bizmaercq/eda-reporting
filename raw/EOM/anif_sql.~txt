@@ -1,0 +1,44 @@
+select distinct cu.customer_name1 Nom_Client, ac.ac_no as Num_Compte,cl.description,glt.code_desc Secteur_Activites,decode(substr(ac.TRN_REF_NO,4,4),'CHDP','VERSEMENT ESPECES','RETRAIT ESPECES') as libelle_Operation, 
+xx.mt
+from xafnfc.acvw_all_ac_entries ac ,xafnfc.sttm_cust_account ca,xafnfc.sttm_customer cu, xafnfc.sttm_account_class cl, xafnfc.gltm_mis_code glt,xafnfc.mitm_customer_default mi,
+(select f.cpte cp,f.montant mt from 
+(select cc.ac_no cpte,sum(cc.lcy_amount) montant 
+from xafnfc.acvw_all_ac_entries cc 
+where cc.auth_stat = 'A'
+and substr(cc.TRN_REF_NO,4,4) in ('CHWL','CHDP')
+and cc.cust_gl = 'A'
+--and cc.ac_no = ac.AC_NO
+and cc.trn_dt between '&begining_date' and '&end_date'
+--and ac.lcy_amount >= to_number(:mini)
+group by cc.AC_NO
+having sum(cc.lcy_amount) >= 5000000
+) f ) xx
+where ac.AC_NO = ca.cust_ac_no 
+and cu.customer_no = ca.cust_no 
+and glt.mis_code = mi.cust_mis_3
+and mi.customer = cu.customer_no
+and cl.account_class = ca.account_class
+and xx.cp = ac.AC_NO
+--and substr(ac.TRN_REF_NO,1,3) = nvl(:branch_code,substr(ac.TRN_REF_NO,1,3))
+and ac.auth_stat = 'A'
+and substr(ac.TRN_REF_NO,4,4) in ('CHWL','CHDP')
+and ac.cust_gl = 'A'
+and ac.trn_dt between '&begining_date' and '&end_date'
+
+
+///////////////ANIF1
+
+select ac.trn_dt as Date_operations,substr(ac.TRN_REF_NO,1,3) as Agence,cu.customer_name1 Nom_Client, ac.ac_no as Num_Compte,cl.description,glt.code_desc Secteur_Activites,decode(substr(ac.TRN_REF_NO,4,4),'CHDP','VERSEMENT ESPECES','RETRAIT ESPECES') as libelle_Operation, 
+ac.lcy_amount 
+from xafnfc.acvw_all_ac_entries ac ,xafnfc.sttm_cust_account ca,xafnfc.sttm_customer cu, xafnfc.sttm_account_class cl, xafnfc.gltm_mis_code glt,xafnfc.mitm_customer_default mi
+where ac.AC_NO = ca.cust_ac_no 
+and cu.customer_no = ca.cust_no 
+and glt.mis_code = mi.cust_mis_3
+and mi.customer = cu.customer_no
+and cl.account_class = ca.account_class
+--and substr(ac.TRN_REF_NO,1,3) = nvl(:branch_code,substr(ac.TRN_REF_NO,1,3))
+and ac.auth_stat = 'A'
+and substr(ac.TRN_REF_NO,4,4) in ('CHWL','CHDP')
+and ac.cust_gl = 'A'
+and ac.trn_dt between '&begining_date' and '&end_date'
+and ac.lcy_amount >= to_number(5000000)

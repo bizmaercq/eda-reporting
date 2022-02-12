@@ -1,0 +1,9 @@
+cd /home/weblogic/Oracle/Middleware/user_projects/domains/FCUBS112/bin/
+nohup ./startWeblogic.sh &
+cd /home/weblogic/Oracle/Middleware/wlserver_10.3/server/bin
+nohup ./startNodeManager.sh &
+cd /home/weblogic/OraHome_1/webcache/bin
+./webcachectl start
+
+http://172.20.50.12:9400/webcacheadmin
+login as ias_admin/nfc1bank

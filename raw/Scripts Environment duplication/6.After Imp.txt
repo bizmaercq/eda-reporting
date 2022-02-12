@@ -1,0 +1,11 @@
+UPDATE sttms_host SET 	username = smpkss.fn_encrypt_app_password ('FCCUAT','CITIL'),
+			password = smpkss.fn_encrypt_app_password ('FCCUAT','FCCUAT'),
+			host_name = 'FCCTEST';
+
+UPDATE STTMS_BRANCH SET HOST_NAME='FCCTEST';
+
+UPDATE SMTB_SYSTEM_REG  SET PARAM_VALUE='FCCUAT' WHERE PARAM_NAME='TITLE_BAR_TEXT'
+
+UPDATE SMTB_USER_REG  SET PARAM_VALUE='FCCUAT' WHERE PARAM_NAME='TITLE_BAR_TEXT';
+
+commit;

@@ -1,0 +1,26 @@
+-- Detailed
+select aa.branch_code,aa.account,c.customer_name1,aa.bkg_date LAST_MVT_DATE,'&Date' Period_End_Date, aa.lcy_closing_bal from
+actb_accbal_history aa , sttm_customer c
+where substr(aa.account,9,6) = c.customer_no 
+and aa.bkg_date =
+(select max(a.bkg_date) from actb_accbal_history a 
+where a.bkg_date <= '&Date' 
+and a.account = aa.account)
+--and aa.account = '&Account'
+and aa.account in
+(select ac.cust_ac_no from sttm_cust_account ac where ac.account_class = '281' and ac.record_stat ='O')
+order by aa.branch_code, aa.account
+
+
+-- summary and count 
+select c.customer_type,count(*) from
+actb_accbal_history aa , sttm_customer c
+where substr(aa.account,9,6) = c.customer_no 
+and aa.bkg_date =
+(select max(a.bkg_date) from actb_accbal_history a 
+where a.bkg_date <= '&Date' 
+and a.account = aa.account)
+and aa.lcy_closing_bal >0
+--and aa.account = '&Account'
+--and aa.account in (select ac.cust_ac_no from sttm_cust_account ac where ac.account_class = '281' and ac.record_stat ='O')
+group by c.customer_type

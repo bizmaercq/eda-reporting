@@ -1,0 +1,84 @@
+'Check for Tanked Entries'
+
+no rows selected
+
+
+no rows selected
+
+REAL Dr AND Cr MISMATCH BY MODULE
+
+no rows selected
+
+CONTINGENT Dr AND Cr MISMATCH BY MODULE
+
+no rows selected
+
+MEMO Dr AND Cr MISMATCH BY MODULE
+
+no rows selected
+
+POSITION Dr AND Cr MISMATCH BY MODULE
+
+no rows selected
+
+REAL Dr AND Cr MISMATCH BY TRANSACTION
+
+no rows selected
+
+REAL Dr AND Cr MISMATCH BY BATCH FOR DE
+
+BATC;FINANCIAL;PER;                         REAL_DR;                         REAL_CR;                      DIFFERENCE
+----;---------;---;--------------------------------;--------------------------------;--------------------------------
+2023;FY2013   ;M02;                  16,473,260.000;                   9,745,331.000;                   6,727,929.000
+    ;FY2013   ;M02;                            .000;                   6,727,929.000;                  -6,727,929.000
+
+2 rows selected.
+
+CONTINGENT Dr AND Cr MISMATCH BY TRANSACTION
+
+no rows selected
+
+CONTINGENT Dr AND Cr MISMATCH BY BATCH FOR DE
+
+no rows selected
+
+MARK EOFI stage query
+
+AC_;                         REAL_DR;                         REAL_CR;                         CONT_DR;                         CONT_CR;FINANCIAL;PER
+---;--------------------------------;--------------------------------;--------------------------------;--------------------------------;---------;---
+023;                 818,202,937.000;                 818,202,937.000;                  37,876,466.000;                  37,876,466.000;FY2013   ;M02
+
+1 row selected.
+
+BRANCH DETAILS
+
+BRA;SUSPENSE_;CONTINGEN;BRA
+---;---------;---------;---
+023;454101000;999000999;XAF
+
+1 row selected.
+
+
+AMOUNT_TAG                         ;EVEN;TRN
+-----------------------------------;----;---
+OFS_AMT                            ;INIT;CSD
+
+1 row selected.
+
+Total Entries Details
+
+MO;                        COUNT(*)
+--;--------------------------------
+RT;                         238.000
+DD;                           4.000
+LC;                          40.000
+CG;                          14.000
+DE;                         216.000
+FT;                          12.000
+
+6 rows selected.
+
+Entries with Balance_upd<>U
+
+no rows selected
+

@@ -1,0 +1,11 @@
+-- Dormant accounts
+select a.branch_code,c.customer_no,c.customer_name1, a.cust_ac_no,a.ac_desc,a.ac_stat_dormant, a.dormancy_date from sttm_cust_account a , sttm_customer c 
+where a.cust_no = c.customer_no 
+and a.ac_stat_dormant = 'Y' and a.record_stat ='O';
+
+-- Accounts Blocked for debits
+
+select a.branch_code,c.customer_no,c.customer_name1, a.cust_ac_no,a.ac_desc,a.ac_stat_no_dr, a.dormancy_date from sttm_cust_account a , sttm_customer c 
+where a.cust_no = c.customer_no 
+and a.ac_stat_no_dr = 'Y' 
+and a.record_stat ='O';

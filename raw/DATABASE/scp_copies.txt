@@ -1,0 +1,11 @@
+scp oracle@172.20.50.11:/u02/app/oracle/expdump/expdp-full-10012015_090002.dmp oracle@172.20.50.6:/home/oracle/expdp/
+
+
+scp oracle@172.20.50.11:/u01/app/oracle/fast_recovery_area/FCUBS/1_10193_787452072.dbf oracle@172.20.50.14:/u02/app/oracle/archive/FCRPUBS
+
+scp oracle@172.20.50.11:/u01/app/oracle/fast_recovery_area/FCUBS/1_10205_787452072.dbf oracle@172.20.50.14:/u02/app/oracle/archive/FCRPUBS
+
+# recovering gap 06/02/2015
+scp oracle@172.20.50.11:/u01/app/oracle/fast_recovery_area/FCUBS/1_19496_787452072.dbf oracle@172.20.50.14:/u02/app/oracle/archive/FCRPUBS
+
+

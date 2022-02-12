@@ -1,0 +1,115 @@
+<?xml version = '1.0' encoding = 'utf-8'?>
+<report xmlns="http://xmlns.oracle.com/oxp/xmlp" version="1.1" defaultDataSourceRef="Oracle BI EE">
+   <title>ALL_GL_CONSOLIDATED_TBAL_6_COLMN</title>
+   <properties>
+      <property name="showControls" value="true"/>
+      <property name="showReportLinks" value="true"/>
+      <property name="online" value="true"/>
+      <property name="parameterColumns" value="2"/>
+      <property name="openLinkInNewWindow" value="true"/>
+      <property name="autoRun" value="false"/>
+      <property name="cacheDocument" value="false"/>
+      <property name="useExcelProcessor" value="false"/>
+   </properties>
+   <dataModel defaultDataSet="trialbalance6colm">
+      <dataSet id="trialbalance6colm">
+         <sql fixedSchema="false">
+            <![CDATA[SELECT CODE,GLCODE2,GLCODE1,DESCRIPTION,NVL(DR_OPEN,0) DR_OPEN,NVL(CR_OPEN,0) CR_OPEN,
+NVL(DR_MOV,0) DR_MOV,NVL(CR_MOV,0) CR_MOV,
+NVL(DR_CLOSING_BALANCE,0) DR_CLOSING_BALANCE,NVL(CR_CLOSING_BALANCE,0) CR_CLOSING_BALANCE
+ FROM 
+(SELECT
+'1' CODE,
+GLCODE2,
+GLCODE1,
+DESCRIPTION,
+CASE
+WHEN OPENING_BALANCE < '0' THEN
+ABS(NVL(OPENING_BALANCE,0))
+END DR_OPEN,
+CASE
+WHEN OPENING_BALANCE >= '0' THEN
+ABS(NVL(OPENING_BALANCE,0))
+END CR_OPEN,
+MOV_BALANCE_dr DR_Mov,
+MOV_BALANCE_cr CR_Mov,
+CASE
+WHEN CLOSINGING_BALANCE < '0' THEN
+ABS(NVL(CLOSINGING_BALANCE,0))
+END DR_CLOSING_BALANCE,
+CASE
+WHEN CLOSINGING_BALANCE >= '0' THEN
+ABS(NVL(CLOSINGING_BALANCE,0))
+END CR_CLOSING_BALANCE
+from
+(
+select d.gl_code GLCODE2,SUBSTR(d.gl_code,1,5) glcode1,
+d.gl_desc description,
+DECODE(:PM_PERIOD_CODE,'M04',nvl('',0),(select  (SUM(NVL(CR_BAL_LCY,0)) - SUM(NVL(DR_BAL_LCY,0))) from gltb_gl_bal
+ where GL_CODE = T.GL_CODE AND PERIOD_CODE = :PM_PRE_CODE AND
+FIN_YEAR = :PM_FINANCIAL_CYCLE))  OPENING_BALANCE,
+--DECODE('M04','M04','0',(SUM(NVL(OPEN_CR_BAL_LCY,0))- SUM(NVL(OPEN_DR_BAL_LCY,0))))  OPENING_BALANCE,
+SUM(NVL(Cr_MOV_lcy,0))  MOV_BALANCE_cr,
+SUM(NVL(dr_MOV_lcy,0))  MOV_BALANCE_dr,
+SUM(NVL(CR_BAL_LCY,0))-SUM(NVL(DR_BAL_LCY,0))  CLOSINGING_BALANCE  
+from gltb_gl_bal T , gltm_glmaster d
+where 
+t.gl_code(+) = d.gl_code and 
+d.leaf = 'Y' and 
+t.leaf = 'Y' AND
+(gl_code BETWEEN NVL(:FROM_GL,GL_CODE) and NVL(:TO_GL,GL_CODE) )and
+(Category IN ('1', '2','5','6','7','8','9') OR (Category IN ('3', '4') AND Ccy_Code = 'XAF')) and
+PERIOD_CODE = :PM_PERIOD_CODE AND
+FIN_YEAR = :PM_FINANCIAL_CYCLE
+--PERIOD_CODE = 'M05' AND
+--FIN_YEAR = 'FY2012'
+group by GL_CODE)) 
+ORDER BY GLCODE2]]>
+         </sql>
+         <input id="PM_PERIOD_CODE" value="${PM_PERIOD_CODE}" dataType="xsd:string"/>
+         <input id="PM_PRE_CODE" value="${PM_PRE_CODE}" dataType="xsd:string"/>
+         <input id="PM_FINANCIAL_CYCLE" value="${PM_FINANCIAL_CYCLE}" dataType="xsd:string"/>
+         <input id="FROM_GL" value="${FROM_GL}" dataType="xsd:integer"/>
+         <input id="TO_GL" value="${TO_GL}" dataType="xsd:integer"/>
+      </dataSet>
+   </dataModel>
+   <valueSets>
+      <valueSet id="LOV_FINANCIAL_CYCLE">
+         <sql>
+            <![CDATA[SELECT DISTINCT FIN_CYCLE FROM STTM_PERIOD_CODES ORDER BY FIN_CYCLE]]>
+         </sql>
+      </valueSet>
+      <valueSet id="LOV_PERIODIC_CODE">
+         <sql>
+            <![CDATA[SELECT DISTINCT PERIOD_CODE FROM STTM_PERIOD_CODES ORDER BY PERIOD_CODE]]>
+         </sql>
+      </valueSet>
+      <valueSet id="LOV_GLCODE">
+         <sql>
+            <![CDATA[SELECT GL_CODE,GL_DESC,LEAF FROM GLTM_GLMASTER ORDER BY GL_CODE]]>
+         </sql>
+      </valueSet>
+   </valueSets>
+   <parameters>
+      <parameter id="FROM_GL" dataType="xsd:integer">
+         <select lovSearch="Y" label="From GLCODE:" valueSet="LOV_GLCODE" multiple="false" all="true" allValue="null"/>
+      </parameter>
+      <parameter id="TO_GL" dataType="xsd:integer">
+         <select lovSearch="Y" label="To GLCODE:" valueSet="LOV_GLCODE" multiple="false" all="true" allValue="null"/>
+      </parameter>
+      <parameter id="PM_FINANCIAL_CYCLE" defaultValue="FY2012">
+         <select label="Please select FINANCIAL CYCLE:" valueSet="LOV_FINANCIAL_CYCLE" multiple="false" all="false" allValue="null" refreshParameters="true"/>
+      </parameter>
+      <parameter id="PM_PERIOD_CODE" defaultValue="M04">
+         <select label="Please select Current PERIOD CODE:" valueSet="LOV_PERIODIC_CODE" multiple="false" all="false" allValue="null" refreshParameters="true"/>
+      </parameter>
+      <parameter id="PM_PRE_CODE" defaultValue="M04">
+         <select label="Please Select Previous Period Code:" valueSet="LOV_PERIODIC_CODE" multiple="false" all="false" allValue="null" refreshParameters="true"/>
+      </parameter>
+   </parameters>
+   <templates default="Trialbalance6colm">
+      <template label="Trialbalance6colm" type="rtf" url="TRIAL_BALANCE_6_COLMN.rtf"/>
+      <template label="New Template" type="rtf" url="New Template.rtf"/>
+   </templates>
+   <burst enabled="false"/>
+</report>

@@ -1,0 +1,185 @@
+SQL> 
+SQL> SELECT aa.AC_BRANCH,
+  2  	    aa.AC_NO,
+  3  	    aa.trn_code,
+  4  	    aa.LCY_AMOUNT,
+  5  	    aa.TXN_INIT_DATE,
+  6  	    bb.branch_code,
+  7  	    bb.cust_ac_no,
+  8  	    aa.related_account,
+  9  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 10  	    cc.ac_stat_dormant "DORM_ACC"
+ 11    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 12   WHERE aa. EVENT = 'ILIQ'
+ 13  	and aa.TXN_init_date = '31-Dec-2012'
+ 14  	and aa.AC_NO = bb.cust_ac_no
+ 15  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 16  	AND cc.ac_stat_dormant='Y'
+ 17  	AND bb.cust_ac_no=cc.ac_gl_no
+ 18  	AND bb.CUST_AC_NO NOT IN
+ 19  	    (SELECT ac.cust_ac_no
+ 20  	       FROM STTM_CUST_ACCOUNT ac
+ 21  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 22  		AND ac.ACCOUNT_CLASS LIKE '3%');
+
+AC_;AC_NO               ;TRN;              LCY_AMOUNT;TXN_INIT_;BRA;CUST_AC_NO          ;RELATED_ACCOUNT     ;D;D
+---;--------------------;---;------------------------;---------;---;--------------------;--------------------;-;-
+042;0423830103386464    ;CRI;                 1924.00;31-DEC-12;042;0423830103386464    ;0423830103386464    ;N;Y
+042;0423830103386464    ;TAX;                  317.00;31-DEC-12;042;0423830103386464    ;0423830103386464    ;N;Y
+040;0403830102700122    ;CRI;                 1204.00;31-DEC-12;040;0403830102700122    ;0403830102700122    ;N;Y
+040;0403830102700122    ;TAX;                  198.00;31-DEC-12;040;0403830102700122    ;0403830102700122    ;N;Y
+020;0203830100289293    ;CRI;               433865.00;31-DEC-12;020;0203830100289293    ;0203830100289293    ;N;Y
+020;0203830100289293    ;TAX;                71587.00;31-DEC-12;020;0203830100289293    ;0203830100289293    ;N;Y
+020;0203830100541978    ;CRI;               325545.00;31-DEC-12;020;0203830100541978    ;0203830100541978    ;N;Y
+020;0203830100541978    ;TAX;                53714.00;31-DEC-12;020;0203830100541978    ;0203830100541978    ;N;Y
+022;0223830101231812    ;CRI;                  760.00;31-DEC-12;022;0223830101231812    ;0223830101231812    ;N;Y
+022;0223830101231812    ;TAX;                  125.00;31-DEC-12;022;0223830101231812    ;0223830101231812    ;N;Y
+
+10 rows selected.
+
+SQL> 
+SQL> create table temp_dormant_109 as
+  2  SELECT aa.AC_BRANCH,
+  3  	    aa.AC_NO,
+  4  	    aa.trn_code,
+  5  	    aa.LCY_AMOUNT,
+  6  	    aa.TXN_INIT_DATE,
+  7  	    bb.branch_code,
+  8  	    bb.cust_ac_no,
+  9  	    aa.related_account,
+ 10  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 11  	    cc.ac_stat_dormant "DORM_ACC"
+ 12    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 13   WHERE aa. EVENT = 'ILIQ'
+ 14  	and aa.TXN_init_date = '31-Dec-2012'
+ 15  	and aa.AC_NO = bb.cust_ac_no
+ 16  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 17  	AND cc.ac_stat_dormant='Y'
+ 18  	AND bb.cust_ac_no=cc.ac_gl_no
+ 19  	AND bb.CUST_AC_NO NOT IN
+ 20  	    (SELECT ac.cust_ac_no
+ 21  	       FROM STTM_CUST_ACCOUNT ac
+ 22  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 23  		AND ac.ACCOUNT_CLASS LIKE '3%');
+create table temp_dormant_109 as
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> 
+SQL> select * from temp_dormant_109 ;
+
+no rows selected
+
+SQL> 
+SQL> declare
+  2  CURSOR c1 is
+  3  SELECT aa.AC_BRANCH,
+  4  	    aa.AC_NO,
+  5  	    aa.trn_code,
+  6  	    aa.LCY_AMOUNT,
+  7  	    aa.TXN_INIT_DATE,
+  8  	    bb.branch_code,
+  9  	    bb.cust_ac_no,
+ 10  	    aa.related_account,
+ 11  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 12  	    cc.ac_stat_dormant "DORM_ACC"
+ 13    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 14   WHERE aa. EVENT = 'ILIQ'
+ 15  	and aa.TXN_init_date = '31-Dec-2012'
+ 16  	and aa.AC_NO = bb.cust_ac_no
+ 17  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 18  	AND cc.ac_stat_dormant='Y'
+ 19  	AND bb.cust_ac_no=cc.ac_gl_no
+ 20  	AND bb.CUST_AC_NO NOT IN
+ 21  	    (SELECT ac.cust_ac_no
+ 22  	       FROM STTM_CUST_ACCOUNT ac
+ 23  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 24  		AND ac.ACCOUNT_CLASS LIKE '3%');
+ 25  BEGIN
+ 26  FOR each_row in c1 LOOP
+ 27  
+ 28  update STTM_CUST_ACCOUNT
+ 29  	set AC_STAT_DORMANT = 'Y'
+ 30   where cust_ac_no = each_row.cust_ac_no
+ 31   and branch_code= each_row.branch_code
+ 32   and ac_stat_dormant='N';
+ 33  
+ 34  update STTB_ACCOUNT
+ 35  	set AC_STAT_DORMANT = 'Y'
+ 36   where ac_gl_no= each_row.cust_ac_no
+ 37    and branch_code= each_row.branch_code
+ 38    and ac_stat_dormant='N';
+ 39  
+ 40  commit;
+ 41  END LOOP;
+ 42  EXCEPTION
+ 43  		 WHEN OTHERS THEN
+ 44  			     DBMS_OUTPUT.PUT_LINE('ERROR ' || SUBSTR(SQLERRM, 1, 255));
+ 45  END;
+ 46  /
+LIABILITY_NO FOUND IS  ---->33864
+Facility NOT Found ->>>>
+Facility NOT Found ->>>> ORA-01403: no data found
+UPDATE SUCCESS
+LIABILITY_NO FOUND IS  ---->27001
+Facility NOT Found ->>>>
+Facility NOT Found ->>>> ORA-01403: no data found
+UPDATE SUCCESS
+LIABILITY_NO FOUND IS  ---->2892
+Facility NOT Found ->>>>
+Facility NOT Found ->>>> ORA-01403: no data found
+UPDATE SUCCESS
+LIABILITY_NO FOUND IS  ---->5419
+Facility NOT Found ->>>>
+Facility NOT Found ->>>> ORA-01403: no data found
+UPDATE SUCCESS
+LIABILITY_NO FOUND IS  ---->12318
+Facility NOT Found ->>>>
+Facility NOT Found ->>>> ORA-01403: no data found
+UPDATE SUCCESS
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> SELECT aa.AC_BRANCH,
+  2  	    aa.AC_NO,
+  3  	    aa.trn_code,
+  4  	    aa.LCY_AMOUNT,
+  5  	    aa.TXN_INIT_DATE,
+  6  	    bb.branch_code,
+  7  	    bb.cust_ac_no,
+  8  	    aa.related_account,
+  9  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 10  	    cc.ac_stat_dormant "DORM_ACC"
+ 11    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 12   WHERE aa. EVENT = 'ILIQ'
+ 13  	and aa.TXN_init_date = '31-Dec-2012'
+ 14  	and aa.AC_NO = bb.cust_ac_no
+ 15  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 16  	AND cc.ac_stat_dormant='Y'
+ 17  	AND bb.cust_ac_no=cc.ac_gl_no
+ 18  	AND bb.CUST_AC_NO NOT IN
+ 19  	    (SELECT ac.cust_ac_no
+ 20  	       FROM STTM_CUST_ACCOUNT ac
+ 21  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 22  		AND ac.ACCOUNT_CLASS LIKE '3%');
+
+AC_;AC_NO               ;TRN;              LCY_AMOUNT;TXN_INIT_;BRA;CUST_AC_NO          ;RELATED_ACCOUNT     ;D;D
+---;--------------------;---;------------------------;---------;---;--------------------;--------------------;-;-
+042;0423830103386464    ;CRI;                 1924.00;31-DEC-12;042;0423830103386464    ;0423830103386464    ;Y;Y
+042;0423830103386464    ;TAX;                  317.00;31-DEC-12;042;0423830103386464    ;0423830103386464    ;Y;Y
+040;0403830102700122    ;CRI;                 1204.00;31-DEC-12;040;0403830102700122    ;0403830102700122    ;Y;Y
+040;0403830102700122    ;TAX;                  198.00;31-DEC-12;040;0403830102700122    ;0403830102700122    ;Y;Y
+020;0203830100289293    ;CRI;               433865.00;31-DEC-12;020;0203830100289293    ;0203830100289293    ;Y;Y
+020;0203830100289293    ;TAX;                71587.00;31-DEC-12;020;0203830100289293    ;0203830100289293    ;Y;Y
+020;0203830100541978    ;CRI;               325545.00;31-DEC-12;020;0203830100541978    ;0203830100541978    ;Y;Y
+020;0203830100541978    ;TAX;                53714.00;31-DEC-12;020;0203830100541978    ;0203830100541978    ;Y;Y
+022;0223830101231812    ;CRI;                  760.00;31-DEC-12;022;0223830101231812    ;0223830101231812    ;Y;Y
+022;0223830101231812    ;TAX;                  125.00;31-DEC-12;022;0223830101231812    ;0223830101231812    ;Y;Y
+
+10 rows selected.
+
+SQL> 
+SQL> spool off;

@@ -1,0 +1,1 @@
+http://lmtgroup.dyndns.org/sendsms/sendsms.php?UserName=NFC&Password=Ne7FCs5083123&SOA=NFC-BANK&MN=237699695211&SM=BONJOUR

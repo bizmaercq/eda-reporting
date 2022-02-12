@@ -1,0 +1,306 @@
+Connected to Oracle Database 11g Enterprise Edition Release 11.2.0.2.0 
+Connected as xafnfc
+ 
+SQL> 
+SQL> set array 1
+Cannot SET ARRAY
+SQL> set line 5000
+Cannot SET LINE
+SQL> set head on
+SQL> set pagesize 10000
+SQL> set feedback on
+SQL> set trimspool on
+Cannot SET TRIMSPOOL
+SQL> set numformat 9999999999999999.999
+Cannot SET NUMFORMAT
+SQL> set echo on
+SQL> set colsep ";"
+set colsep ";"
+SQL> SPOOL C:\LM_DETAILS.SPL
+SPOOL C:\LM_DETAILS.SPL
+Started spooling to C:\LM_DETAILS.SPL
+SQL> --accept CUSTOMER_ID PROMPT 'Enter the customer id ==> '
+SQL> --select liability_no from sttms_customer where customer_no = '&customer_Id';
+SQL> accept LIAB_ID PROMPT 'Enter the liability id ==> '
+accept LIAB_ID PROMPT 'Enter the liability id ==> '
+SQL> select * from sttms_dates where branch_code=( select distinct liab_br from lmtm_liab where LIAB_ID = '&LIAB_ID');
+select * from sttms_dates where branch_code=( select distinct liab_br from lmtm_liab where LIAB_ID = '&LIAB_ID');
+ 
+BRANCH_CODE;TODAY      ;PREV_WORKING_DAY;NEXT_WORKING_DAY;RECORD_STAT;AUTH_STAT;MOD_NO;MAKER_ID    ;MAKER_DT_STAMP;CHECKER_ID  ;CHECKER_DT_STAMP;ONCE_AUTH
+-----------;-----------;----------------;----------------;-----------;---------;------;------------;--------------;------------;----------------;---------
+SQL> PROMPT LMTMS_LIMITS
+LMTMS_LIMITS
+SQL> SELECT * FROM LMTMS_LIMITS WHERE LIAB_ID = '&LIAB_ID';
+SELECT * FROM LMTMS_LIMITS WHERE LIAB_ID = '&LIAB_ID';
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;LM_TEMPLE;MAIN_LINE  ;CCY_RESTRICTION;LINE_CURRENCY;REVOLVING_LINE;LINE_START_DATE;LINE_EXPIRY_DATE;LAST_NEW_UTIL_DATE;AVAILABILITY_FLAG;INTERNAL_REMARKS                                                                ;              LIMIT_AMOUNT;   COLLATERAL_CONTRIBUTION;   UNCOLLECTED_FUNDS_LIMIT;          REPORTING_AMOUNT;          AVAILABLE_AMOUNT;DATE_OF_FIRST_OD;DATE_OF_LAST_OD;     AMOUNT_UTILISED_TODAY;   AMOUNT_REINSTATED_TODAY;        UNCOLLECTED_AMOUNT;              EXCESS_TENOR;MAKER_ID    ;CHECKER_ID  ;MAKER_DT_STAMP;CHECKER_DT_STAMP;              MATURED_UTIL;RECORD_STAT;AUTH_STAT;MOD_NO;ONCE_AUTH;               UTILISATION;LIAB_BR;COLLATERAL_PCT;NETTING_REQUIRED;BRN;LMT_AMT_BASIS;UNADVISED;           TRANSFER_AMOUNT;INTEREST_REQD;INTEREST_CALC_ACC   ;       DSP_EFF_LINE_AMOUNT;         DAYLIGHT_OD_LIMIT;COMMITMENT_PRODUCT;COMMITMENT_REF_NO                  ;COMMITMENT_SETTL_BRN;COMMITMENT_SETTL_ACC
+---------;---------;-----------;---------;-----------;---------------;-------------;--------------;---------------;----------------;------------------;-----------------;--------------------------------------------------------------------------------;--------------------------;--------------------------;--------------------------;--------------------------;--------------------------;----------------;---------------;--------------------------;--------------------------;--------------------------;--------------------------;------------;------------;--------------;----------------;--------------------------;-----------;---------;------;---------;--------------------------;-------;--------------;----------------;---;-------------;---------;--------------------------;-------------;--------------------;--------------------------;--------------------------;------------------;-----------------------------------;--------------------;--------------------
+SQL> PROMPT LMTBS_LIMITS
+LMTBS_LIMITS
+SQL> SELECT * FROM LMTBS_LIMITS WHERE LIAB_ID = '&LIAB_ID';
+SELECT * FROM LMTBS_LIMITS WHERE LIAB_ID = '&LIAB_ID';
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;MAIN_LINE  ;CCY_RESTRICTION;LINE_CURRENCY;REVOLVING_LINE;LINE_START_DATE;LINE_EXPIRY_DATE;LAST_NEW_UTIL_DATE;AVAILABILITY_FLAG;LIAB_BR;RECORD_STAT;AUTH_STAT
+---------;---------;-----------;-----------;---------------;-------------;--------------;---------------;----------------;------------------;-----------------;-------;-----------;---------
+SQL> PROMPT LMTMS_LIAB
+LMTMS_LIAB
+SQL> SELECT * FROM LMTMS_LIAB WHERE LIAB_ID = '&LIAB_ID' ;
+SELECT * FROM LMTMS_LIAB WHERE LIAB_ID = '&LIAB_ID' ;
+ 
+LIAB_ID  ;             OVERALL_LIMIT;       FX_CLEAN_RISK_LIMIT;CREDIT_RATING;REVISION_DATE;LIMIT_CCY;                  UTIL_AMT;LIAB_BR;RECORD_STAT;AUTH_STAT;    SEC_CLEAN_RISK_LIMIT;     SEC_PSTL_RISK_LIMIT;NETTING_REQUIRED;UNADVISED
+---------;--------------------------;--------------------------;-------------;-------------;---------;--------------------------;-------;-----------;---------;------------------------;------------------------;----------------;---------
+SQL> PROMPT LMTBS_LINE_UTILS
+LMTBS_LINE_UTILS
+SQL> SELECT * FROM LMTBS_LINE_UTILS WHERE LIAB_ID = '&LIAB_ID' ;
+SELECT * FROM LMTBS_LINE_UTILS WHERE LIAB_ID = '&LIAB_ID' ;
+ 
+IS_ACCOUNT;REF_NO                        ;AMT_TAG                  ;CUST_ID  ;LINE_ID                                                                         ;CCY;                       AMT;                    UNCOLL;BRANCH;PRODUCT;LIAB_ID  ;TENOR_BASIS;     TENOR;MATURITY_DATE;CTRY_EXPOSURE;MOD_CODE;TRACK_CUST_EXP;TRACK_PROD_EXP;TRACK_CTRY_EXP;MATURED;               MATURED_AMT;REVOLVING;             LINE_CCY_UTIL;              LINE_CCY_MAT;           LINE_CCY_UNCOLL;                 LIAB_UTIL;LINE_CCY;LIAB_CCY;LIAB_BR;MAIN_LINE  ;MAIN_LINE_CCY;                   ML_UTIL;LINE_CD  ;LINE_SERIAL;TIMESTAMP  ;INTERNAL_SEC_ID ;                   UNITS;IS_POSITION;REVAL_LIAB;REVAL_LINE
+----------;------------------------------;-------------------------;---------;--------------------------------------------------------------------------------;---;--------------------------;--------------------------;------;-------;---------;-----------;----------;-------------;-------------;--------;--------------;--------------;--------------;-------;--------------------------;---------;--------------------------;--------------------------;--------------------------;--------------------------;--------;--------;-------;-----------;-------------;--------------------------;---------;-----------;-----------;----------------;------------------------;-----------;----------;----------
+SQL> PROMPT LMTVS_LINE_UTILS
+LMTVS_LINE_UTILS
+SQL> SELECT * FROM LMTVS_LINE_UTILS WHERE LIAB_ID = '&LIAB_ID' ;
+SELECT * FROM LMTVS_LINE_UTILS WHERE LIAB_ID = '&LIAB_ID' ;
+ 
+SELECT * FROM LMTVS_LINE_UTILS WHERE LIAB_ID = '014979'
+ 
+ORA-00942: Table ou vue inexistante
+SQL> PROMPT LMVW_LINE_UTILS_REFNO
+LMVW_LINE_UTILS_REFNO
+SQL> SELECT * FROM LMVW_LINE_UTILS_REFNO WHERE LIAB_ID = '&LIAB_ID' ;
+SELECT * FROM LMVW_LINE_UTILS_REFNO WHERE LIAB_ID = '&LIAB_ID' ;
+ 
+SELECT * FROM LMVW_LINE_UTILS_REFNO WHERE LIAB_ID = '014979'
+ 
+ORA-00942: Table ou vue inexistante
+SQL> PROMPT LMTBS_LIMITS_HISTORY
+LMTBS_LIMITS_HISTORY
+SQL> SELECT * FROM LMTBS_LIMITS_HISTORY WHERE LIAB_ID = '&LIAB_ID' ;
+SELECT * FROM LMTBS_LIMITS_HISTORY WHERE LIAB_ID = '&LIAB_ID' ;
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;MAIN_LINE  ;CCY_RESTRICTION;LINE_CURRENCY;REVOLVING_LINE;LINE_START_DATE;LINE_EXPIRY_DATE;LAST_NEW_UTIL_DATE;AVAILABILITY_FLAG;INTERNAL_REMARKS                                                                ;              LIMIT_AMOUNT;   COLLATERAL_CONTRIBUTION;   UNCOLLECTED_FUNDS_LIMIT;          REPORTING_AMOUNT;          AVAILABLE_AMOUNT;        UNCOLLECTED_AMOUNT;              EXCESS_TENOR;BOOKING_DATE;LIAB_BR;         DAYLIGHT_OD_LIMIT
+---------;---------;-----------;-----------;---------------;-------------;--------------;---------------;----------------;------------------;-----------------;--------------------------------------------------------------------------------;--------------------------;--------------------------;--------------------------;--------------------------;--------------------------;--------------------------;--------------------------;------------;-------;--------------------------
+SQL> PROMPT LMTBS_LIMITS_TENOR_REST
+LMTBS_LIMITS_TENOR_REST
+SQL> SELECT * FROM LMTBS_LIMITS_TENOR_REST WHERE LIAB_ID = '&LIAB_ID' ;
+SELECT * FROM LMTBS_LIMITS_TENOR_REST WHERE LIAB_ID = '&LIAB_ID' ;
+ 
+LINE_CD  ;LIAB_ID  ;LINE_SERIAL;TENOR_MNEMONIC;     TENOR;LIAB_BR
+---------;---------;-----------;--------------;----------;-------
+SQL> PROMPT LMTMS_LIMITS_TENOR_REST
+LMTMS_LIMITS_TENOR_REST
+SQL> SELECT * FROM LMTMS_LIMITS_TENOR_REST where liab_id='&LIAB_ID';
+SELECT * FROM LMTMS_LIMITS_TENOR_REST where liab_id='&LIAB_ID';
+ 
+LINE_CD  ;LINE_SERIAL;LIAB_ID  ;TENOR_MNEMONIC;     TENOR;                     LIMIT;               UTILISATION;                  FROM_PRV;                   TO_NEXT;LIAB_BR
+---------;-----------;---------;--------------;----------;--------------------------;--------------------------;--------------------------;--------------------------;-------
+SQL> PROMPT lmtms_limits_cust_rest
+lmtms_limits_cust_rest
+SQL> SELECT * FROM lmtms_limits_cust_rest WHERE liab_id = '&LIAB_ID';
+SELECT * FROM lmtms_limits_cust_rest WHERE liab_id = '&LIAB_ID';
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;CUSTOMER_NO
+---------;---------;-----------;-----------
+SQL> PROMPT lmtms_limits_prod_rest
+lmtms_limits_prod_rest
+SQL> SELECT * FROM lmtms_limits_prod_rest WHERE liab_id = '&LIAB_ID';
+SELECT * FROM lmtms_limits_prod_rest WHERE liab_id = '&LIAB_ID';
+ 
+LINE_CD  ;LINE_SERIAL;LIAB_ID  ;PRODUCT_CODE
+---------;-----------;---------;------------
+SQL> PROMPT lmtms_limits_br_rest
+lmtms_limits_br_rest
+SQL> SELECT * FROM lmtms_limits_br_rest WHERE liab_id = '&LIAB_ID';
+SELECT * FROM lmtms_limits_br_rest WHERE liab_id = '&LIAB_ID';
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;BRANCH_CODE
+---------;---------;-----------;-----------
+SQL> PROMPT lmtms_limits_ccy_rest
+lmtms_limits_ccy_rest
+SQL> SELECT * FROM lmtms_limits_ccy_rest WHERE liab_id = '&LIAB_ID';
+SELECT * FROM lmtms_limits_ccy_rest WHERE liab_id = '&LIAB_ID';
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;CCY_CODE
+---------;---------;-----------;--------
+SQL> PROMPT LMTMS_COLLAT
+LMTMS_COLLAT
+SQL> SELECT * FROM LMTMS_COLLAT WHERE LIAB_ID='&LIAB_ID';
+SELECT * FROM LMTMS_COLLAT WHERE LIAB_ID='&LIAB_ID';
+ 
+LIAB_ID  ;LINE_CD  ;LINE_SERIAL;SEQUENCE_NUMBER;COLLATERAL_DESCRIPTION                                                          ;         NUMBER_OF_UNITS;                CAP_AMOUNT;          COLLATERAL_VALUE;   MARGIN;        LIMIT_CONTRIBUTION;START_DATE ;END_DATE   ;REVIEW_DATE;LAST_REVAL_PRICE;COLLATERAL_CURRENCY;COLLATERAL_TYPE               ;PRICE_CODE                    ;SECURITY_ID;MAKER_ID    ;CHECKER_ID  ;MAKER_DT_STAMP;CHECKER_DT_STAMP;RECORD_STAT;AUTH_STAT;MOD_NO;ONCE_AUTH;MARKET_VALUE_BASED;                LM_CCY_AMT;LIAB_BR;COLLATERAL_CODE ;REVAL_COLLAT;LENDABLE_MARGIN;MORTGAGE_INITIATED
+---------;---------;-----------;---------------;--------------------------------------------------------------------------------;------------------------;--------------------------;--------------------------;---------;--------------------------;-----------;-----------;-----------;----------------;-------------------;------------------------------;------------------------------;-----------;------------;------------;--------------;----------------;-----------;---------;------;---------;------------------;--------------------------;-------;----------------;------------;---------------;------------------
+SQL> PROMPT LMTMS_POOL_COLLATERAL_LINKAGES
+LMTMS_POOL_COLLATERAL_LINKAGES
+SQL> select * from LMTMS_POOL_COLLATERAL_LINKAGES where liab_id='&LIAB_ID';
+select * from LMTMS_POOL_COLLATERAL_LINKAGES where liab_id='&LIAB_ID';
+ 
+LIAB_ID  ;POOL_CODE           ;  ORDER_NO;TYPE;BRANCH_CODE;COLLATERAL_CODE     ;COLLATERAL_CURRENCY;COLLATERAL_AMOUNT;LINKED_AMOUNT;LINKED_AMOUNT_POOL_CCY;AUTO_DELINK;UTILIZATION;LIEN_NUMBER         ;EXTERNAL_REF_NO     ;CO_NATIVE;LINKED_PERCENT_NUMBER;DIFF_AMOUNT;AUTH_STAT;FUNCTION_TYPE
+---------;--------------------;----------;----;-----------;--------------------;-------------------;-----------------;-------------;----------------------;-----------;-----------;--------------------;--------------------;---------;---------------------;-----------;---------;-------------
+SQL> PROMPT LMTMS_POOL
+LMTMS_POOL
+SQL> select * from LMTMS_POOL where liab_id='&LIAB_ID';
+select * from LMTMS_POOL where liab_id='&LIAB_ID';
+ 
+LIAB_ID  ;POOL_CODE           ;POOL_DESCRIPTION                                                                ;POOL_CCY;POOL_AMOUNT; POOL_UTIL;RECORD_STAT;AUTH_STAT;    MOD_NO;MAKER_ID    ;MAKER_DT_STAMP;CHECKER_ID  ;CHECKER_DT_STAMP;ONCE_AUTH;LIAB_BR;FUNCTION_TYPE;MORTGAGE_INITIATED
+---------;--------------------;--------------------------------------------------------------------------------;--------;-----------;----------;-----------;---------;----------;------------;--------------;------------;----------------;---------;-------;-------------;------------------
+SQL> PROMPT STTMS_CUSTOMER
+STTMS_CUSTOMER
+SQL> SELECT * FROM STTMS_CUSTOMER WHERE LIABILITY_NO = '&LIAB_ID';
+SELECT * FROM STTMS_CUSTOMER WHERE LIABILITY_NO = '&LIAB_ID';
+ 
+CUSTOMER_NO;CUSTOMER_TYPE;CUSTOMER_NAME1                                                                  ;ADDRESS_LINE1                                                                   ;ADDRESS_LINE3                                                                   ;ADDRESS_LINE2                                                                   ;ADDRESS_LINE4                                                                   ;COUNTRY;SHORT_NAME          ;NATIONALITY;LANGUAGE;EXPOSURE_COUNTRY;LOCAL_BRANCH;LIABILITY_NO;UNIQUE_ID_NAME      ;UNIQUE_ID_VALUE     ;FROZEN;DECEASED;WHEREABOUTS_UNKNOWN;CUSTOMER_CATEGORY;HO_AC_NO                                                                        ;RECORD_STAT;AUTH_STAT;MOD_NO;MAKER_ID    ;MAKER_DT_STAMP;CHECKER_ID  ;CHECKER_DT_STAMP;ONCE_AUTH;FX_CUST_CLEAN_RISK_LIMIT;             OVERALL_LIMIT;       FX_CLEAN_RISK_LIMIT;CREDIT_RATING;REVISION_DATE;LIMIT_CCY;CAS_CUST;LIAB_NODE                                                                       ;SEC_CUST_CLEAN_RISK_LIMIT;    SEC_CLEAN_RISK_LIMIT;SEC_CUST_PSTL_RISK_LIMIT;     SEC_PSTL_RISK_LIMIT;LIAB_BR;PAST_DUE_FLAG;DEFAULT_MEDIA  ;SSN        ;SWIFT_CODE  ;LOC_CODE;SHORT_NAME2         ;UTILITY_PROVIDER;UTILITY_PROVIDER_ID                ;RISK_PROFILE        ;DEBTOR_CATEGORY;FULL_NAME                                                                       ;UDF_1                                                                           ;UDF_2                                                                           ;UDF_3                                                                           ;UDF_4                                                                           ;UDF_5                                                                           ;AML_REQUIRED;AML_CUSTOMER_GRP;MAILERS_REQUIRED;GROUP_CODE;EXPOSURE_CATEGORY   ;CUST_CLASSIFICATION ;CIF_STATUS          ;CIF_STATUS_SINCE;CHARGE_GROUP;INTRODUCER;CUST_CLG_GROUP;CHK_DIGIT_VALID_REQD;ALG_ID              ;FT_ACCTING_AS_OF;UNADVISED;TAX_GROUP ;CONSOL_TAX_CERT_REQD;INDIVIDUAL_TAX_CERT_REQD;CLS_CCY_ALLOWED;CLS_PARTICIPANT;FX_NETTING_CUSTOMER;RISK_CATEGORY;FAX_NUMBER                                                                      ;EXT_REF_NO          ;CRM_CUSTOMER;ISSUER_CUSTOMER;TREASURY_CUSTOMER;CIF_CREATION_DATE;   WHT_PCT;RP_CUSTOMER;GENERATE_MT920;KYC_DETAILS;STAFF;KYC_REF_NO      ;UTILITY_PROVIDER_TYPE              ;JOINT_VENTURE;JV_LIMIT_TRACKING;PRIVATE_CUSTOMER
+-----------;-------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;-------;--------------------;-----------;--------;----------------;------------;------------;--------------------;--------------------;------;--------;-------------------;-----------------;--------------------------------------------------------------------------------;-----------;---------;------;------------;--------------;------------;----------------;---------;------------------------;--------------------------;--------------------------;-------------;-------------;---------;--------;--------------------------------------------------------------------------------;-------------------------;------------------------;------------------------;------------------------;-------;-------------;---------------;-----------;------------;--------;--------------------;----------------;-----------------------------------;--------------------;---------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;------------;----------------;----------------;----------;--------------------;--------------------;--------------------;----------------;------------;----------;--------------;--------------------;--------------------;----------------;---------;----------;--------------------;------------------------;---------------;---------------;-------------------;-------------;--------------------------------------------------------------------------------;--------------------;------------;---------------;-----------------;-----------------;----------;-----------;--------------;-----------;-----;----------------;-----------------------------------;-------------;-----------------;----------------
+014979     ;C            ;KM (ETS)                                                                        ;YAOUNDE - MVOG MBI                                                              ;99999905                                                                        ;                                                                                ;                                                                                ;CM     ;KM (ETS)250557      ;CM         ;ENG     ;CM              ;023         ;014979      ;BUS_REG_CERT        ;39 M 200050557      ;N     ;N       ;N                  ;73               ;                                                                                ;O          ;A        ;     1;CONV_USER   ;28/04/2012 19:;CONV_USER   ;28/04/2012 19:33;Y        ;                        ;                     0,000;                          ;             ;             ;XAF      ;N       ;FCUBS                                                                           ;                         ;                        ;                        ;                        ;023    ;             ;MAIL           ;           ;            ;10      ;KM (ETS)250557      ;N               ;                                   ;                    ;               ;ETS KM                                                                          ;014979                                                                          ;                                                                                ;                                                                                ;                                                                                ;                                                                                ;N           ;                ;N               ;          ;                    ;ORD                 ;                    ;                ;            ;          ;              ;                    ;                    ;M               ;N        ;          ;N                   ;N                       ;D              ;N              ;014979             ;             ;                                                                                ;250557              ;Y           ;N              ;N                ;28/04/2012       ;          ;N          ;              ;           ;N    ;                ;                                   ;             ;                 ;N
+SQL> PROMPT STTMS_CUST_ACCOUNT
+STTMS_CUST_ACCOUNT
+SQL> SELECT * FROM STTMS_CUST_ACCOUNT WHERE CUST_NO in ( select customer_no
+SELECT * FROM STTMS_CUST_ACCOUNT WHERE CUST_NO in ( select customer_no
+  2  FROM STTMS_CUSTOMER WHERE LIABILITY_NO = '&LIAB_ID');
+FROM STTMS_CUSTOMER WHERE LIABILITY_NO = '&LIAB_ID');
+ 
+BRANCH_CODE;CUST_AC_NO          ;AC_DESC                                                                         ;CUST_NO  ;CCY;ACCOUNT_CLASS;AC_STAT_NO_DR;AC_STAT_NO_CR;AC_STAT_BLOCK;AC_STAT_STOP_PAY;AC_STAT_DORMANT;JOINT_AC_INDICATOR;AC_OPEN_DATE;AC_STMT_DAY;AC_STMT_CYCLE;ALT_AC_NO           ;CHEQUE_BOOK_FACILITY;ATM_FACILITY;PASSBOOK_FACILITY;AC_STMT_TYPE;DR_HO_LINE      ;CR_HO_LINE      ;CR_CB_LINE      ;DR_CB_LINE      ;                SUBLIMIT;      UNCOLL_FUNDS_LIMIT;AC_STAT_FROZEN;PREVIOUS_STATEMENT_DATE;PREVIOUS_STATEMENT_BALANCE;PREVIOUS_STATEMENT_NO;TOD_LIMIT_START_DATE;TOD_LIMIT_END_DATE;               TOD_LIMIT;NOMINEE1                                                                        ;NOMINEE2                                                                        ;DR_GL    ;CR_GL    ;RECORD_STAT;AUTH_STAT;MOD_NO;MAKER_ID    ;MAKER_DT_STAMP;CHECKER_ID  ;CHECKER_DT_STAMP;ONCE_AUTH;LIMIT_CCY;LINE_ID    ;           OFFLINE_LIMIT;CAS_ACCOUNT;ACY_OPENING_BAL;LCY_OPENING_BAL;ACY_TODAY_TOVER_DR;LCY_TODAY_TOVER_DR;ACY_TODAY_TOVER_CR;LCY_TODAY_TOVER_CR;ACY_TANK_CR;ACY_TANK_DR;LCY_TANK_CR;LCY_TANK_DR;ACY_TOVER_CR;LCY_TOVER_CR;ACY_TANK_UNCOLLECTED;ACY_CURR_BALANCE;LCY_CURR_BALANCE;ACY_BLOCKED_AMOUNT;ACY_AVL_BAL;ACY_UNAUTH_DR;ACY_UNAUTH_TANK_DR;ACY_UNAUTH_CR;ACY_UNAUTH_TANK_CR;ACY_UNAUTH_UNCOLLECTED;ACY_UNAUTH_TANK_UNCOLLECTED;ACY_MTD_TOVER_DR;LCY_MTD_TOVER_DR;ACY_MTD_TOVER_CR;LCY_MTD_TOVER_CR;ACY_ACCRUED_DR_IC;ACY_ACCRUED_CR_IC;DATE_LAST_CR_ACTIVITY;DATE_LAST_DR_ACTIVITY;DATE_LAST_DR;DATE_LAST_CR;ACY_UNCOLLECTED;TOD_START_DATE;TOD_END_DATE;DORMANCY_DATE;DORMANCY_DAYS;HAS_TOV;LAST_CCY_CONV_DATE;ADDRESS1                                                                        ;ADDRESS2                                                                        ;ADDRESS3                                                                        ;ADDRESS4                                                                        ;TYPE_OF_CHQ;ATM_CUST_AC_NO      ;       ATM_DLY_AMT_LIMIT;ATM_DLY_COUNT_LIMIT;GEN_STMT_ONLY_ON_MVMT;AC_STAT_DE_POST;DISPLAY_IBAN_IN_ADVICES;CLEARING_BANK_CODE  ;CLEARING_AC_NO                  ;IBAN_AC_NO                         ;REG_CC_AVAILABILITY;  REG_CC_AVAILABLE_FUNDS;PREV_AC_SRNO_PRINTED_IN_PBK;LATEST_SRNO_SUBMITTED;PREV_RUNBAL_PRINTED_IN_PBK; LATEST_RUNBAL_SUBMMITED;PREV_PAGE_NO;PREV_LINE_NO;MT210_REQD;ACC_STMT_TYPE2;ACC_STMT_DAY2;AC_STMT_CYCLE2;PREVIOUS_STATEMENT_DATE2;PREVIOUS_STATEMENT_BALANCE2;PREVIOUS_STATEMENT_NO2;GEN_STMT_ONLY_ON_MVMT2;ACC_STMT_TYPE3;ACC_STMT_DAY3;AC_STMT_CYCLE3;PREVIOUS_STATEMENT_DATE3;PREVIOUS_STATEMENT_BALANCE3;PREVIOUS_STATEMENT_NO3;GEN_STMT_ONLY_ON_MVMT3;SWEEP_TYPE;MASTER_ACCOUNT_NO   ;AUTO_DEPOSITS_BAL;CAS_CUSTOMER;ACCOUNT_TYPE;MIN_REQD_BAL;POSITIVE_PAY_AC;STALE_DAYS;     CR_AUTO_EX_RATE_LMT;     DR_AUTO_EX_RATE_LMT;TRACK_RECEIVABLE;RECEIVABLE_AMOUNT;PRODUCT_LIST;TXN_CODE_LIST;SPECIAL_CONDITION_PRODUCT;SPECIAL_CONDITION_TXNCODE;REG_D_APPLICABLE;REGD_PERIODICITY;REGD_START_DATE;REGD_END_DATE;TD_CERT_PRINTED;CHECKBOOK_NAME_1                                                                ;CHECKBOOK_NAME_2                                                                ;AUTO_REORDER_CHECK_REQUIRED;AUTO_REORDER_CHECK_LEVEL;AUTO_REORDER_CHECK_LEAVES;NETTING_REQUIRED;REFERRAL_REQUIRED;LODGEMENT_BOOK_FACILITY;ACC_STATUS;STATUS_SINCE;INHERIT_REPORTING;OVERDRAFT_SINCE;PREV_OVD_DATE;STATUS_CHANGE_AUTOMATIC;OVERLINE_OD_SINCE;TOD_SINCE  ;PREV_TOD_SINCE;DORMANT_PARAM;DR_INT_DUE;EXCL_SAMEDAY_RVRTRNS_FM_STMT;ALLOW_BACK_PERIOD_ENTRY;AUTO_PROV_REQD;EXPOSURE_CATEGORY   ;    RISK_FREE_EXP_AMOUNT;        PROVISION_AMOUNT;CREDIT_TXN_LIMIT;CR_LM_START_DATE;CR_LM_REV_DATE;STATEMENT_ACCOUNT   ;ACCOUNT_DERIVED_STATUS;PROV_CCY_TYPE;   CHG_DUE;WITHDRAWABLE_UNCOLLED_FUND;DEFER_RECON;CONSOLIDATION_REQD;FUNDING;FUNDING_BRANCH;FUNDING_ACCOUNT     ;MOD9_VALIDATION_REQD;VALIDATION_DIGIT;LOCATION       ;MEDIA          ;ACC_TANKED_STAT;GEN_INTERIM_STMT;GEN_INTERIM_STMT_ON_MVMT;GEN_BALANCE_REPORT;INTERIM_REPORT_SINCE;INTERIM_REPORT_TYPE;BALANCE_REPORT_SINCE;BALANCE_REPORT_TYPE;       INTERIM_DEBIT_AMT;      INTERIM_CREDIT_AMT;INTERIM_STMT_DAY_COUNT;INTERIM_STMT_YTD_COUNT;MODE_OF_OPERATION;     INF_ACC_OPENING_AMT;INF_PAY_IN_OPTION;INF_OFFSET_BRANCH;INF_OFFSET_ACCOUNT  ;INF_WAIVE_ACC_OPEN_CHARGE;   DAYLIGHT_LIMIT_AMOUNT;TRNOVER_LMT_CODE;  PASSBOOK_NUMBER;COUNTRY_CODE;CONSOL_CHG_ACC      ;ESCROW_TRANSFER;ESCROW_BRANCH_CODE;ESCROW_AC_NO        ;       ESCROW_PERCENTAGE;SOD_NOTIFICATION_PERCENT;SALARY_ACCOUNT;REPL_CUST_SIG;MAX_NO_CHEQUE_REJECTIONS;NO_CHEQUE_REJECTIONS;FUND_ID         ;LINKED_DEP_BRANCH;LINKED_DEP_ACC  ;MUDARABAH_ACCOUNTS;ZAKAT_EXEMPTION;ACCOUNT_AUTO_CLOSED;CONSOL_CHG_BRN;NO_OF_CHQ_REJ_RESET_ON;CRS_STAT_REQD;CONTRIBUTE_TO_PDM;EXCLUDE_FROM_DISTRIBUTION;AC_SET_CLOSE;AC_SET_CLOSE_DATE;PROJECT_ACCOUNT;ACY_SWEEP_INELIGIBLE;MT110_RECON_REQD;SAL_OD_OPTIN
+-----------;--------------------;--------------------------------------------------------------------------------;---------;---;-------------;-------------;-------------;-------------;----------------;---------------;------------------;------------;-----------;-------------;--------------------;--------------------;------------;-----------------;------------;----------------;----------------;----------------;----------------;------------------------;------------------------;--------------;-----------------------;--------------------------;---------------------;--------------------;------------------;------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;---------;---------;-----------;---------;------;------------;--------------;------------;----------------;---------;---------;-----------;------------------------;-----------;---------------;---------------;------------------;------------------;------------------;------------------;-----------;-----------;-----------;-----------;------------;------------;--------------------;----------------;----------------;------------------;-----------;-------------;------------------;-------------;------------------;----------------------;---------------------------;----------------;----------------;----------------;----------------;-----------------;-----------------;---------------------;---------------------;------------;------------;---------------;--------------;------------;-------------;-------------;-------;------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;-----------;--------------------;------------------------;-------------------;---------------------;---------------;-----------------------;--------------------;--------------------------------;-----------------------------------;-------------------;------------------------;---------------------------;---------------------;--------------------------;------------------------;------------;------------;----------;--------------;-------------;--------------;------------------------;---------------------------;----------------------;----------------------;--------------;-------------;--------------;------------------------;---------------------------;----------------------;----------------------;----------;--------------------;-----------------;------------;------------;------------;---------------;----------;------------------------;------------------------;----------------;-----------------;------------;-------------;-------------------------;-------------------------;----------------;----------------;---------------;-------------;---------------;--------------------------------------------------------------------------------;--------------------------------------------------------------------------------;---------------------------;------------------------;-------------------------;----------------;-----------------;-----------------------;----------;------------;-----------------;---------------;-------------;-----------------------;-----------------;-----------;--------------;-------------;----------;----------------------------;-----------------------;--------------;--------------------;------------------------;------------------------;----------------;----------------;--------------;--------------------;----------------------;-------------;----------;--------------------------;-----------;------------------;-------;--------------;--------------------;--------------------;----------------;---------------;---------------;---------------;----------------;------------------------;------------------;--------------------;-------------------;--------------------;-------------------;------------------------;------------------------;----------------------;----------------------;-----------------;------------------------;-----------------;-----------------;--------------------;-------------------------;------------------------;----------------;-----------------;------------;--------------------;---------------;------------------;--------------------;------------------------;------------------------;--------------;-------------;------------------------;--------------------;----------------;-----------------;----------------;------------------;---------------;-------------------;--------------;----------------------;-------------;-----------------;-------------------------;------------;-----------------;---------------;--------------------;----------------;------------
+023        ;0231730101497973    ;ETS KM CURRENT ACCOUNT                                                          ;014979   ;XAF;173          ;N            ;N            ;N            ;N               ;N              ;S                 ;03/01/2011  ;         31;M            ;000233717025055719  ;N                   ;N           ;N                ;D           ;                ;                ;C71             ;H71             ;                        ;                        ;N             ;                       ;                          ;                     ;                    ;04/05/2012        ;                        ;                                                                                ;                                                                                ;371007000;371117000;O          ;A        ;     9;LEBANECK    ;06/07/2012 12:;WATEH       ;06/07/2012 12:19;Y        ;XAF      ;           ;                        ;N          ;      -34211062;      -34211062;           4000000;           4000000;                 0;                 0;          0;          0;          0;          0;            ;            ;                   0;       -38211062;       -38211062;                 0;  -38211062;            0;                 0;            0;                 0;                     0;                          0;       220820062;       220820062;       186609000;       186609000;           350934;                0;16/07/2012           ;18/07/2012           ;18/07/2012  ;16/07/2012  ;              0;              ;04/05/2012  ;13/01/2013   ;          180;Y      ;                  ;                                                                                ;                                                                                ;                                                                                ;                                                                                ;           ;                    ;                        ;                   ;                     ;Y              ;                       ;                    ;0231730101497973                ;                                   ;                   ;                        ;                           ;                     ;                          ;                        ;            ;            ;N         ;N             ;             ;              ;                        ;                           ;                      ;                      ;N             ;             ;              ;                        ;                           ;                      ;                      ;         1;                    ;                 ;N           ;U           ;            ;N              ;          ;                        ;                        ;Y               ;                0;D           ;D            ;N                        ;N                        ;N               ;N               ;               ;             ;               ;                                                                                ;                                                                                ;N                          ;                       0;                        0;                ;N                ;N                      ;NORM      ;03/01/2011  ;N                ;28/04/2012     ;             ;Y                      ;28/04/2012       ;           ;              ;C            ;         0;Y                           ;N                      ;N             ;                    ;                        ;                   0,000;                ;                ;              ;                    ;NORM                  ;L            ;         0;                 0,0000000;N          ;N                 ;N      ;              ;                    ;                    ;                ;               ;MAIL           ;N              ;                ;                        ;                  ;                    ;                   ;                    ;                   ;                        ;                        ;                      ;                      ;                 ;                        ;A                ;                 ;                    ;N                        ;                   0,000;                ;                 ;            ;                    ;N              ;                  ;                    ;                        ;                        ;N             ;Y            ;                        ;                    ;                ;                 ;                ;                  ;               ;N                  ;              ;                      ;             ;                 ;                         ;            ;                 ;N              ;                    ;                ;N
+SQL> select * from cstb_contract where contract_ref_no in (SELECT ref_no FROM LMTBS_LINE_UTILS WHERE LIAB_ID = '&LIAB_ID' and amt <> 0);
+select * from cstb_contract where contract_ref_no in (SELECT ref_no FROM LMTBS_LINE_UTILS WHERE LIAB_ID = '&LIAB_ID' and amt <> 0);
+ 
+CONTRACT_REF_NO ;BOOK_DATE  ;SERIAL_NO;LATEST_EVENT_SEQ_NO;USER_REF_NO                        ;LATEST_VERSION_NO;BRANCH;PRODUCT_CODE;COUNTERPARTY;CONTRACT_STATUS;AUTH_STATUS;TEMPLATE_STATUS;PRODUCT_TYPE;CURR_EVENT_CODE;MODULE_CODE;USER_DEFINED_STATUS;CONTRACT_CCY;LATEST_EVENT_DATE;EXTERNAL_REF_NO ;AUTO_MANUAL_FLAG;FUND_REF_NO     ;RESPONSE_STAT;SECURITY_UPLOAD_STATUS;STOP_DATE  ;LIABILITY_CIF;SOURCE         ;REVERSED_CONT_REF
+----------------;-----------;---------;-------------------;-----------------------------------;-----------------;------;------------;------------;---------------;-----------;---------------;------------;---------------;-----------;-------------------;------------;-----------------;----------------;----------------;----------------;-------------;----------------------;-----------;-------------;---------------;-----------------
+SQL> PROMPT LIAB_LEVEL_MISMATCH
+LIAB_LEVEL_MISMATCH
+SQL> SELECT 	l.liab_id,
+SELECT 	l.liab_id,
+  2  			nvl(l.util_amt,0)-SUM(nvl(u.liab_util,0)) diff
+			nvl(l.util_amt,0)-SUM(nvl(u.liab_util,0)) diff
+  3  	FROM 		lmtbs_line_utils u, lmtms_liab l
+	FROM 		lmtbs_line_utils u, lmtms_liab l
+  4  	WHERE 	l.liab_id=u.liab_id
+	WHERE 	l.liab_id=u.liab_id
+  5  	AND 		l.liab_br=u.liab_br
+	AND 		l.liab_br=u.liab_br
+  6  	AND 		l.record_stat='O'
+	AND 		l.record_stat='O'
+  7  	AND 		l.auth_stat='A'
+	AND 		l.auth_stat='A'
+  8  	AND 		l.liab_id ='&liab_id'
+	AND 		l.liab_id ='&liab_id'
+  9  	GROUP BY 	l.liab_id,l.util_amt
+	GROUP BY 	l.liab_id,l.util_amt
+ 10  	HAVING 	nvl(l.util_amt,0) <> SUM(nvl(u.liab_util,0))
+	HAVING 	nvl(l.util_amt,0) <> SUM(nvl(u.liab_util,0))
+ 11  	ORDER BY 	l.liab_id;
+	ORDER BY 	l.liab_id;
+ 
+LIAB_ID  ;      DIFF
+---------;----------
+SQL> PROMPT LINE_LEVEL_MISMATCH
+LINE_LEVEL_MISMATCH
+SQL> SELECT v.branch,v.liab_id, v.line_id, v.main_line,v.line_currency,
+SELECT v.branch,v.liab_id, v.line_id, v.main_line,v.line_currency,
+  2  v.limit_amount,sum(nvl(v.utilisation,0))-SUM(v.sum_util) diff
+v.limit_amount,sum(nvl(v.utilisation,0))-SUM(v.sum_util) diff
+  3  from
+from
+  4  (
+(
+  5  SELECT u.branch,u.liab_id, u.line_id, l.main_line,l.line_currency,
+SELECT u.branch,u.liab_id, u.line_id, l.main_line,l.line_currency,
+  6  l.limit_amount,nvl(l.utilisation,0) utilisation , SUM(nvl(u.line_ccy_util,0)) sum_util
+l.limit_amount,nvl(l.utilisation,0) utilisation , SUM(nvl(u.line_ccy_util,0)) sum_util
+  7  FROM lmtbs_line_utils u, lmtms_limits l  , STTMS_DATES C
+FROM lmtbs_line_utils u, lmtms_limits l  , STTMS_DATES C
+  8  WHERE  l.liab_id(+) 	= u.liab_id
+WHERE  l.liab_id(+) 	= u.liab_id
+  9   AND l.line_cd(+) 	= SUBSTR(u.line_id,1,9)
+ AND l.line_cd(+) 	= SUBSTR(u.line_id,1,9)
+ 10   AND l.line_serial(+) 	= TO_NUMBER(SUBSTR(u.line_id,10))
+ AND l.line_serial(+) 	= TO_NUMBER(SUBSTR(u.line_id,10))
+ 11   AND L.LINE_EXPIRY_DATE >= C.TODAY
+ AND L.LINE_EXPIRY_DATE >= C.TODAY
+ 12   AND L.LIAB_BR 		= C.BRANCH_CODE
+ AND L.LIAB_BR 		= C.BRANCH_CODE
+ 13   AND L.LIAB_ID ='&liab_id'
+ AND L.LIAB_ID ='&liab_id'
+ 14   AND L.RECORD_STAT 	= 'O'
+ AND L.RECORD_STAT 	= 'O'
+ 15   AND l.auth_stat		= 'A'
+ AND l.auth_stat		= 'A'
+ 16   AND l.main_line is not null
+ AND l.main_line is not null
+ 17   GROUP BY u.branch,u.liab_id, u.line_id,l.main_line,l.line_currency, l.limit_amount,l.utilisation
+ GROUP BY u.branch,u.liab_id, u.line_id,l.main_line,l.line_currency, l.limit_amount,l.utilisation
+ 18  UNION
+UNION
+ 19   SELECT u.branch,u.liab_id, u.line_id, l.main_line, l.line_currency,
+ SELECT u.branch,u.liab_id, u.line_id, l.main_line, l.line_currency,
+ 20   l.limit_amount, nvl(l.utilisation,0) - s.utilisation utilisation, SUM(nvl(u.line_ccy_util,0)) sum_util
+ l.limit_amount, nvl(l.utilisation,0) - s.utilisation utilisation, SUM(nvl(u.line_ccy_util,0)) sum_util
+ 21   FROM lmtbs_line_utils u, lmtms_limits l  , STTMS_DATES C,
+ FROM lmtbs_line_utils u, lmtms_limits l  , STTMS_DATES C,
+ 22  (SELECT u.branch,u.liab_id, u.line_id, l.main_line,l.line_currency,
+(SELECT u.branch,u.liab_id, u.line_id, l.main_line,l.line_currency,
+ 23  l.limit_amount,nvl(l.utilisation,0) utilisation , SUM(nvl(u.line_ccy_util,0)) sum_util
+l.limit_amount,nvl(l.utilisation,0) utilisation , SUM(nvl(u.line_ccy_util,0)) sum_util
+ 24  FROM lmtbs_line_utils u, lmtms_limits l  , STTMS_DATES C
+FROM lmtbs_line_utils u, lmtms_limits l  , STTMS_DATES C
+ 25  WHERE  l.liab_id(+) 	= u.liab_id
+WHERE  l.liab_id(+) 	= u.liab_id
+ 26   AND l.line_cd(+) 	= SUBSTR(u.line_id,1,9)
+ AND l.line_cd(+) 	= SUBSTR(u.line_id,1,9)
+ 27   AND l.line_serial(+) 	= TO_NUMBER(SUBSTR(u.line_id,10))
+ AND l.line_serial(+) 	= TO_NUMBER(SUBSTR(u.line_id,10))
+ 28   AND L.LINE_EXPIRY_DATE >= C.TODAY
+ AND L.LINE_EXPIRY_DATE >= C.TODAY
+ 29   AND L.LIAB_BR 		= C.BRANCH_CODE
+ AND L.LIAB_BR 		= C.BRANCH_CODE
+ 30   AND L.LIAB_ID ='&liab_id'
+ AND L.LIAB_ID ='&liab_id'
+ 31   AND L.RECORD_STAT 	= 'O'
+ AND L.RECORD_STAT 	= 'O'
+ 32   AND l.auth_stat		= 'A'
+ AND l.auth_stat		= 'A'
+ 33   AND l.main_line is not null
+ AND l.main_line is not null
+ 34   GROUP BY u.branch,u.liab_id, u.line_id,l.main_line,l.line_currency, l.limit_amount,l.utilisation)S
+ GROUP BY u.branch,u.liab_id, u.line_id,l.main_line,l.line_currency, l.limit_amount,l.utilisation)S
+ 35   WHERE l.liab_id	 	= u.liab_id
+ WHERE l.liab_id	 	= u.liab_id
+ 36   AND l.line_cd 		= SUBSTR(u.line_id,1,9)
+ AND l.line_cd 		= SUBSTR(u.line_id,1,9)
+ 37   AND l.line_serial 	= TO_NUMBER(SUBSTR(u.line_id,10))
+ AND l.line_serial 	= TO_NUMBER(SUBSTR(u.line_id,10))
+ 38   AND L.LINE_EXPIRY_DATE >= C.TODAY
+ AND L.LINE_EXPIRY_DATE >= C.TODAY
+ 39   AND L.LIAB_BR 		= C.BRANCH_CODE
+ AND L.LIAB_BR 		= C.BRANCH_CODE
+ 40   AND L.RECORD_STAT 	= 'O'
+ AND L.RECORD_STAT 	= 'O'
+ 41   AND l.auth_stat		= 'A'
+ AND l.auth_stat		= 'A'
+ 42   AND l.liab_id = s.liab_id
+ AND l.liab_id = s.liab_id
+ 43   AND L.LIAB_ID ='&liab_id'
+ AND L.LIAB_ID ='&liab_id'
+ 44   AND l.line_cd||l.line_serial = s.main_line
+ AND l.line_cd||l.line_serial = s.main_line
+ 45   AND l.main_line is null
+ AND l.main_line is null
+ 46   GROUP BY u.branch,u.liab_id, u.line_id,l.main_line,l.line_currency,l.limit_amount, nvl(l.utilisation,0) - s.utilisation
+ GROUP BY u.branch,u.liab_id, u.line_id,l.main_line,l.line_currency,l.limit_amount, nvl(l.utilisation,0) - s.utilisation
+ 47  )v
+)v
+ 48  group by
+group by
+ 49  v.branch,v.liab_id, v.line_id,v.main_line,v.line_currency,v.limit_amount
+v.branch,v.liab_id, v.line_id,v.main_line,v.line_currency,v.limit_amount
+ 50  having sum(nvl(v.utilisation,0)) - SUM(v.sum_util) <> 0
+having sum(nvl(v.utilisation,0)) - SUM(v.sum_util) <> 0
+ 51  /
+/
+ 
+BRANCH;LIAB_ID  ;LINE_ID                                                                         ;MAIN_LINE  ;LINE_CURRENCY;              LIMIT_AMOUNT;      DIFF
+------;---------;--------------------------------------------------------------------------------;-----------;-------------;--------------------------;----------
+SQL> SPOOL OFF
+SPOOL OFF
+Stopped spooling to C:\LM_DETAILS.SPL
+ 
+SQL> 

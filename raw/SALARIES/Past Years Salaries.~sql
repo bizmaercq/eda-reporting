@@ -1,0 +1,20 @@
+select branch,matricle,name,sum(JANUARY) JANUARY,sum(FEBRUARY) FEBRUARY,sum(MARCH) MARCH,sum(APRIL) APRIL,sum(MAY) MAY,sum(JUNE) JUNE,
+sum(JULY) JULY,sum(AUGUST) AUGUST,sum(SEPTEMBER) SEPTEMBER,sum(OCTOBER) OCTOBER,sum(NOVEMBER) NOVEMBER,sum(DECEMBER) DECEMBER
+from
+(select pf.fon_agence Branch,hc.matricule MATRICLE,hc.noms NAME, 
+case when hc.mois ='JANUARY' then hc.montant_salaire else 0 end JANUARY ,
+case when hc.mois ='FEBRUARY' then hc.montant_salaire else 0 end FEBRUARY ,
+case when hc.mois ='MARCH' then hc.montant_salaire else 0 end MARCH ,
+case when hc.mois ='APRIL' then hc.montant_salaire else 0 end APRIL ,
+case when hc.mois ='MAY' then hc.montant_salaire else 0 end MAY ,
+case when hc.mois ='JUNE' then hc.montant_salaire else 0 end JUNE ,
+case when hc.mois ='JULY' then hc.montant_salaire else 0 end JULY ,
+case when hc.mois ='AUGUST' then hc.montant_salaire else 0 end AUGUST ,
+case when hc.mois ='SEPTEMBER' then hc.montant_salaire else 0 end SEPTEMBER ,
+case when hc.mois ='OCTOBER' then hc.montant_salaire else 0 end OCTOBER ,
+case when hc.mois ='NOVEMBER' then hc.montant_salaire else 0 end NOVEMBER ,
+case when hc.mois ='DECEMBER' then hc.montant_salaire else 0 end DECEMBER 
+from historique_cenadi hc,paie_fonctionnaire pf
+where hc.matricule = pf.fon_matricule
+and hc.annee =2013)
+group by branch,matricle,Name

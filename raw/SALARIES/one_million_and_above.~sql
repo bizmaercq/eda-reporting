@@ -1,0 +1,35 @@
+select sal_matricule,sal_intitule,fon_fcubs_account,
+sum(January) january,
+sum(February) February,
+sum(March) march,
+sum(April) april,
+sum(May) may,
+sum(June) june,
+sum(July) july,
+sum(August) august,
+sum(September) september,
+sum(October) october,
+sum(November) november,
+sum(december) december
+
+from
+(
+SELECT sc.sal_matricule,sc.sal_intitule,pf.fon_fcubs_account,
+case when to_char(sc.sal_date_paie,'MON') = 'JAN' then sc.sal_montant else 0 end January,
+case when to_char(sc.sal_date_paie,'MON') = 'FEB' then sc.sal_montant else 0 end February,
+case when to_char(sc.sal_date_paie,'MON') = 'MAR' then sc.sal_montant else 0 end March,
+case when to_char(sc.sal_date_paie,'MON') = 'APR' then sc.sal_montant else 0 end April,
+case when to_char(sc.sal_date_paie,'MON') = 'MAY' then sc.sal_montant else 0 end May,
+case when to_char(sc.sal_date_paie,'MON') = 'JUN' then sc.sal_montant else 0 end June,
+case when to_char(sc.sal_date_paie,'MON') = 'JUL' then sc.sal_montant else 0 end July,
+case when to_char(sc.sal_date_paie,'MON') = 'AUG' then sc.sal_montant else 0 end August,
+case when to_char(sc.sal_date_paie,'MON') = 'SEP' then sc.sal_montant else 0 end September,
+case when to_char(sc.sal_date_paie,'MON') = 'OCT' then sc.sal_montant else 0 end October,
+case when to_char(sc.sal_date_paie,'MON') = 'NOV' then sc.sal_montant else 0 end November,
+case when to_char(sc.sal_date_paie,'MON') = 'DEC' then sc.sal_montant else 0 end december
+FROM sal_cenadi sc , paie_fonctionnaire pf
+WHERE sc.sal_matricule = pf.fon_matricule
+and sc.sal_montant >= 1000000 and to_char(sc.sal_date_paie,'RRRR') = '&Financial_Year'
+) 
+group by sal_matricule,sal_intitule,fon_fcubs_account
+order by sal_intitule

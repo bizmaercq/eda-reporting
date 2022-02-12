@@ -1,0 +1,77 @@
+
+------------------------------------------------------------------------------
+---       Génération du fichier des personnes physiques                   ----
+------------------------------------------------------------------------------
+
+select c.customer_no||';'||rpad(p.customer_prefix,4,' ')||';'||rpad(p.customer_prefix1,5,' ')||';"'||rpad(nvl(p.last_name,regexp_substr(full_name,'[^ ]+',1)),30,' ')||'";"'||rpad(nvl(p.first_name,' '),30,' ')||'";'||to_char(date_of_birth,'DD/MM/YYYY')||';"'||rpad(nvl(c.udf_2,' '),50,' ')||'";"'||rpad(nvl(c.udf_3,' '),30,' ')||'";'||'S.'||substr(decode(m.cust_mis_1,'SEC999','14400',m.cust_mis_1),1,3)||';'||rpad(iso3_code,3,' ')||';"'||rpad(nvl(c.udf_4,' '),50,' ')||'";'||rpad(c.cust_classification,3,' ')||';"'||rpad(nvl(c.address_line1,' '),30,' ')||'";"'||rpad(nvl(c.address_line2,' '),30,' ')||'";"'||rpad(nvl(c.address_line3,' '),30,' ')||'";;'||rpad(substr(c.loc_code,1,2),2,' ')||';'||field_val_1
+from xafnfc.sttm_customer c join xafnfc.sttm_cust_personal p on c.customer_no = p.customer_no
+                     join xafnfc.mitm_customer_default m on c.customer_no = m.customer
+                     left join xafnfc.sttm_cust_professional pr on c.customer_no = pr.customer_no
+                     join xafnfc.CSTM_FUNCTION_USERDEF_FIELDS ud on c.customer_no = substr(ud.rec_key,1,6)
+                     join xafnfc.sttm_country_isocodes i on i.iso2_code = c.country
+where c.customer_type ='I'
+and c.cif_creation_date between '01/07/2012' and '31/07/2012';
+
+
+select sc.* from xafnfc.sttm_customer sc
+
+
+------------------------------------------------------------------------------
+---       Génération du fichier des personnes morales                     ----
+------------------------------------------------------------------------------
+
+select '"'||c.customer_no||'";"'||pr.corporate_name||'";"'||field_val_2||'";"'||substr(c.loc_code,1,2)||'";"'||c.unique_id_value||'";"'||c.short_name||'";"'||pr.c_national_id||'";"'||m.cust_mis_2||'";'||to_char(pr.incorp_date,'DD/MM/YYYY')||';"'||c.cust_classification||'";"'||
+pr.business_description||'";"'||pr.r_address1||'";"'||c.address_line2||'";"'||c.address_line3||'";'||null||';"'||substr(c.loc_code,1,2)||'";"'||m.cust_mis_1||'";"'||c.fax_number||'";"'||p.telephone||'";"'||null||'";"'||null||'";"'||
+null||'";"'||m.cust_mis_3||'"'
+from xafnfc.sttm_customer c join xafnfc.sttm_cust_personal p on c.customer_no = p.customer_no
+                     join xafnfc.mitm_customer_default m on c.customer_no = m.customer
+                     left join xafnfc.sttm_cust_corporate pr on c.customer_no = pr.customer_no
+                     join xafnfc.CSTM_FUNCTION_USERDEF_FIELDS ud on c.customer_no = substr(ud.rec_key,1,6)
+where c.customer_type ='C'
+and c.cif_creation_date between '01/07/2012' and '31/07/2012';
+
+
+
+------------------------------------------------------------------------------
+---                        Génération des encours                         ----
+------------------------------------------------------------------------------
+select '"'||customer_id||'";"'||customer_name1||'";"'||cust_mis_3||'";"'||
+sum(Effet_Commerciaux_Locaux)||';'||
+ltrim(replace(to_char(sum(Decouverts),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Accompagnements_Marches),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Avances_Court_Terme),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Credit_Export),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Credit_Moyen_Terme),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Credit_Long_Terme),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Impayes),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Douteux),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Agios_Reserves),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Engagement_par_signature),'99990.90'),'.',','),' ')||';'||
+ltrim(replace(to_char(sum(Dont_Douteux),'99990.90'),'.',','),' ')
+from
+(
+ select customer_id,customer_name1,decode(cust_mis_3,'GRP999','93.0',cust_mis_3) as cust_mis_3,
+ case when central_bank_code in ('C2J','C2K','C2L') then  trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Effet_Commerciaux_Locaux,
+ case when central_bank_code in ('C71','C72','C75','C76','C86') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Decouverts,
+ case when central_bank_code in ('C2M','C2N') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Accompagnements_Marches,
+ case when central_bank_code in ('C2C','C22','C23','C26','C27','C29','C87','C28','C78','N4D') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Avances_Court_Terme, 
+ case when central_bank_code in ('C2D','C2E','C2F','C2G','C2H') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Credit_Export, 
+ case when central_bank_code in ('C11','C12','C13','C14','C15','C16','C17','C18') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Credit_Moyen_Terme, 
+ case when central_bank_code in ('C01','C02','C03','C04','C05','C06','C07','C08') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Credit_Long_Terme ,
+ case when central_bank_code in ('C41') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Impayes, 
+ case when central_bank_code in ('C42','C43','C44','C45','C46','C47') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Douteux, 
+ case when central_bank_code in ('Q8K','Q8L') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Agios_Reserves, 
+ case when central_bank_code in ('M21','M22','M23','M24','M25','M29','N43','Q8D','Q8E','Q8F','Q8G','Q83','Q8H','Q8J') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Engagement_par_signature, 
+ case when central_bank_code in ('Q8D','Q8E','Q8F','Q8G','Q83','Q8H','Q8J') then trunc(abs (nvl(sum(Amount),0))/1000000,2) end as Dont_Douteux 
+ from xafnfc.vw_trial_balance join xafnfc.sttm_customer on customer_id = customer_no
+                             join xafnfc.mitm_customer_default m on customer_no = m.customer
+ where length(account_number)<> 9
+ group by customer_id,customer_name1,cust_mis_3,central_bank_code
+ having sum(amount) <=-10000
+)
+group by customer_id,customer_name1,cust_mis_3
+having ( ( sum(Effet_Commerciaux_Locaux) <>0) or (sum(Decouverts) <>0) or(sum(Accompagnements_Marches) <>0) or(sum(Avances_Court_Terme) <>0) or
+          (sum(Credit_Export) <>0) or(sum(Credit_Moyen_Terme) <>0) or(sum(Credit_Long_Terme) <>0) or(sum(Impayes) <>0) or
+          (sum(Douteux) <>0) or(sum(Agios_Reserves) <>0) or(sum(Engagement_par_signature) <>0) or(sum(Dont_Douteux) <>0)
+       ) 
+order by customer_id;

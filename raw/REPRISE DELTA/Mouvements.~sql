@@ -1,0 +1,4 @@
+select mv.mvtw_age, mv.mvtw_cha,mv.mvtw_cli,mv.mvtw_suf,mv.mvtw_dco, mv.mvtw_lib, mv.mvtw_sen, mv.mvtw_mon 
+from mouvement2012 mv
+where mv.mvtw_cha like '475%'
+order by mv.mvtw_dco

@@ -1,0 +1,35 @@
+insert into Custacc_Temp_09Oct2015 values ('0233820301315007');
+insert into Custacc_Temp_09Oct2015 values ('0202850105416762');
+insert into Custacc_Temp_09Oct2015 values ('0502820106060151');
+insert into Custacc_Temp_09Oct2015 values ('0232850105602181');
+insert into Custacc_Temp_09Oct2015 values ('0242820106025136');
+insert into Custacc_Temp_09Oct2015 values ('0413830106057859');
+insert into Custacc_Temp_09Oct2015 values ('0413830106055725');
+insert into Custacc_Temp_09Oct2015 values ('0413830106057471');
+insert into Custacc_Temp_09Oct2015 values ('0413830106055919');
+insert into Custacc_Temp_09Oct2015 values ('0413830106056889');
+insert into Custacc_Temp_09Oct2015 values ('0413830105530664');
+insert into Custacc_Temp_09Oct2015 values ('0413830206057002');
+insert into Custacc_Temp_09Oct2015 values ('0413860106048982');
+insert into Custacc_Temp_09Oct2015 values ('0413830106048644');
+insert into Custacc_Temp_09Oct2015 values ('0413830106048838');
+
+
+
+
+
+insert into Cust_Temp values ('013150');
+insert into Cust_Temp values ('054167');
+insert into Cust_Temp values ('060601');
+insert into Cust_Temp values ('056021');
+insert into Cust_Temp values ('060251');
+insert into Cust_Temp values ('060578');
+insert into Cust_Temp values ('060557');
+insert into Cust_Temp values ('060574');
+insert into Cust_Temp values ('060559');
+insert into Cust_Temp values ('060568');
+insert into Cust_Temp values ('055306');
+insert into Cust_Temp values ('060570');
+insert into Cust_Temp values ('060489');
+insert into Cust_Temp values ('060486');
+insert into Cust_Temp values ('060488');

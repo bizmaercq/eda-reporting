@@ -1,0 +1,209 @@
+<dataTemplate name="DATATEMPLATE2" description="Account Statement" Version="1.0" dataSourceRef="FCBIP">
+	<parameters>
+		<parameter name="PARAM_BRANCH_CODE" dataType="character"/>
+		<parameter name="PARAM_AC_NO" dataType="character"/>
+		<parameter name="PARAM_FROM_DT" dataType="date"/>
+		<parameter name="PARAM_TO_DT" dataType="date"/>
+	</parameters>
+	<dataQuery>
+		<sqlStatement name="Q1">
+select :PARAM_FROM_DT DAT_STMNT_FROM,
+  :PARAM_TO_DT DAT_STMNT_TO,
+  c.CUST_AC_no COD_ACCT_NO,
+       C.ACCOUNT_CLASS NAM_PRODUCT,
+       C.CCY COD_CCY,
+       c.Branch_Code COD_CC_BRN,
+       b.branch_NAME NAM_BRANCH,
+       d.short_name NAM_CUST_SHRT,
+       d.CUSTOMER_NO COD_CUST,
+       d.Customer_Name1 NAM_CUST_FULL,
+       d.address_line1 TXT_CUSTADR_ADD1,
+       c.Ac_Desc COD_ACCT_TITLE,
+       bipks_report.FN_GET_CASA_OPENINGBAL(c.Branch_Code,c.CUST_AC_no,:PARAM_FROM_DT) OPEN_BAL
+  from STTM_CUST_ACCOUNT C, 
+       STTM_CUSTOMER D, 
+       STTM_BRANCH b
+ where C.CUST_AC_NO = :PARAM_AC_NO
+   and c.branch_code=  :PARAM_BRANCH_CODE
+   AND c.cust_NO = d.customer_no
+   and c.Branch_Code = b.Branch_Code
+   and c.Record_Stat = 'O'
+   and d.Record_Stat = 'O'
+					</sqlStatement>
+		<sqlStatement name="Q3">
+select a.ac_entry_sr_no,
+         TO_CHAR(a.TRN_DT, 'dd-MON-yyyy') DAT_TXN,
+         A.AC_BRANCH COD_CC_BRN_TXN,
+         TO_CHAR(a.VALUE_DT, 'dd-MON-yyyy') DAT_VALUE,
+         lpad(a.TRN_REF_NO, 20) REF_CHQ_NO,
+         case
+           when a.module in ('RT') THEN
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT) ||
+            ' / ' || 'Teller Ref No:' ||
+            (SELECT XREF
+               FROM DETB_RTL_TELLER
+              WHERE TRN_REF_NO = a.TRN_REF_NO)
+           when a.module in ('SI') THEN
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT) ||
+            ' / ' || 'Debit Customer:' ||
+            (SELECT CUSTOMER_NAME1
+               FROM STTM_CUSTOMER
+              WHERE CUSTOMER_NO =
+                    (SELECT distinct SUBSTR(DR_ACCOUNT, 9, 6)
+                       FROM Sitb_contract_master
+                      WHERE Contract_ref_no = a.TRN_REF_NO))
+                      
+                      
+                      when a.module in ('FT') THEN
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT) ||
+            ' / ' || 'Payment Details' ||
+          
+                      
+                      (SELECT  payment_details1
+                       FROM FTTB_CONTRACT_MASTER
+                      WHERE Contract_ref_no = a.TRN_REF_NO)
+                      
+                      
+                       
+                      when a.module in ('IC') THEN
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT) ||
+            ' / ' || 'Payment Details ' ||
+                                
+                      (SELECT  CUST_AC_NO
+                       FROM STTM_CUST_ACCOUNT B
+                      WHERE  B.CUST_AC_NO = A.AC_no AND ACCOUNT_CLASS LIKE   '5%')
+                      
+                      
+                                            
+                      when a.module in ('LC') THEN
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT) ||
+            ' / ' || 'Payment Details ' ||
+                               
+                      (select  distinct BB.fft_ins_descr from lctb_ffts BB where BB.CONTRACT_REF_NO=a.TRN_REF_NO)
+                      
+                      
+                      
+                                            
+                      when a.module in ('CL') THEN
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT) ||
+            ' / ' || 'Loan Liquidation No '||
+                               
+                      (select DISTINCT schedule_no from cltb_account_schedules where account_number =:PARAM_AC_NO
+                      and  a.related_account = account_number)
+                      
+                      -----------------
+           else
+            acpks_stmt.fn_get_rtl_narrative_desc(a.TRN_REF_NO,
+                                                 a.MODULE,
+                                                 'TXN',
+                                                 a.TRN_CODE,
+                                                 'ENG',
+                                                 A.AC_NO,
+                                                 A.AC_BRANCH,
+                                                 a.ac_ccy,
+                                                 a.trn_dt,
+                                                 A.LCY_AMOUNT)
+         end TXT_TXN_DESC,
+         NVL(case
+               when a.DRCR_IND = 'C' then
+                decode(a.ac_ccy, 'XAF', a.LCY_AMOUNT, a.fcy_amount)
+             END,
+             0) CR_AMT_TXN,
+         NVL(case
+               when a.DRCR_IND = 'D' then
+                decode(a.ac_ccy, 'XAF', a.LCY_AMOUNT, a.fcy_amount)
+             END,
+             0) DB_AMT_TXN
+          from acvw_all_ac_entries a
+         where A.AC_NO = :PARAM_AC_NO
+           AND A.AC_BRANCH = :PARAM_BRANCH_CODE
+           AND event != 'REVL'
+              --AND a.cust_gl = 'A'
+           and A.TRN_DT between :PARAM_FROM_DT AND :PARAM_TO_DT
+           AND DONT_SHOWIN_STMT = 'N'
+         order by a.ac_entry_sr_no
+         
+					</sqlStatement>
+	</dataQuery>
+	<?dataTrigger name="ACC_STMT" source="ap_ch_r220(:PARAM_AC_NO,to_date(:PARAM_FROM_DT,'YYYY-MM-DD'),to_date(:PARAM_TO_DT,'YYYY-MM-DD'))"/?>
+	<dataStructure>
+		<group name="G_HEADER" source="Q1">
+			<element name="DAT_STMNT_FROM" value="DAT_STMNT_FROM"/>
+			<element name="DAT_STMNT_TO" value="DAT_STMNT_TO"/>
+			<element name="COD_ACCT_NO" value="COD_ACCT_NO"/>
+			<element name="NAM_PRODUCT" value="NAM_PRODUCT"/>
+			<element name="COD_CCY" value="COD_CCY"/>
+			<element name="COD_CC_BRN" value="COD_CC_BRN"/>
+			<element name="NAM_BRANCH" value="NAM_BRANCH"/>
+			<element name="NAM_CUST_SHRT" value="NAM_CUST_SHRT"/>
+			<element name="COD_CUST" value="COD_CUST"/>
+			<element name="NAM_CUST_FULL" value="NAM_CUST_FULL"/>
+			<element name="TXT_CUSTADR_ADD1" value="TXT_CUSTADR_ADD1"/>
+			<element name="COD_ACCT_TITLE" value="COD_ACCT_TITLE"/>
+			<element name="OPEN_BAL" value="OPEN_BAL"/>
+			<group name="G_TRANSACTIONS" source="Q3">
+				<element name="DAT_TXN" value="DAT_TXN"/>
+				<element name="REF_CHQ_NO" value="REF_CHQ_NO"/>
+				<element name="DAT_VALUE" value="DAT_VALUE"/>
+				<element name="COD_CC_BRN_TXN" value="COD_CC_BRN_TXN"/>
+				<element name="TXT_TXN_DESC" value="TXT_TXN_DESC"/>
+				<element name="DB_AMT_TXN" value="DB_AMT_TXN"/>
+				<element name="CR_AMT_TXN" value="CR_AMT_TXN"/>
+			</group>
+		</group>
+	</dataStructure>
+</dataTemplate>

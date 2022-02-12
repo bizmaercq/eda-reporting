@@ -1,0 +1,139 @@
+SQL> 
+SQL> SELECT aa.AC_BRANCH,
+  2  	    aa.AC_NO,
+  3  	    aa.trn_code,
+  4  	    aa.LCY_AMOUNT,
+  5  	    aa.TXN_INIT_DATE,
+  6  	    bb.branch_code,
+  7  	    bb.cust_ac_no,
+  8  	    aa.related_account,
+  9  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 10  	    cc.ac_stat_dormant "DORM_ACC"
+ 11    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 12   WHERE aa. EVENT = 'ILIQ'
+ 13  	and aa.TXN_init_date = '31-Dec-2012'
+ 14  	and aa.AC_NO = bb.cust_ac_no
+ 15  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 16  	AND cc.ac_stat_dormant='Y'
+ 17  	AND bb.cust_ac_no=cc.ac_gl_no
+ 18  	AND bb.CUST_AC_NO NOT IN
+ 19  	    (SELECT ac.cust_ac_no
+ 20  	       FROM STTM_CUST_ACCOUNT ac
+ 21  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 22  		AND ac.ACCOUNT_CLASS LIKE '3%');
+
+no rows selected
+
+SQL> 
+SQL> create table temp_dormant_109 as
+  2  SELECT aa.AC_BRANCH,
+  3  	    aa.AC_NO,
+  4  	    aa.trn_code,
+  5  	    aa.LCY_AMOUNT,
+  6  	    aa.TXN_INIT_DATE,
+  7  	    bb.branch_code,
+  8  	    bb.cust_ac_no,
+  9  	    aa.related_account,
+ 10  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 11  	    cc.ac_stat_dormant "DORM_ACC"
+ 12    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 13   WHERE aa. EVENT = 'ILIQ'
+ 14  	and aa.TXN_init_date = '31-Dec-2012'
+ 15  	and aa.AC_NO = bb.cust_ac_no
+ 16  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 17  	AND cc.ac_stat_dormant='Y'
+ 18  	AND bb.cust_ac_no=cc.ac_gl_no
+ 19  	AND bb.CUST_AC_NO NOT IN
+ 20  	    (SELECT ac.cust_ac_no
+ 21  	       FROM STTM_CUST_ACCOUNT ac
+ 22  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 23  		AND ac.ACCOUNT_CLASS LIKE '3%');
+
+Table created.
+
+SQL> 
+SQL> select * from temp_109 ;
+select * from temp_109
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> 
+SQL> declare
+  2  CURSOR c1 is
+  3  SELECT aa.AC_BRANCH,
+  4  	    aa.AC_NO,
+  5  	    aa.trn_code,
+  6  	    aa.LCY_AMOUNT,
+  7  	    aa.TXN_INIT_DATE,
+  8  	    bb.branch_code,
+  9  	    bb.cust_ac_no,
+ 10  	    aa.related_account,
+ 11  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 12  	    cc.ac_stat_dormant "DORM_ACC"
+ 13    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 14   WHERE aa. EVENT = 'ILIQ'
+ 15  	and aa.TXN_init_date = '31-Dec-2012'
+ 16  	and aa.AC_NO = bb.cust_ac_no
+ 17  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 18  	AND cc.ac_stat_dormant='Y'
+ 19  	AND bb.cust_ac_no=cc.ac_gl_no
+ 20  	AND bb.CUST_AC_NO NOT IN
+ 21  	    (SELECT ac.cust_ac_no
+ 22  	       FROM STTM_CUST_ACCOUNT ac
+ 23  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 24  		AND ac.ACCOUNT_CLASS LIKE '3%');
+ 25  BEGIN
+ 26  FOR each_row in c1 LOOP
+ 27  
+ 28  update STTM_CUST_ACCOUNT
+ 29  	set AC_STAT_DORMANT = 'N'
+ 30   where cust_ac_no = each_row.cust_ac_no
+ 31   and branch_code= each_row.branch_code
+ 32   and ac_stat_dormant='Y';
+ 33  
+ 34  update STTB_ACCOUNT
+ 35  	set AC_STAT_DORMANT = 'N'
+ 36   where ac_gl_no= each_row.cust_ac_no
+ 37    and branch_code= each_row.branch_code
+ 38    and ac_stat_dormant='Y';
+ 39  
+ 40  commit;
+ 41  END LOOP;
+ 42  EXCEPTION
+ 43  		 WHEN OTHERS THEN
+ 44  			     DBMS_OUTPUT.PUT_LINE('ERROR ' || SUBSTR(SQLERRM, 1, 255));
+ 45  END;
+ 46  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> SELECT aa.AC_BRANCH,
+  2  	    aa.AC_NO,
+  3  	    aa.trn_code,
+  4  	    aa.LCY_AMOUNT,
+  5  	    aa.TXN_INIT_DATE,
+  6  	    bb.branch_code,
+  7  	    bb.cust_ac_no,
+  8  	    aa.related_account,
+  9  		bb.ac_stat_dormant "DORM_CUST_ACC",
+ 10  	    cc.ac_stat_dormant "DORM_ACC"
+ 11    FROM ACVW_ALL_AC_ENTRIES aa, sttm_cust_account bb,sttb_account cc
+ 12   WHERE aa. EVENT = 'ILIQ'
+ 13  	and aa.TXN_init_date = '31-Dec-2012'
+ 14  	and aa.AC_NO = bb.cust_ac_no
+ 15  	AND aa.TRN_REF_NO LIKE '%CIOS%'
+ 16  	AND cc.ac_stat_dormant='Y'
+ 17  	AND bb.cust_ac_no=cc.ac_gl_no
+ 18  	AND bb.CUST_AC_NO NOT IN
+ 19  	    (SELECT ac.cust_ac_no
+ 20  	       FROM STTM_CUST_ACCOUNT ac
+ 21  	      WHERE ac.ACY_AVL_BAL >= '10000000'
+ 22  		AND ac.ACCOUNT_CLASS LIKE '3%');
+
+no rows selected
+
+SQL> 
+SQL> spool off;

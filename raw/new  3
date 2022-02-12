@@ -1,0 +1,17 @@
+set array 1
+set head on
+set feedback on
+set line 10000
+set pagesize 10000
+set echo on
+set trimspool on
+set numformat 99999999999999999999.9999
+spool /home/oracle/spool/Account_Block.spl
+
+
+select 'update sttm_cust_account set AC_STAT_NO_DR = ''Y'' where cust_ac_no ='''||fon_fcubs_account||''';' from paie_fonctionnaire where fon_montant_mois_actuel >= 1000000
+order by fon_agence;
+
+spool off
+@@Account_Block.spl
+commit;

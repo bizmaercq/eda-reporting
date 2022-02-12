@@ -1,0 +1,1196 @@
+CREATE OR REPLACE PACKAGE BODY "SMSUSR"."SMS_JOB_PKG" as
+  procedure dbg(p_msg in varchar2) is
+    l_msg varchar2(32767);
+  begin
+    l_msg := 'SMS_JOB_PKG ==>' || p_msg;
+    smspkg_debug.pr_debug(l_msg);
+  end dbg;
+
+  procedure pr_start_sms_alerts(p_err_code   in out varchar2,
+                                p_err_params in out varchar2) as
+    l_job_no number;
+    l_job    varchar2(200);
+    l_broken varchar2(10);
+
+    cursor c_job(pwhat varchar2) is
+      select job, broken
+        from user_jobs
+       where what like '%' || pwhat || '%';
+  begin
+    dbg('Entered into pr_start_sms_alerts');
+
+    l_Job := 'begin sms_job_pkg.pr_sms_alerts_job; end;';
+
+    open c_job(l_job);
+
+    fetch c_job
+      into l_job_no, l_broken;
+
+    if c_job%notfound then
+      dbms_job.submit(l_job_no, l_job, sysdate, 'sysdate+1/14000');
+      commit;
+      dbg('Job submitted successfully');
+    elsif l_broken = 'Y' then
+      dbms_job.broken(l_job_no, false, sysdate);
+      commit;
+    end if;
+    close c_job;
+
+    update sms_job_status set status = 'Y';
+
+    if (sql%rowcount = 0) then
+      insert into sms_job_status (process, status) values ('SMS', 'Y');
+    end if;
+    commit;
+    dbg('Job status updated successfully');
+
+    dbg('Returning from fn_start_sms_alerts');
+  exception
+    when others then
+      dbg('Exception in fn_start_sms_alerts' || sqlerrm);
+      smspkg_exception.log_exception('JOB-0001', '', SQLERRM);
+  end pr_start_sms_alerts;
+
+  --------------------------------------------------------------
+  procedure pr_sms_alerts_job is
+
+    l_mbl_no varchar2(100) := null;
+
+    sms_http varchar2(255);
+    sms_user varchar2(255);
+    sms_pass varchar2(255);
+    SOA      varchar2(255);
+
+
+    l_sms_text varchar2(160);
+    l_sms_http varchar2(500);
+
+    job_run_status varchar2(1);
+    skip_rec exception;
+    skip_rec_1 exception; --TTI
+    l_cust_type      sms_customer.CUSTOMER_TYPE%TYPE;
+    l_customer_name1 sms_customer.CUSTOMER_NAME1%TYPE;
+
+    l_resp_code VARCHAR2(100);
+    l_status    VARCHAR2(1);
+    l_sms_count sms_alert_log.sms_count%TYPE;
+
+    l_err_reason VARCHAR2(1000);
+    skip_rec_2 exception;--Joint
+
+    l_joint_ac_hldr NUMBER;--Joint
+  begin
+    dbg('Entered into pr_sms_alerts_job');
+
+    EXECUTE IMMEDIATE 'ALTER SESSION SET NLS_DATE_FORMAT=''DD-MM-YYYY''';
+
+    commit;
+
+    begin
+      select param_value
+        into job_run_status
+        from sms_param
+       where param_name = 'IS_JOB_RUNNING';
+
+      dbg('Param IS_JOB_RUNNING=' || job_run_status);
+
+      if (job_run_status = 'N') then
+
+        update sms_param
+           set param_value = 'Y'
+         where param_name = 'IS_JOB_RUNNING';
+        dbg('Updated IS_JOB_RUNNING to Y ');
+        commit;
+
+        dbg('Selecting HTTP Params');
+        for l_sms in (select param_name, param_value
+                        from smss_param
+                       where param_name in
+                             ('SMS_HTTP', 'SMS_USER', 'SMS_PASS')) loop
+          if l_sms.param_name = 'SMS_HTTP' then
+            sms_http := l_sms.param_value;
+          elsif l_sms.param_name = 'SMS_USER' then
+            sms_user := l_sms.param_value;
+          elsif l_sms.param_name = 'SMS_PASS' then
+            sms_pass := l_sms.param_value;
+          end if;
+        end loop;
+        dbg('Selected HTTP Params');        
+
+          
+  --TTI Cchanges starts here
+        for TTrec in (select *
+                      from smss_alert_log
+                     where process_status IN ('U', 'R')AND OPERATION='TTI') loop
+            BEGIN
+            dbg('Start processing record ' || TTrec.acc_no);
+            
+            l_mbl_no     := null;
+            l_sms_http   := null;
+            l_sms_text   := null;
+            l_resp_code  := null;
+            l_status     := null;
+            l_sms_count  := 0;
+            l_err_reason := null;
+            l_mbl_no     := null;
+            l_joint_ac_hldr := 0;
+            
+            BEGIN
+              dbg('Selecting from sms_customer ' || TTrec.acc_no);
+              SELECT BENEF_ADDR_2
+                  into l_mbl_no
+                  FROM xafnfc.ISTM_INSTR_TXN
+                 where CONTRACT_REF_NO =TTrec.reference_no;            
+              dbg('l_mbl_no=' || l_mbl_no);
+            EXCEPTION
+              WHEN OTHERS THEN
+                dbg('Exception Occured JOB-0002 ' || SQLERRM);
+                smspkg_exception.log_exception('JOB-0002', '', SQLERRM);
+                RAISE skip_rec_1;
+            END;
+            
+            IF l_mbl_no is NULL THEN  
+                                          
+                dbg('Mobile Number is null ' || l_mbl_no);
+                l_err_reason := 'Mobile Number is null ' || l_mbl_no;
+                l_status     := 'F';
+                update smss_alert_log
+                   set process_status    = l_status,
+                       resp_code         = l_resp_code,
+                       sms_count         = l_sms_count,
+                       dispatch_dt_stamp = SYSTIMESTAMP,
+                       mobile_number     = l_mbl_no,
+                       error_reason      = l_err_reason
+                 where pkey_values = TTrec.pkey_values
+                   and base_table = TTrec.base_table;
+                dbg('Updating smss_alert_log successfully');
+              RAISE skip_rec_1;
+                    
+              END IF;              
+                  
+              dbg('Calling fn_form_sms_text' || TTrec.datestamp);
+            
+              IF NOT fn_form_sms_text(TTrec.base_table,
+                                      TTrec.operation,
+                                      TTrec.trn_code,
+                                      TTrec.acc_no,
+                                      TTrec.trn_amt,
+                                      TO_CHAR(TTrec.datestamp,
+                                              'DD-MM-YYYY HH24:MI:SS'),
+                                      'TT ISSUE',
+                                      TTrec.drcr_ind,
+                                      TTrec.trn_ccy,
+                                      TTrec.trn_brn,
+                                      TTrec.avl_bal,
+                                      TTrec.Reference_No,                                      
+                                      l_sms_text) THEN
+                l_err_reason := 'Message is unstable';
+                l_status     := 'F';
+                RAISE skip_rec_1;
+              END IF;
+              dbg('Called fn_form_sms_text' || TTrec.datestamp);
+              
+              l_sms_http := sms_http || 'MN=237' || l_mbl_no || chr(38) ||
+                           'UserName=' || sms_user || chr(38) || 'Password=' ||
+                           sms_pass || chr(38) ||' SOA=NFC-BANK' || chr(38)  || 'SM=' || l_sms_text;                           
+                                        
+               dbg('l_sms_http=' || l_sms_http); 
+               
+               IF NOT fn_send_sms(l_sms_http,
+                                 l_status,
+                                 l_resp_code,
+                                 l_err_reason) THEN
+              
+                dbg('Failure response');
+                dbg('Updating smss_alert_log to F for record ' ||
+                    TTrec.pkey_values || '~' || TTrec.base_table);
+              
+                l_sms_count := 0;
+                update smss_alert_log
+                   set process_status    = l_status,
+                       resp_code         = l_resp_code,
+                       sms_count         = l_sms_count,
+                       dispatch_dt_stamp = SYSTIMESTAMP,
+                       mobile_number     = l_mbl_no,
+                       error_reason      = l_err_reason
+                 where pkey_values = TTrec.pkey_values
+                   and base_table = TTrec.base_table;
+                dbg('Updating smss_alert_log successfully');
+              
+              ELSE
+              
+                dbg('Success response');
+                dbg('Updating smss_alert_log to P for record ' ||
+                    TTrec.pkey_values || '~' || TTrec.base_table);
+              
+                l_sms_count := 1;
+              
+                update smss_alert_log
+                   set process_status    = l_status,
+                       resp_code         = l_resp_code,
+                       sms_count         = l_sms_count,
+                       dispatch_dt_stamp = SYSTIMESTAMP,
+                       mobile_number     = l_mbl_no
+                 where pkey_values = TTrec.pkey_values
+                   and base_table = TTrec.base_table;
+                   
+                dbg('Updating smss_alert_log successfully');
+              
+                IF NOT fn_update_charge(TTrec.ac_branch,
+                                        TTrec.acc_no,
+                                        TTrec.datestamp,
+                                        TTrec.period_code,
+                                        TTrec.fin_year) THEN
+                  smspkg_exception.log_exception('TRG-0998',
+                                                 TTrec.ac_branch || '~' ||
+                                                 TTrec.acc_no || '~' ||
+                                                 TTrec.datestamp,
+                                                 SQLERRM);
+              END IF;              
+              END IF;            
+              END;
+              END LOOP;
+              
+ --TTI Changes ends here
+
+        for rec in (select *
+                      from smss_alert_log
+                     where process_status IN ('U', 'R')AND OPERATION<>'TTI') loop
+
+          BEGIN
+            dbg('Start processing record ' || rec.acc_no);
+
+            l_mbl_no     := null;
+            l_sms_http   := null;
+            l_sms_text   := null;
+            l_resp_code  := null;
+            l_status     := null;
+            l_sms_count  := 0;
+            l_err_reason := null;
+            l_mbl_no     := null;
+            l_joint_ac_hldr := 0;
+
+            BEGIN
+              dbg('Selecting from sms_customer ' || rec.acc_no);
+               
+              SELECT customer_type, customer_name1
+                into l_cust_type, l_customer_name1
+                FROM sms_customer
+               where customer_no IN
+                     (SELECT cust_no
+                        FROM sms_cust_account
+                       WHERE cust_ac_no = rec.acc_no);
+
+              dbg('l_cust_type=' || l_cust_type);
+            EXCEPTION
+              WHEN OTHERS THEN
+                dbg('Exception Occured JOB-0002 ' || SQLERRM);
+                smspkg_exception.log_exception('JOB-0002', '', SQLERRM);
+                RAISE skip_rec;
+            END;
+           
+
+            IF l_cust_type = 'I' THEN
+              dbg('Entered into I type customer');
+
+              BEGIN
+                dbg('Selecting from sms_cust_personal ' || rec.acc_no);
+                SELECT MOBILE_NUMBER
+                  into l_mbl_no
+                  FROM SMS_CUSTOMER a, sms_cust_account b
+                 where a.customer_no = b.cust_no
+                   and b.cust_ac_no = rec.acc_no;
+
+                dbg('l_mbl_no=' || l_mbl_no);
+
+              EXCEPTION
+                WHEN OTHERS THEN
+                  dbg('Exception Occured JOB-0002 ' || SQLERRM);
+                  smspkg_exception.log_exception('JOB-0002', '', SQLERRM);
+                  RAISE skip_rec;
+              END;
+
+              IF l_mbl_no is NULL THEN
+
+                    dbg('Mobile Number is null ' || l_mbl_no);
+
+                  SELECT COUNT(*) INTO l_joint_ac_hldr FROM SMS_CUST_PERSONAL_JOINT a, sms_cust_account b
+                  WHERE b.CUST_no = a.customer_no
+                  and b.CUST_AC_NO = rec.acc_no;
+
+                  dbg('Is joint account ? '||l_joint_ac_hldr);
+
+                  IF l_joint_ac_hldr = 0 THEN
+                    l_err_reason := 'Mobile Number is null ';
+                    l_status     := 'F';
+                     RAISE skip_rec;
+                  ELSE
+                     dbg('Going to process Joint account');
+                     GOTO proc_joint;
+                  END IF;
+
+              END IF;
+
+              /*IF NOT
+                  (SUBSTR(l_mbl_no, 1, 3) = '237' AND LENGTH(l_mbl_no) = 12) THEN
+                dbg('Invalid Mobile Number ' || l_mbl_no);
+                l_err_reason := 'Invalid Mobile Number ' || l_mbl_no;
+                l_status     := 'F';
+                RAISE skip_rec;
+              END IF;*/
+
+              dbg('Calling fn_form_sms_text' || rec.datestamp);
+
+              IF NOT fn_form_sms_text(rec.base_table,
+                                      rec.operation,
+                                      rec.trn_code,
+                                      rec.acc_no,
+                                      rec.trn_amt,
+                                      TO_CHAR(rec.datestamp,
+                                              'DD-MM-YYYY HH24:MI:SS'),
+                                      l_customer_name1,
+                                      rec.drcr_ind,
+                                      rec.trn_ccy,
+                                      rec.trn_brn,
+                                      rec.avl_bal,
+                                      rec.reference_no,
+                                      l_sms_text) THEN
+                l_err_reason := 'Message is unstable';
+                l_status     := 'F';
+                RAISE skip_rec;
+              END IF;
+              dbg('Called fn_form_sms_text' || rec.datestamp);
+
+              /*l_sms_http := sms_http || 'msisdn=' || l_mbl_no || chr(38) ||
+                            'user=' || sms_user || chr(38) || 'password=' ||
+                            sms_pass || chr(38) || 'message=' || l_sms_text;*/
+
+              l_sms_http := sms_http || 'MN=237' || l_mbl_no || chr(38) ||
+                           'UserName=' || sms_user || chr(38) || 'Password=' ||
+                           sms_pass || chr(38) ||' SOA=NFC-BANK' || chr(38)  || 'SM=' || l_sms_text;
+
+
+
+
+              dbg('l_sms_http=' || l_sms_http);
+
+              IF NOT fn_send_sms(l_sms_http,
+                                 l_status,
+                                 l_resp_code,
+                                 l_err_reason) THEN
+
+                dbg('Failure response');
+                dbg('Updating smss_alert_log to F for record ' ||
+                    rec.pkey_values || '~' || rec.base_table);
+
+                l_sms_count := 0;
+
+                update smss_alert_log
+                   set process_status    = l_status,
+                       resp_code         = l_resp_code,
+                       sms_count         = l_sms_count,
+                       dispatch_dt_stamp = SYSTIMESTAMP,
+                       mobile_number     = l_mbl_no,
+                       error_reason      = l_err_reason
+                 where pkey_values = rec.pkey_values
+                   and base_table = rec.base_table;
+                dbg('Updating smss_alert_log successfully');
+
+              ELSE
+
+                dbg('Success response');
+                dbg('Updating smss_alert_log to P for record ' ||
+                    rec.pkey_values || '~' || rec.base_table);
+
+                l_sms_count := 1;
+
+                update smss_alert_log
+                   set process_status    = l_status,
+                       resp_code         = l_resp_code,
+                       sms_count         = l_sms_count,
+                       dispatch_dt_stamp = SYSTIMESTAMP,
+                       mobile_number     = l_mbl_no
+                 where pkey_values = rec.pkey_values
+                   and base_table = rec.base_table;
+                dbg('Updating smss_alert_log successfully');
+
+                IF NOT fn_update_charge(rec.ac_branch,
+                                        rec.acc_no,
+                                        rec.datestamp,
+                                        rec.period_code,
+                                        rec.fin_year) THEN
+                  smspkg_exception.log_exception('TRG-0998',
+                                                 rec.ac_branch || '~' ||
+                                                 rec.acc_no || '~' ||
+                                                 rec.datestamp,
+                                                 SQLERRM);
+                END IF;
+
+              END IF;
+
+
+
+              --Joint
+              <<proc_joint>>
+
+                dbg('Calling fn_form_sms_text' || rec.datestamp);
+              IF NOT fn_form_sms_text(rec.base_table,
+                                      rec.operation,
+                                      rec.trn_code,
+                                      rec.acc_no,
+                                      rec.trn_amt,
+                                      TO_CHAR(rec.datestamp,
+                                              'DD-MM-YYYY HH24:MI:SS'),
+                                      l_customer_name1,
+                                      rec.drcr_ind,
+                                      rec.trn_ccy,
+                                      rec.trn_brn,
+                                      rec.avl_bal,
+                                      rec.reference_no,
+                                      l_sms_text) THEN
+                l_err_reason := 'Failed in fn_form_sms_text';
+                l_status     := 'F';
+                RAISE skip_rec;
+              END IF;
+              dbg('Called fn_form_sms_text' || rec.datestamp);
+
+
+
+              for jntrec in (select cpj.telephone
+                               from sms_customer            cm,
+                                    SMS_CUST_PERSONAL_JOINT cpj,
+                                    sms_cust_account        cac
+                              where cm.customer_no = cpj.customer_no
+                                and cm.customer_no = cac.cust_no
+                                and cac.cust_ac_no = rec.acc_no) loop
+
+
+              BEGIN
+
+                l_mbl_no := jntrec.telephone;
+                l_resp_code := null;
+                l_status := null;
+                l_err_reason := 0;
+
+
+                dbg('l_mbl_no=' || l_mbl_no);
+
+                IF l_mbl_no is NULL THEN
+                  dbg('Mobile Number is null ' || l_mbl_no);
+                  l_err_reason := 'Mobile Number is null ';
+                  l_status     := 'F';
+                  RAISE skip_rec_2;
+                END IF;
+
+                /*IF NOT (SUBSTR(l_mbl_no, 1, 3) = '255' AND
+                    LENGTH(l_mbl_no) = 12) THEN
+
+                  l_err_reason := 'Invalid Mobile Number ' || l_mbl_no;
+                  l_status     := 'F';
+                  RAISE skip_rec_2;
+                END IF;*/
+
+               /* l_sms_http := sms_http || 'msisdn=' || l_mbl_no || chr(38) ||
+                              'user=' || sms_user || chr(38) || 'password=' ||
+                              sms_pass || chr(38) || 'message=' ||
+                              l_sms_text;*/
+                  l_sms_http := sms_http || 'MN=237' || l_mbl_no || chr(38) ||
+                           'UserName=' || sms_user || chr(38) || 'Password=' ||
+                           sms_pass || chr(38) ||' SOA=NFC-BANK' || chr(38)  || 'SM=' || l_sms_text;
+
+                dbg('l_sms_http=' || l_sms_http);
+
+                IF NOT fn_send_sms(l_sms_http, l_status, l_resp_code, l_err_reason) THEN
+
+                  dbg('Failure response');
+                  dbg('Updating smss_alert_log to F for record ' ||
+                      rec.pkey_values || '~' || rec.base_table);
+                  update smss_alert_log
+                     set process_status = l_status, resp_code = l_resp_code
+                   where pkey_values = rec.pkey_values
+                     and base_table = rec.base_table;
+                  dbg('Updating smss_alert_log successfully');
+                ELSE
+                  l_sms_count := l_sms_count + 1;
+                  IF NOT fn_update_charge(rec.ac_branch,
+                                          rec.acc_no,
+                                          rec.datestamp,
+                                          rec.period_code,
+                                          rec.fin_year) THEN
+                    smspkg_exception.log_exception('TRG-0999',
+                                                   rec.ac_branch || '~' ||
+                                                   rec.acc_no || '~' ||
+                                                   rec.datestamp,
+                                                   SQLERRM);
+                  END IF;
+                END IF;
+
+
+                EXCEPTION
+                  WHEN skip_rec_2 THEN
+                    dbg('Exception skip_rec_2 '||SQLERRM);
+                                 smspkg_exception.log_exception('TRG-084',
+                                                   rec.ac_branch || '~' ||
+                                                   rec.acc_no || '~' ||
+                                                   rec.datestamp,
+                                                   SQLERRM);
+                                                   END;
+
+
+              END LOOP;
+
+              dbg('Updating smss_alert_log to P for record ' ||
+                  rec.pkey_values || '~' || rec.base_table);
+              update smss_alert_log
+                 set process_status    = l_status,
+                     resp_code         = l_resp_code,
+                     sms_count         = l_sms_count,
+                     dispatch_dt_stamp = SYSTIMESTAMP
+               where pkey_values = rec.pkey_values
+                 and base_table = rec.base_table;
+              dbg('Updating smss_alert_log successfully');
+
+              --Joint
+
+            ELSIF l_cust_type = 'C' THEN
+              dbg('Entered into C type customer');
+
+              dbg('Calling fn_form_sms_text');
+
+              IF NOT fn_form_sms_text(rec.base_table,
+                                      rec.operation,
+                                      rec.trn_code,
+                                      rec.acc_no,
+                                      rec.trn_amt,
+                                      TO_CHAR(rec.datestamp,
+                                              'DD-MM-YYYY HH24:MI:SS'),
+                                      l_customer_name1,
+                                      rec.drcr_ind,
+                                      rec.trn_ccy,
+                                      rec.trn_brn,
+                                      rec.avl_bal,
+                                      rec.reference_no,
+                                      l_sms_text) THEN
+                l_err_reason := 'Message is unstable';
+                l_status     := 'F';
+                RAISE skip_rec;
+              END IF;
+              dbg('Called fn_form_sms_text');
+
+              dbg('Selecting corporate mobile_numbers');
+
+              /*              FOR mobrec in (SELECT a.mobile_number
+               FROM sms_corp_directors a, sms_cust_account b
+              where a.customer_no = b.cust_no
+                and b.cust_ac_no = rec.acc_no) LOOP*/ --Temp Change
+              FOR mobrec in (SELECT a.MOBILE_NUMBER
+                               FROM sms_customer a, sms_cust_account b
+                              where a.customer_no = b.cust_no
+                                and b.cust_ac_no = rec.acc_no) LOOP
+
+                l_mbl_no := mobrec.MOBILE_NUMBER;
+                dbg('l_mbl_no=' || l_mbl_no);
+
+                IF l_mbl_no is NULL THEN
+                  dbg('Mobile Number is null ' || l_mbl_no);
+                  l_err_reason := 'Mobile Number is null ';
+                  l_status     := 'F';
+                  RAISE skip_rec;
+                END IF;
+
+               /* IF NOT (SUBSTR(l_mbl_no, 1, 3) = '255' AND
+                    LENGTH(l_mbl_no) = 12) THEN
+
+                  l_err_reason := 'Invalid Mobile Number ' || l_mbl_no;
+                  l_status     := 'F';
+                  RAISE skip_rec;
+                END IF;*/
+
+                /*l_sms_http := sms_http || 'msisdn=' || l_mbl_no || chr(38) ||
+                              'user=' || sms_user || chr(38) || 'password=' ||
+                              sms_pass || chr(38) || 'message=' ||
+                              l_sms_text;*/
+
+                   l_sms_http := sms_http || 'MN=237' || l_mbl_no || chr(38) ||
+                           'UserName=' || sms_user || chr(38) || 'Password=' ||
+                           sms_pass || chr(38) ||' SOA=NFC-BANK' || chr(38)  || 'SM=' || l_sms_text;
+
+                dbg('l_sms_http=' || l_sms_http);
+
+                IF NOT fn_send_sms(l_sms_http,
+                                   l_status,
+                                   l_resp_code,
+                                   l_err_reason) THEN
+
+                  dbg('Failure response');
+                  dbg('Updating smss_alert_log to F for record ' ||
+                      rec.pkey_values || '~' || rec.base_table);
+                  update smss_alert_log
+                     set process_status    = l_status,
+                         resp_code         = l_resp_code,
+                         dispatch_dt_stamp = SYSTIMESTAMP,
+                         mobile_number     = l_mbl_no,
+                         error_reason      = l_err_reason
+                   where pkey_values = rec.pkey_values
+                     and base_table = rec.base_table;
+                  dbg('Updating smss_alert_log successfully');
+                ELSE
+                  l_sms_count := l_sms_count + 1;
+                  IF NOT fn_update_charge(rec.ac_branch,
+                                          rec.acc_no,
+                                          rec.datestamp,
+                                          rec.period_code,
+                                          rec.fin_year) THEN
+                    smspkg_exception.log_exception('TRG-0999',
+                                                   rec.ac_branch || '~' ||
+                                                   rec.acc_no || '~' ||
+                                                   rec.datestamp,
+                                                   SQLERRM);
+                  END IF;
+                END IF;
+
+              END LOOP;          
+              
+              dbg('Updating smss_alert_log to P for record ' ||
+                  rec.pkey_values || '~' || rec.base_table);
+              update smss_alert_log
+                 set process_status    = l_status,
+                     resp_code         = l_resp_code,
+                     sms_count         = l_sms_count,
+                     dispatch_dt_stamp = SYSTIMESTAMP,
+                     mobile_number     = l_mbl_no
+               where pkey_values = rec.pkey_values
+                 and base_table = rec.base_table;
+              dbg('Updating smss_alert_log successfully');
+
+            END IF;
+
+            dbms_lock.sleep(1);
+
+          exception
+            --when skip_rec then
+            when others then
+              dbg('Updating smss_alert_log to F for record ' ||
+                  rec.pkey_values || '~' || rec.base_table);
+              update smss_alert_log
+                 set process_status    = NVL(l_status, 'F'),
+                     resp_code         = l_resp_code,
+                     sms_count         = l_sms_count,
+                     dispatch_dt_stamp = SYSTIMESTAMP,
+                     mobile_number     = l_mbl_no,
+                     error_reason      = NVL(l_err_reason,
+                                             'Unhandled Exception')
+               where pkey_values = rec.pkey_values
+                 and base_table = rec.base_table;
+              dbg('Updating smss_alert_log successfully F');
+              /*            when others then
+              dbg('Unhandled Exception ' || SQLERRM);
+              null;*/
+          end;
+          commit;
+        end loop;
+        
+        update sms_param
+           set param_value = 'N'
+         where param_name = 'IS_JOB_RUNNING';
+        commit;
+      end if;
+    end;
+  exception
+    when others then
+      dbg('Exception in pr_sms_alerts_job :' || sqlerrm);
+      update sms_param
+         set param_value = 'N'
+       where param_name = 'IS_JOB_RUNNING';
+      commit;     
+        
+  end pr_sms_alerts_job;
+
+  function fn_update_charge(p_ac_brn    IN VARCHAR2,
+                            p_acc_no    IN VARCHAR2,
+                            p_date      IN DATE,
+                            p_per_code  IN VARCHAR2,
+                            p_fin_cycle IN VARCHAR2) return boolean is
+    l_updated VARCHAR2(1) := 'N';
+    l_date    DATE;
+  begin
+
+    dbg('Entered into fn_update_charge');
+
+    dbg('Values:');
+    dbg('p_date=' || p_date);
+    l_date := TO_DATE(p_date, 'DD-MM-YYYY');
+    dbg('l_date=' || l_date);
+
+    BEGIN
+      dbg('Updating SMS_CHARGE_ACC ' || p_acc_no);
+      UPDATE SMS_CHARGE_ACC
+         SET SMS_COUNT = SMS_COUNT + 1
+       WHERE BRANCH_CODE = p_ac_brn
+         AND ACC_NO = p_acc_no
+         AND FLEX_APP_DATE = l_date;
+
+      IF (SQL%ROWCOUNT > 0) THEN
+        l_updated := 'Y';
+        dbg('l_updated ' || l_updated);
+      END IF;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbg('Failed while updating SMSS_CHARGE_ACC TRG-0043 ' || SQLERRM);
+        smspkg_exception.log_exception('TRG-0043',
+                                       p_ac_brn || '~' || p_acc_no || '~' ||
+                                       p_per_code || '~' || p_fin_cycle,
+                                       SQLERRM);
+        return false;
+    END;
+
+    IF (l_updated = 'N') THEN
+      dbg('Not updated, now inserting');
+      BEGIN
+        INSERT INTO SMSS_CHARGE_ACC
+          (BRANCH_CODE,
+           ACC_NO,
+           PERIOD_CODE,
+           FIN_YEAR,
+           SMS_COUNT,
+           FLEX_APP_DATE)
+        VALUES
+          (p_ac_brn, p_acc_no, p_per_code, p_fin_cycle, 1, l_date);
+        dbg('Inserted into SMSS_CHARGE_ACC ' || SQL%ROWCOUNT);
+      EXCEPTION
+        WHEN OTHERS THEN
+          dbg('Failed while inserting into SMSS_CHARGE_ACC TRG-0049 ' ||
+              SQLERRM);
+          smspkg_exception.log_exception('TRG-0049',
+                                         p_ac_brn || '~' || p_acc_no || '~' ||
+                                         p_per_code || '~' || p_fin_cycle,
+                                         SQLERRM);
+          return false;
+      END;
+    END IF;
+
+    dbg('Returning from fn_update_charge');
+
+    return true;
+  exception
+    when others then
+      dbg('Exception in fn_update_charge :' || sqlerrm);
+      return false;
+  end fn_update_charge;
+
+  function fn_form_sms_text(p_base_tbl       IN VARCHAR2,
+                            p_oper           IN VARCHAR2,
+                            p_trn_code       IN VARCHAR2,
+                            p_acc_no         IN VARCHAR2,
+                            p_trn_amt        IN VARCHAR2,
+                            p_dt_stamp       IN VARCHAR2,
+                            p_customer_name1 IN VARCHAR2,
+                            l_dr_cr          IN VARCHAR2,
+                            p_trn_ccy        IN VARCHAR2,
+                            p_trn_brn        IN VARCHAR2,
+                            p_avl_bal        IN VARCHAR2,
+                            p_reference_no   IN VARCHAR2,
+                            p_sms_text       OUT VARCHAR2) return boolean is
+    l_msg            varchar2(160);
+    l_trn_desc       varchar2(255);
+    l_trn_amt        varchar2(100);
+    l_cnt            NUMBER;
+    l_acc_no         VARCHAR2(100);
+    l_customer_name1 VARCHAR2(100);
+    l_dr_cr_desc     VARCHAR2(10);
+    l_branch_name    VARCHAR2(100);
+    l_avl_bal        VARCHAR2(100);
+    L_BENEF_NAME     VARCHAR2(100);
+    L_INSTR_NO       VARCHAR2(100);
+  BEGIN
+    dbg('Entered into fn_form_sms_text' || p_dt_stamp);
+
+    dbg('Values:');
+    dbg('p_base_tbl=' || p_base_tbl);
+    dbg('p_oper=' || p_oper);
+    dbg('p_trn_code=' || p_trn_code);
+    dbg('p_acc_no=' || p_acc_no);
+    dbg('p_trn_amt=' || p_trn_amt);
+    dbg('p_dt_stamp=' || p_dt_stamp);
+    dbg('p_customer_name1=' || p_customer_name1);
+    dbg('l_dr_cr=' || l_dr_cr);
+    dbg('p_trn_ccy=' || p_trn_ccy);
+
+    l_trn_amt        := p_trn_amt;
+    l_acc_no         := p_acc_no;
+    l_customer_name1 := p_customer_name1;
+
+    BEGIN
+      dbg('Selecting from sms_alertmsg_maint ' || p_base_tbl || '~' ||
+          p_oper);
+      select message
+        into l_msg
+        from sms_alertmsg_maint
+       where tbl_id = p_base_tbl
+         and operation = p_oper;
+      dbg('l_msg=' || l_msg);
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbg('Exception Occured JOB-0089 ' || SQLERRM);
+        smspkg_exception.log_exception('JOB-0089',
+                                       p_base_tbl || '~' || p_oper,
+                                       SQLERRM);
+        return false;
+    END;
+
+    IF INSTR(l_msg, '^TRN^') <> 0 THEN
+      BEGIN
+        dbg('Selecting from SMS_TRN_CODE ' || p_trn_code);
+        SELECT trn_desc
+          INTO l_trn_desc
+          FROM SMS_TRN_CODE
+         WHERE trn_code = p_trn_code;
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          l_trn_desc := '';
+        WHEN OTHERS THEN
+          dbg('Exception Occured JOB-0015 ' || SQLERRM);
+          smspkg_exception.log_exception('JOB-0015', '', SQLERRM);
+          return false;
+      END;
+
+      dbg('l_trn_desc=' || l_trn_desc);
+    END IF;
+--Rahul Changes Starts Here
+IF INSTR(l_msg, '^AVLBAL^') <> 0 THEN
+      BEGIN
+        dbg('Selecting from SMS_CUST_ACCOUNT ' || p_avl_bal);
+        SELECT LCY_CURR_BALANCE
+          INTO l_avl_bal
+          FROM SMS_CUST_ACCOUNT
+         WHERE CUST_AC_NO = p_acc_no;
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          l_avl_bal := '';
+        WHEN OTHERS THEN
+          dbg('Exception Occured JOB-0015 ' || SQLERRM);
+          smspkg_exception.log_exception('JOB-0015', '', SQLERRM);
+          return false;
+      END;
+
+      dbg('l_avl_bal=' || l_avl_bal);
+    END IF;
+    
+ IF INSTR(l_msg, '^BENEF_NAME^') <> 0 THEN
+      BEGIN
+        dbg('Selecting from SMS_INSTR_TXN ');
+        SELECT BENEF_NAME,INSTR_NO
+          INTO L_BENEF_NAME,L_INSTR_NO
+          FROM SMS_INSTR_TXN
+         WHERE CONTRACT_REF_NO =p_reference_no;
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          L_BENEF_NAME := '';
+          L_INSTR_NO := '';
+        WHEN OTHERS THEN
+          dbg('Exception Occured JOB-0015 ' || SQLERRM);
+          smspkg_exception.log_exception('JOB-0015', '', SQLERRM);
+          return false;
+      END;
+
+      dbg('L_BENEF_NAME=' || L_BENEF_NAME);
+      dbg('L_INSTR_NO=' || L_INSTR_NO);
+    END IF;   
+--Rahul Changes ends Here
+    IF INSTR(l_msg, '^BRN^') <> 0 THEN
+      BEGIN
+        dbg('Selecting from SMS_BRANCH ' || p_trn_brn);
+        SELECT branch_name
+          INTO l_branch_name
+          FROM SMS_BRANCH
+         WHERE branch_code = p_trn_brn;
+
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          l_branch_name := 'AML Branch';
+        WHEN OTHERS THEN
+          dbg('Exception Occured JOB-0015 ' || SQLERRM);
+          smspkg_exception.log_exception('JOB-0015', '', SQLERRM);
+          return false;
+
+      END;
+
+      dbg('l_branch_name=' || l_branch_name);
+    END IF;
+
+    --Mask customer account
+    IF INSTR(l_msg, '^ACC^') <> 0 THEN
+      dbg('Account Number before masking ' || l_acc_no);
+      l_acc_no := SUBSTR(l_acc_no, 1, 14) || 'XX' ; --RAHUL CHANGES HERE
+      dbg('Account Number after masking ' || l_acc_no);
+    END IF;
+
+    --Limit customer name
+    dbg('Customer Name before limiting ' || l_customer_name1);
+    l_customer_name1 := SUBSTR(l_customer_name1, 1, 13);
+    dbg('Customer Name after limiting ' || l_customer_name1);
+
+    --Limit branch name
+    dbg('Branch Name before limiting ' || l_branch_name);
+    l_branch_name := SUBSTR(l_branch_name, 1, 13);
+    dbg('Branch Name after limiting ' || l_branch_name);
+
+    --Handle -ve amounts and change the description of DR/CR accordingly
+    dbg('l_dr_cr =' || l_dr_cr);
+    dbg('l_trn_amt =' || l_trn_amt);
+
+    IF l_dr_cr = 'D' AND l_trn_amt >= 0 THEN
+      dbg('DR/CR Condition 1');
+      l_dr_cr_desc := 'debited';
+    ELSIF l_dr_cr = 'C' AND l_trn_amt >= 0 THEN
+      dbg('DR/CR Condition 2');
+      l_dr_cr_desc := 'credited';
+    ELSIF l_dr_cr = 'D' AND l_trn_amt < 0 THEN
+      dbg('DR/CR Condition 3');
+      l_dr_cr_desc := 'credited';
+    ELSIF l_dr_cr = 'C' AND l_trn_amt < 0 THEN
+      dbg('DR/CR Condition 4');
+      l_dr_cr_desc := 'debited';
+    END IF;
+
+    dbg('l_dr_cr_desc = ' || l_dr_cr_desc);
+
+    --Format -ve amount to +ve
+    dbg('Txn Amount before formatting ' || l_trn_amt);
+    l_trn_amt := ABS(l_trn_amt);
+    dbg('Txn Amount after formatting ' || l_trn_amt);
+
+    --Format comma separated and and handle decimals
+    dbg('Txn Amount before formatting ' || l_trn_amt);
+    IF NOT fn_format_amount(l_trn_amt) THEN
+      dbg('Error Occured fn_format_amount ' || SQLERRM);
+    END IF;
+    dbg('Txn Amount after formatting ' || l_trn_amt);
+
+    --Replace TAGS
+    dbg('Message before TAG replacement ' || l_msg);
+    l_msg := replace(l_msg, '^AMT^', l_trn_amt); --Transaction Amount
+    l_msg := replace(l_msg, '^ACC^', l_acc_no); --Account Number
+    l_msg := replace(l_msg, '^ACO^', l_acc_no); --Account Number
+    l_msg := replace(l_msg, '^DTT^', p_dt_stamp); --Timestamp
+    l_msg := replace(l_msg, '^TRN^', l_trn_desc); --Transaction Code Description
+    l_msg := replace(l_msg, '^DC^', l_dr_cr_desc); --Debit Credit
+    l_msg := replace(l_msg, '^NAM^', l_customer_name1); --Customer Name
+    l_msg := replace(l_msg, '^CCY^', p_trn_ccy); --Account Currency
+    l_msg := replace(l_msg, '^BRN^', l_branch_name); --Transaction branch
+    --rahul changes starts here
+    l_msg := replace(l_msg, '^AVLBAL^', l_avl_bal); --Available Balance
+    l_msg := replace(l_msg, '^BENEF_NAME^', L_BENEF_NAME); --BENEFICIARY NAME
+    l_msg := replace(l_msg, '^INSTR_NO^', L_INSTR_NO); --INSTRUMENT NUMBER
+    --rahul changes ends here
+    dbg('Message after TAG replacement ' || l_msg);
+
+    p_sms_text := l_msg;
+
+    dbg('Final Message : ' || p_sms_text);
+    dbg('Returning from fn_form_sms_text');
+
+    return true;
+  exception
+    when others then
+      dbg('Exception in fn_form_sms_text :' || sqlerrm);
+      return false;
+  end fn_form_sms_text;
+
+  function fn_send_sms(p_sms_http   IN varchar2,
+                       p_status     IN OUT varchar2,
+                       p_resp_code  IN OUT varchar2,
+                       p_err_reason IN OUT VARCHAR2) return boolean is
+
+    xhttp_version varchar2(30) := '1.1';
+    xhttp_method  varchar2(10) := 'POST';
+    l_request     utl_http.req;
+    l_response    utl_http.resp;
+    l_resp_code   VARCHAR2(1000);
+
+    l_err_code   VARCHAR2(100);
+    l_err_params VARCHAR2(100);
+
+  BEGIN
+
+    begin
+      dbg('Pinging ' || p_sms_http);
+
+      l_request := utl_http.begin_request(utl_url.escape(p_sms_http),
+                                          xhttp_version,
+                                          xhttp_method);
+
+    exception
+      when utl_http.request_failed then
+        dbg(' utl_http.request_failed ' || sqlerrm);
+        IF INSTR(SQLERRM, 'ORA-24247') <> 0 THEN
+          p_status     := 'F';
+          p_err_reason := 'Network Access Denied By Access Control List (ACL)';
+          smspkg_exception.log_exception('JOB-0546', '', SQLERRM);
+
+        ELSIF INSTR(SQLERRM, 'ORA-12535') <> 0 THEN
+          p_status     := 'F';
+          p_err_reason := 'TNS: Operation Timed Out - Gateway Unavailable';
+          smspkg_exception.log_exception('JOB-0985', '', SQLERRM);
+
+        END IF;
+        return false;
+    end;
+
+    l_response := utl_http.get_response(l_request);
+    utl_http.end_response(l_response);
+    l_resp_code := l_response.status_code;
+
+    dbg('Got response as ' || l_resp_code);
+
+    p_resp_code := l_resp_code;
+
+    if l_resp_code = '200' then
+      dbg('Returning TRUE');
+      p_status := 'P';
+      return true;
+    elsif l_resp_code = '400' then
+      dbg('Returning FALSE');
+      p_status := 'F';
+      return false;
+    elsif l_resp_code = '408' then
+      dbg('Returning FALSE');
+      p_status     := 'R';
+      p_err_reason := 'Gateway Request Timeout';
+      return false;
+    else
+      dbg('Returning FALSE');
+      p_status := 'F';
+      return false;
+    end if;
+  exception
+    when others then
+      dbg('Exception in fn_send_sms :' || sqlerrm);
+
+      return false;
+  end fn_send_sms;
+
+  function fn_format_amount(p_trn_amt IN OUT VARCHAR2) return boolean is
+
+    l_cnt NUMBER;
+    l_len NUMBER;
+    --    p_trn_amt VARCHAR2(100);
+    l_tmp_amt   VARCHAR2(100);
+    l_comma_cnt NUMBER := 0;
+    l_tmp_dec   varchar2(100);
+  BEGIN
+
+    dbg('Entered into fn_format_amount');
+    --    p_trn_amt := '123456789.55';
+
+    dbg('Values:');
+    dbg('p_trn_amt=' || p_trn_amt);
+
+    l_tmp_amt := '';
+
+    dbg('Amount before decimal truncation=' || p_trn_amt);
+    IF INSTR(p_trn_amt, '.') <> 0 THEN
+      l_tmp_dec := SUBSTR(p_trn_amt, INSTR(p_trn_amt, '.'));
+      p_trn_amt := SUBSTR(p_trn_amt, 1, INSTR(p_trn_amt, '.') - 1);
+    END IF;
+    dbg('Amount before decimal truncation=' || p_trn_amt);
+
+    l_len := LENGTH(p_trn_amt);
+
+    dbg('Amount before comma formatting' || p_trn_amt);
+    FOR i IN 1 .. l_len LOOP
+      l_cnt := l_len - i + 1;
+      DBMS_OUTPUT.PUT_LINE(l_cnt);
+
+      l_comma_cnt := l_comma_cnt + 1;
+
+      IF l_comma_cnt = 4 THEN
+        l_tmp_amt   := l_tmp_amt || ',' || SUBSTR(p_trn_amt, l_cnt, 1);
+        l_comma_cnt := 1;
+      ELSE
+        l_tmp_amt := l_tmp_amt || SUBSTR(p_trn_amt, l_cnt, 1);
+      END IF;
+
+    END LOOP;
+    dbg('Amount before comma formatting' || l_tmp_amt);
+
+    l_len     := LENGTH(l_tmp_amt);
+    p_trn_amt := '';
+
+    dbg('Amount before swapping' || l_tmp_amt);
+    FOR i IN 1 .. l_len LOOP
+      l_cnt := l_len - i + 1;
+      DBMS_OUTPUT.PUT_LINE(l_cnt);
+
+      p_trn_amt := p_trn_amt || SUBSTR(l_tmp_amt, l_cnt, 1);
+
+    END LOOP;
+    dbg('Amount after swapping' || p_trn_amt);
+
+    dbg('Amount before decimal formatting' || p_trn_amt);
+    IF l_tmp_dec IS NULL OR l_tmp_dec = '' THEN
+      p_trn_amt := p_trn_amt || '.00';
+    ELSE
+      p_trn_amt := p_trn_amt || l_tmp_dec;
+    END IF;
+    dbg('Amount after decimal formatting' || p_trn_amt);
+
+    dbg('Final amount ' || p_trn_amt);
+
+    dbg('Returning from fn_format_amount');
+
+    return true;
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbg('Exception occured in fn_format_amount ' || SQLERRM);
+      RETURN FALSE;
+
+  end fn_format_amount;
+
+  procedure pr_stop_sms_alerts(p_err_code   in out varchar2,
+                               p_err_params in out varchar2) as
+
+    l_job_no number;
+    l_job    varchar2(200);
+    l_broken varchar2(10);
+
+    cursor c_job(pwhat varchar2) is
+      select job, broken
+        from user_jobs
+       where what like '%' || pwhat || '%';
+
+  begin
+    dbg('Entered into pr_stop_sms_alerts');
+    l_job := 'begin sms_job_pkg.pr_sms_alerts_job; end;';
+
+    open c_job(l_job);
+
+    fetch c_job
+      into l_job_no, l_broken;
+
+    if c_job%found then
+      /*      if l_broken = 'N' then
+
+        dbms_job.broken(l_job_no, true, sysdate);
+        commit;
+        dbg('Broken');
+      else*/
+      dbms_job.remove(l_job_no);
+      commit;
+      dbg('Job removed successfully');
+      /*      end if;*/
+    end if;
+    close c_job;
+
+    update sms_job_status set status = 'N';
+    commit;
+    dbg('Job status updated successfully');
+    dbg('Returning from pr_stop_sms_alerts');
+
+  exception
+    when others then
+      dbg('Exception in fn_stop_sms_alerts : ' || sqlerrm);
+  end pr_stop_sms_alerts;
+
+end SMS_JOB_PKG;
+/

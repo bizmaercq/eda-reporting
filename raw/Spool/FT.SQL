@@ -1,0 +1,191 @@
+accept CRN PROMPT 'Enter the contract reference no ==> '
+accept BRN PROMPT 'Enter the branch code ==> '
+
+set head on
+set array 1
+set linesize 10000
+set pagesize 50000
+set long 10000
+set echo on
+set trimspool on
+set colsep ';'
+
+SPOOL C:\FT_DETAILS.SPL
+PROMPT CSTB_CONTRACT
+SELECT * FROM CSTB_CONTRACT WHERE CONTRACT_REF_NO = UPPER('&CRN');
+
+PROMPT CSTB_CONTRACT_EVENT_LOG
+SELECT * FROM CSTB_CONTRACT_EVENT_LOG WHERE CONTRACT_REF_NO = UPPER('&CRN');
+
+PROMPT FTTB_CONTRACT_MASTER
+SELECT * FROM FTTB_CONTRACT_MASTER WHERE CONTRACT_REF_NO = UPPER('&CRN');
+
+PROMPT ACTB_RECON_MASTER
+SELECT * FROM ACTB_RECON_MASTER WHERE reconno in (select nvl(mck_number,contract_ref_no) FROM FTTB_CONTRACT_MASTER WHERE CONTRACT_REF_NO = UPPER('&CRN'));
+
+PROMPT FTTB_UPLOAD_MASTER
+SELECT * FROM FTTB_UPLOAD_MASTER WHERE ft_contract_ref = UPPER('&CRN');
+
+PROMPT FTTB_UPLOAD_MASTER using source ref
+SELECT * FROM FTTB_UPLOAD_MASTER WHERE source_ref =
+(select distinct source_ref_no from fttb_contract_master  WHERE CONTRACT_REF_NO = UPPER('&CRN'));
+
+PROMPT CFTB_CONTRACT_CHARGES
+SELECT * FROM CFTB_CONTRACT_CHARGES WHERE CONTRACT_REFERENCE_NO = UPPER('&CRN');
+
+PROMPT ACVW_ALL_AC_ENTRIES
+SELECT * FROM ACVW_ALL_AC_ENTRIES WHERE TRN_REF_NO = UPPER('&CRN');
+
+PROMPT ACTB_DAILY_LOG
+SELECT * FROM ACTB_DAILY_LOG WHERE TRN_REF_NO = UPPER('&CRN');
+
+prompt actb_ghost_log
+select * from actb_daily_ghost_log where TRN_REF_NO = UPPER('&CRN');
+
+PROMPT FTTB_STOP_PAYMENT
+SELECT * FROM FTTB_STOP_PAYMENT WHERE CONTRACT_REF_NO = '&CRN';
+
+PROMPT ISTB_CONTRACTIS
+SELECT * FROM ISTBS_CONTRACTIS WHERE CONTRACT_REF_NO = '&CRN';
+
+PROMPT ISTB_UPLOAD_CONTRACTIS
+SELECT * FROM ISTBS_UPLOAD_CONTRACTIS WHERE SOURCE_REF = '&CRN';
+
+PROMPT ISTBS_CONTRACT_DETAILS
+SELECT * FROM ISTBS_CONTRACT_DETAILS WHERE CONTRACT_REF_NO = '&CRN';
+
+PROMPT ISTBS_UPLOAD_CONTRACT_DETAILS
+SELECT * FROM ISTBS_UPLOAD_CONTRACT_DETAILS WHERE ft_contract_ref = '&CRN';
+
+PROMPT ISTBS_CONTRACTIS_SWIFT
+SELECT * FROM ISTBS_CONTRACTIS_SWIFT WHERE CONTRACT_REF_NO = UPPER('&CRN');
+
+PROMPT CSTB_CONTRACT_EXCEPTION
+SELECT * FROM CSTB_CONTRACT_EXCEPTION
+WHERE CONTRACT_REF_NO = '&CRN';
+
+PROMPT CSTB_CONTRACT_OVD
+SELECT * FROM CSTB_CONTRACT_OVD
+WHERE CONTRACT_REF_NO = '&CRN';
+
+PROMPT FTTB_UPLOAD_MASTER
+SELECT * FROM FTTB_UPLOAD_MASTER
+WHERE ft_contract_ref = '&CRN';
+
+PROMPT CSTM_PRODUCT
+SELECT * FROM CSTM_PRODUCT WHERE PRODUCT_CODE = SUBSTR(UPPER('&CRN'),4,4);
+
+PROMPT FTTB_ACTIVITY_JOURNAL
+SELECT * FROM FTTB_ACTIVITY_JOURNAL WHERE CONTRACT_REF_NO = UPPER('&CRN');
+
+PROMPT STTM_BRANCH
+SELECT * FROM STTM_BRANCH WHERE BRANCH_CODE = SUBSTR(UPPER('&CRN'),1,3);
+
+PROMPT FTTM_PRODUCT_DEFINITION
+SELECT * FROM FTTM_PRODUCT_DEFINITION WHERE PRODUCT_CODE = SUBSTR(UPPER('&CRN'),4,4);
+
+PROMPT FTTM_INTMDT_MASTER
+SELECT * FROM FTTM_INTMDT_MASTER WHERE CONTRACT_REF_NO = '&CRN';
+
+PROMPT CSTM_PRODUCT_EVENT_ACCT_ENTRY
+SELECT * FROM CSTM_PRODUCT_EVENT_ACCT_ENTRY
+WHERE PRODUCT_CODE = SUBSTR(UPPER('&CRN'),4,4)
+order by event_code,amt_tag,dr_cr_indicator;
+
+PROMPT CSTM_PRODUCT_EVENT_ADVICE
+SELECT * FROM CSTM_PRODUCT_EVENT_ADVICE
+WHERE PRODUCT_CODE = SUBSTR(UPPER('&CRN'),4,4);
+
+PROMPT ISTBS_MSGHO
+SELECT * FROM ISTBS_MSGHO
+WHERE contract_ref_no = '&CRN'
+ORDER BY EVENT_SEQ_NO, MSG_TYPE, RECEIVER, SERIAL_NO;
+
+PROMPT CSTM_PRODUCT_ACCROLE
+SELECT * FROM CSTM_PRODUCT_ACCROLE WHERE PRODUCT_CODE = UPPER(SUBSTR('&CRN',4,4))
+ORDER BY PRODUCT_CODE, ACCOUNTING_ROLE, STATUS ;
+
+PROMPT CSTB_CONTRACT_EVENT_ADVICE
+SELECT * FROM CSTB_CONTRACT_EVENT_ADVICE WHERE CONTRACT_REF_NO = UPPER('&CRN')
+ORDER BY CONTRACT_REF_NO, EVENT_SEQ_NO, MSG_TYPE ;
+
+SELECT * FROM cftms_product_iccf WHERE PRODUCT = UPPER(SUBSTR('&CRN',4,4));
+
+PROMPT MSTB_DLY_MSG_OUT
+SELECT * FROM MSTB_DLY_MSG_OUT WHERE REFERENCE_NO = UPPER('&CRN')
+ORDER BY DCN, RUNNING_NO ;
+
+PROMPT MSTB_MSG_HANDOFF
+SELECT * FROM MSTB_MSG_HANDOFF WHERE REFERENCE_NO = UPPER('&CRN');
+
+PROMPT MSTB_ARCHIVE_OUT
+SELECT * FROM MSTB_ARCHIVE_OUT WHERE REFERENCE_NO = UPPER('&CRN');
+
+PROMPT FTTBS_STOP_PAYMENT
+SELECT * FROM FTTBS_STOP_PMNT WHERE CONTRACT_REF_NO =UPPER('&CRN');
+
+PROMPT FTTB_UPLOAD_EXCEPTION
+SELECT * FROM FTTB_UPLOAD_EXCEPTION WHERE SOURCE_REF IN
+( SELECT SOURCE_CODE FROM FTTB_UPLOAD_MASTER WHERE FT_CONTRACT_REF = UPPER('&CRN'));
+
+PROMPT CREDIT FUNCTION
+SELECT * FROM cstbs_crfn_appr_resp WHERE CONTRACT_REF_NO =UPPER('&CRN');
+SELECT * FROM cstbs_crfn_txn_handoff WHERE CONTRACT_REF_NO =UPPER('&CRN');
+SELECT * FROM cstbs_crfn_txn_master WHERE CONTRACT_REF_NO =UPPER('&CRN');
+
+PROMPT CHARGE CLAIM
+select * from mstbs_charge_claim_details where contract_ref_no =UPPER('&CRN');
+PROMPT ISTBS_CLG_DETAILS
+select * FROM ISTBS_CLG_DETAILS where contract_ref_no =UPPER('&CRN');
+
+Prompt pctbs_clg_elixir
+select * FROM pctbs_clg_elixir where contract_ref_no = UPPER('&CRN');
+
+Prompt pctbs_clg_sorbnet
+select * FROM pctbs_clg_sorbnet where contract_ref_no = UPPER('&CRN');
+
+Prompt fttm_book_vdate_spread
+select * FROM fttm_book_vdate_spread where product_code = substr(UPPER('&CRN'),4,4);
+
+Prompt dr account from sttms_cust_account
+select * FROM sttms_cust_account where cust_ac_no =
+(select dr_account from fttb_contract_master where contract_ref_no = UPPER('&CRN'));
+
+Prompt cr account from sttms_cust_account
+select * FROM sttms_cust_account where cust_ac_no =
+(select cr_account from fttb_contract_master where contract_ref_no = UPPER('&CRN'));
+
+SELECT * FROM MSTB_VIEW_MESSAGE
+WHERE DCN IN (SELECT DISTINCT DCN FROM MSTBS_DLY_MSG_IN WHERE reference_no = '&CRN');
+
+
+SELECT * FROM MSTBS_DLY_MSG_IN WHERE reference_no = '&CRN';
+
+
+select * from FTTB_CUSTTFR_CONTRACT_DTLS where contract_ref_number='&CRN';
+/
+
+select * from sttm_customer where customer_no in 
+(select cust_no FROM sttms_cust_account where cust_ac_no = (select dr_account from fttb_contract_master where contract_ref_no = UPPER('&CRN'))
+union select cust_no FROM sttms_cust_account where cust_ac_no = (select cr_account from fttb_contract_master where contract_ref_no = UPPER('&CRN'))
+												  );
+
+select * from mstm_cust_address where customer_no in 
+(select cust_no FROM sttms_cust_account where cust_ac_no = (select dr_account from fttb_contract_master where contract_ref_no = UPPER('&CRN'))
+union select cust_no FROM sttms_cust_account where cust_ac_no = (select cr_account from fttb_contract_master where contract_ref_no = UPPER('&CRN'))
+												  );
+
+PROMPT MSTB_DLY_MSG_OUT_PDE
+SELECT * FROM MSTB_DLY_MSG_OUT_PDE 
+WHERE BRANCH = UPPER('&BRN') 
+AND REFERENCE_NO = UPPER('&CRN');
+
+Prompt iftb_out_details
+SELECT SUBSTR(COD_FUNCTION,1,200) FUNC, COD_EVENT, COD_EVENT, COD_PROCESSED_FLAG,
+TO_CHAR(COD_HANDOFF_TIME,'DD-MON-YYYY HH:MI:SS') HOFF_TIME, COD_IDENTIFIER 
+FROM IFTB_OUT_DETAILS where cod_identifier like '%'||UPPER('&CRN')||'%' 
+order by cod_handoff_time;
+
+
+SET ECHO OFF
+SPOOL OFF

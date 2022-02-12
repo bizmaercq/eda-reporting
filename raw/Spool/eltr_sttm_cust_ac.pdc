@@ -1,0 +1,147 @@
+CREATE OR REPLACE TRIGGER "XAFNFC"."ELTR_STTM_CUST_AC" 
+ AFTER UPDATE OR INSERT
+ ON sttm_cust_account
+  for each row
+declare
+  L_COUNT       NUMBER := 0;
+  L_LIAB_ID     NUMBER;
+  L_FACILITY_ID NUMBER;
+  --pragma autonomous_transaction;
+begin
+
+  debug.pr_debug('**', 'INSIDE TRIGGER  ---->ELTR_STTM_CUST_AC');
+--  dbms_output.put_line('INSIDE TRIGGER  ---->ELTR_STTM_CUST_AC');
+--  SAVEPOINT INSRT_NETTING;
+
+
+  SELECT COUNT(*)
+    INTO L_COUNT
+    FROM GETM_NETTING_DETAILS
+   WHERE REFERENCE_NO = :NEW.CUST_AC_NO;
+
+  BEGIN
+    select id
+      into l_liab_id
+      from getm_liab
+     where liab_no = (select liability_no
+                        from sttm_customer
+                       where customer_no = :NEW.CUST_NO);
+    debug.pr_debug('**', 'LIABILITY_NO FOUND IS->>' || l_liab_id);
+    dbms_output.put_line('LIABILITY_NO FOUND IS  ---->' || l_liab_id);
+
+  EXCEPTION
+    WHEN OTHERS THEN
+      l_liab_id := NULL;
+      debug.pr_debug('**', 'LIABILITY NOT FOUND ' || sqlerrm);
+      dbms_output.put_line('LIABILITY NOT FOUND' || sqlerrm);
+  END;
+
+  IF l_liab_id IS NOT NULL THEN
+    BEGIN
+      select id
+        into l_facility_id
+        from getm_facility
+       where line_code || line_serial = TRIM(:NEW.LINE_ID);
+      debug.pr_debug('**', 'Facility Found IS ->>>> '|| l_facility_id);
+      dbms_output.put_line('Facility Found IS->>' || l_facility_id);
+    EXCEPTION
+      WHEN OTHERS THEN
+        l_facility_id := NULL;
+        debug.pr_debug('**', 'Facility NOT Found ->>>> ' || sqlerrm);
+        dbms_output.put_line('Facility NOT Found ->>>> ');
+        dbms_output.put_line('Facility NOT Found ->>>> ' || sqlerrm);
+    END;
+  END IF;
+  IF l_liab_id IS NOT NULL THEN
+    IF L_COUNT = 0 THEN
+      INSERT INTO getm_netting_details
+        (ID,
+         REFERENCE_NO,
+         CUSTOMER_NO,
+         LIABILITY_ID,
+         FACILTY_ID,
+         CURRENCY,
+         AMOUNT,
+         VALUE_DATE,
+         BOOKING_DATE,
+         EXPIRE_DATE,
+         NETTING_REQ,
+         SOURCE,
+         USER_REFNO,
+         RECORD_STAT,
+         AUTH_STAT,
+         ONCE_AUTH,
+         MAKER_ID,
+         MAKER_DT_STAMP,
+         CHECKER_ID,
+         CHECKER_DT_STAMP,
+         MOD_NO,
+         CONTRACT_TYPE)
+      VALUES
+        (SEQ_conver.nextval,
+         :NEW.CUST_AC_NO,
+         :NEW.CUST_NO,
+         l_liab_id,
+         l_facility_id,
+         :NEW.CCY,
+         :NEW.ACY_AVL_BAL,
+         GLOBAL.APPLICATION_DATE,
+         :NEW.AC_OPEN_DATE,
+         NULL,
+         'Y',
+         'FLEXCUBE',
+         NULL,
+         'O',
+         'A',
+         'Y',
+         'SYSTEM',
+         global.application_date,
+         'SYSTEM',
+         global.application_date,
+         1,
+         DECODE(:NEW.ACCOUNT_TYPE, 'Y', 'TD', 'AC'));
+         --COMMIT;
+         debug.pr_debug('**', 'INSERT SUCCESS ');
+         dbms_output.put_line('INSERT SUCCESS ');
+
+    ELSE
+      UPDATE getm_netting_details
+         SET REFERENCE_NO     = :NEW.CUST_AC_NO,
+             CUSTOMER_NO      = :NEW.CUST_NO,
+             LIABILITY_ID     = l_liab_id,
+             FACILTY_ID       = l_facility_id,
+             CURRENCY         = :NEW.CCY,
+             AMOUNT           = :NEW.ACY_AVL_BAL,
+             VALUE_DATE       = GLOBAL.APPLICATION_DATE,
+             BOOKING_DATE     = :NEW.AC_OPEN_DATE,
+             EXPIRE_DATE      = NULL,
+             NETTING_REQ      = 'Y',
+             SOURCE           = 'FLEXCUBE',
+             USER_REFNO       = NULL,
+             RECORD_STAT      = 'O',
+             AUTH_STAT        = 'A',
+             ONCE_AUTH        = 'Y',
+             MAKER_ID         = 'SYSTEM',
+             MAKER_DT_STAMP   = global.application_date,
+             CHECKER_ID       = 'SYSTEM',
+             CHECKER_DT_STAMP = global.application_date,
+             MOD_NO           = MOD_NO + 1,
+             CONTRACT_TYPE    = DECODE(:NEW.ACCOUNT_TYPE, 'Y', 'TD', 'AC')
+       WHERE REFERENCE_NO = :NEW.CUST_AC_NO;
+       dbms_output.put_line('UPDATE SUCCESS ');
+       debug.pr_debug('**','UPDATE SUCCESS' );
+    END IF;
+
+  END IF;
+
+  EXCEPTION WHEN OTHERS THEN
+  debug.pr_debug('**', 'in whenother of product inside ---->' || sqlerrm);
+  debug.pr_debug('**',dbms_utility.format_error_backtrace);
+--  ROLLBACK TO INSRT_NETTING;
+
+end ELTR_STTM_CUST_AC;
+
+
+
+/
+ALTER TRIGGER "XAFNFC"."ELTR_STTM_CUST_AC" ENABLE;

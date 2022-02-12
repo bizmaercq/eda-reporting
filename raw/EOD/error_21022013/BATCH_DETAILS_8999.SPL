@@ -1,0 +1,34 @@
+SQL> 
+SQL> accept BATCH_NO PROMPT 'Enter the batch no ==> '
+Enter the batch no ==> 8999
+SQL> 
+SQL> SELECT * FROM DETB_BATCH_MASTER WHERE BATCH_NO='&BATCH_NO';
+
+no rows selected
+
+SQL> 
+SQL> SELECT * FROM ACTB_DAILY_LOG WHERE BATCH_NO ='&BATCH_NO';
+
+MO;TRN_REF_NO      ;          EVENT_SR_NO;EVEN;       AC_ENTRY_SR_NO;AC_;AC_NO               ;AC_;D;TRN;AMOUNT_TAG                         ;           FCY_AMOUNT;            EXCH_RATE;           LCY_AMOUNT;RELATED_C;RELATED_ACCOUNT     ;RELATED_REFERENC;M;MIS_HEAD ;TRN_DT   ;VALUE_DT ;TXN_INIT_;FINANCIAL;PER;INSTRUMENT_CODE ;BATC;              CURR_NO;USER_ID     ;BANK_CODE   ;              AVLDAYS;B;T;AUTH_ID     ;P;A;C;C;D;NODE                ;D;O;U;           NODE_SR_NO;N;I;F;G;P;G;V;PROD;G;EXTERNAL_REF_NO                    ;P;M;C;D;I;A;ORIG_PNL_;STMT_DT  ;         ENTRY_SEQ_NO;I
+--;----------------;---------------------;----;---------------------;---;--------------------;---;-;---;-----------------------------------;---------------------;---------------------;---------------------;---------;--------------------;----------------;-;---------;---------;---------;---------;---------;---;----------------;----;---------------------;------------;------------;---------------------;-;-;------------;-;-;-;-;-;--------------------;-;-;-;---------------------;-;-;-;-;-;-;-;----;-;-----------------------------------;-;-;-;-;-;-;---------;---------;---------------------;-
+DE;023ZRSP130520001;                1.000;ZRSP;         15251390.000;023;454101000           ;XAF;C;SUS;ADJ_REAL                           ;                     ;                     ;          6727929.000;         ;                    ;                ;Y;         ;21-FEB-13;21-FEB-13;21-FEB-13;FY2013   ;M02;                ;8999;                     ;SYSTEM      ;            ;                 .000;U;6;SYSTEM      ;N;A;2;G;N;FCUBS               ; ;Y;Y;                     ; ; ;Y; ;N; ;Y;ZRSP;N;                                   ; ; ; ;N;Y; ;         ;21-FEB-13;                1.000;
+
+1 row selected.
+
+SQL> 
+SQL> SELECT * FROM DETB_JRNL_LOG WHERE BATCH_NO='&BATCH_NO';
+
+no rows selected
+
+SQL> 
+SQL> SELECT * FROM DETB_UPLOAD_MASTER WHERE BATCH_NO='&BATCH_NO';
+
+no rows selected
+
+SQL> 
+SQL> SELECT * FROM DETB_UPLOAD_DETAIL WHERE BATCH_NO='&BATCH_NO';
+
+no rows selected
+
+SQL> 
+SQL> spool off

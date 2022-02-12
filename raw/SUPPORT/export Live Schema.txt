@@ -1,0 +1,1 @@
+expdp system/<password>@FCUBS directory=dump dumpfile=expdp-full-04112012_040001.dmp logfile=expdp-full-04112012_040001.log  OWNER=XAFNFC

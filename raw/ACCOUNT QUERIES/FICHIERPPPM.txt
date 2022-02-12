@@ -1,0 +1,19 @@
+--PERSONNES MORALES DEBITEURS
+
+
+select count(*) from sttm_cust_account ca where substr(ca.account_class,1,1) ='1' and ca.lcy_curr_balance <0 and ca.record_stat ='O';
+
+  --PERSONNES MORALES CREDITEURS
+
+select count(*) from sttm_cust_account ca where substr(ca.account_class,1,1) ='1' and ca.lcy_curr_balance >0 and ca.record_stat ='O';
+
+
+
+ -- PERSONNES PHYSIQUES DEBITEURS
+
+   select count(*) from sttm_cust_account ca where substr(ca.account_class,1,1) in ('2','3') and ca.lcy_curr_balance <0 and ca.record_stat ='O';
+
+
+ --  -- PERSONNES PHYSIQUES CREDITEURS
+
+select count(*) from sttm_cust_account ca where substr(ca.account_class,1,1) in ('2','3') and ca.lcy_curr_balance >0 and ca.record_stat ='O';

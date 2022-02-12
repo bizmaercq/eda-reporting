@@ -1,0 +1,44 @@
+SQL> 
+SQL> CREATE TABLE CLTB_ACC_COMP_BAL_BREAKUP_30NOV AS SELECT * FROM CLTB_ACCOUNT_COMP_BAL_BREAKUP WHERE account_number='050M03K121440001' ;
+CREATE TABLE CLTB_ACC_COMP_BAL_BREAKUP_30NOV AS SELECT * FROM CLTB_ACCOUNT_COMP_BAL_BREAKUP WHERE account_number='050M03K121440001'
+             *
+ERROR at line 1:
+ORA-00972: identifier is too long
+
+
+SQL> 
+SQL> 
+SQL> DECLARE
+  2  BEGIN
+  3  FOR I IN (SELECT ACCOUNT_NUMBER,SUM(BALANCE),SUM(LCY_BALANCE) FROM CLTB_ACCOUNT_COMP_BAL_BREAKUP where account_number='050M03K121440001' and gl_type='C' GROUP BY ACCOUNT_NUMBER )
+  4  LOOP
+  5  update CLTB_ACCOUNT_COMP_BAL_BREAKUP set BALANCE = I.BALANCE ,set LCY_BALANCE =I.LCY_BALANCE , STATUS_CODE='DOC3'
+  6  where account_number=I.ACCOUNT_NUMBER
+  7  and gl_type='C'
+  8  and component='MAIN_INT';
+  9  
+ 10  DELETE FROM CLTB_ACCOUNT_COMP_BAL_BREAKUP where account_number=I.ACCOUNT_NUMBER
+ 11  and gl_type='C'
+ 12  AND STATUS_CODE='NORM'
+ 13  and component='MAIN_INT';
+ 14  
+ 15  END LOOP;
+ 16  END;
+ 17  
+ 18  UPDATE CLTB_ACCOUNT_MASTER K SET K.USER_DEFINED_STATUS='DOC3'
+ 19  WHERE ACCOUNT_NUMBER='050M03K121440001';
+ 20  
+ 21  COMMIT;
+ 22  /
+update CLTB_ACCOUNT_COMP_BAL_BREAKUP set BALANCE = I.BALANCE ,set LCY_BALANCE =I.LCY_BALANCE , STATUS_CODE='DOC3'
+                                                              *
+ERROR at line 5:
+ORA-06550: line 5, column 63:
+PL/SQL: ORA-01747: invalid user.table.column, table.column, or column specification
+ORA-06550: line 5, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 18, column 1:
+PLS-00103: Encountered the symbol "UPDATE"
+
+
+SQL> spool off

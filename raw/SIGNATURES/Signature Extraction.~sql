@@ -1,0 +1,11 @@
+--Extraction of signature files as of a specific date
+select sm.branch, sm.cif_id,sa.acc_no,sc.imagefilename,sm.checker_dt_stamp ,
+'/home/XAFNFC/Signatures/'||sc.imagefilename||' ' Linux_Path,
+'cp ''/home/XAFNFC/Signatures/'||sc.imagefilename||''' '||'''/home/XAFNFC/NewSig/'||sc.imagefilename||'''' Linux_Command,
+' move "'||sc.imagefilename||'" '||sm.branch||'\"'||sm.cif_id||'_'||sc.imagefilename||'"' Msdos_Command
+from fbtb_acc_signature sa, fbtb_cif_signature sc, svtm_cif_sig_master sm
+where sa.cif_sig_id = sc.cif_sig_id
+and sc.cif_id = sm.cif_id
+--and sm.checker_dt_stamp between '26/09/2014' and '05/12/2014';
+-- last date 05/12/2014
+and sm.checker_dt_stamp between '05/12/2014' and '10/02/2015';

@@ -1,0 +1,7 @@
+Select *  from xafnfc.sttm_cust_personal U WHERE U.Last_Name LIKE '%NTUBA%' and U.First_Name LIKE '%VICTOR%'
+
+select U.User_Id, U.User_Name, U.Customer_No, U.Home_Branch from xafnfc.smtb_user U 
+WHERE U.Record_Stat = 'O'
+order by U.Home_Branch asc, U.START_DATE asc
+
+SELECT b.branch_code||' - '||b.branch_name as branch, b.branch_addr1||' '||b.branch_addr2||' '||b.branch_addr3 as adress  FROM sttm_branch b order by b.branch_code
